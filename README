@@ -1,0 +1,10 @@
+Any time you want update the remote repository with your local copy you must copy the files from production environmentto the cloned local repository /var/www/IRIS_BASE/:
+
+cd /var/www/html
+cp -R common error.html goaccess_reports index.html info.php iris_base iris_base.html nonattivo.html sfondo_errore.png sfondo_index_html.png sfondo_nonattivo.png sfondo_webgis.png ../IRIS_BASE/html
+
+cd /var/www/cgi-bin
+cp *.py ../IRIS_BASE/cgi-bin/
+
+
+Then git commit the difference and upload to the server with git push.
