@@ -1,3 +1,4 @@
+############## GIT UPDATE
 Any time you want update the remote repository with your local copy you must copy the files from production environmentto the cloned local repository /var/www/IRIS_BASE/:
 
 cd /var/www/html
@@ -8,3 +9,38 @@ cp *.py ../IRIS_BASE/cgi-bin/
 
 
 Then git commit the difference and upload to the server with git push.
+
+
+############## SERVER TEST
+To test this IRIS_BASE version modify:
+vi /etc/httpd/conf/httpd.conf
+
+
+By adding under the "<IfModule alias_module>" section the follow lines:
+
+    ScriptAlias /devel/cgi-bin/ "/var/www/IRIS_BASE/cgi-bin/"
+    Alias /devel "/var/www/IRIS_BASE/html"
+    <Directory "/var/www/IRIS_BASE/html">
+      Options +Indexes +FollowSymLinks +ExecCGI
+      AddHandler php-fastcgi .php
+      Action php-fastcgi /cgi-bin/php.fastcgi
+      AllowOverride All
+      Order allow,deny
+      Allow from all
+      #Require all granted
+    </Directory>
+    <Directory "/var/www/IRIS_BASE/cgi-bin">
+      AllowOverride None
+      #Options +ExecCGI -MultiViews +SymLinksIfOwnerMatchù
+      Options None
+      Require all granted
+    </Directory>
+
+
+Made executable all the files in the path /var/www/IRIS_BASE/html and /var/www/IRIS_BASE/cgi-bin/ by entering each path and launch:
+chmod +x .
+
+
+Restart the httpd service:
+service httpd restart
+ 
