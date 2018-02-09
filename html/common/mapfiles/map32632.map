@@ -1,0 +1,59 @@
+#Al momento, giugno 2012, questo e' il file map piu' OTTIMIZZATO ch'io abbia concepito
+
+MAP
+  NAME "MAP UTM-32632"
+  # Map image size
+  SIZE 600 600
+  UNITS meters
+  STATUS OFF
+
+	CONFIG "ON_MISSING_DATA" "IGNORE"
+	CONFIG "PROJ_LIB" "/usr/share/proj/"
+
+  EXTENT 200000 4000000 1600000 6000000 #extent per epsg:32632
+  SYMBOLSET 'symbols/symbols.txt'
+  PROJECTION
+	"init=epsg:32632"
+  END
+  
+  #SHAPEPATH 'C:\Program Files\OSGeo\MapGuide\Web\www\meteo\shpfile\'
+  #SHAPEPATH '/var/www/html/meteo/shpfile/'
+
+  # Web interface definition. Only the template parameter is required to display a map. See MapServer documentation
+  WEB
+    # Set IMAGEPATH to the path where MapServer should write its output.
+#    IMAGEPATH 'tmp/'
+
+    # Set IMAGEURL to the url that points to IMAGEPATH as defined in your web server configuration
+#    IMAGEURL 'tmp/'
+
+    # WMS-WFS server settings
+    METADATA
+	
+		## ows sono le caratteristiche comuni per i servizi WMS e WFS
+		"ows_enable_request"		"*" ## REQUIRED for v6
+		"ows_title"			"MAP_UTM-32632" ## REQUIRED
+		"ows_onlineresource"		"http://remotesensing.arpa.piemonte.it/cgi-bin/mapserv?map=/var/www/html/common/mapfiles/map32632.map&" ## Recommended
+		"ows_srs"			"epsg:32632" ## Recommended
+		"ows_abstract"			"This text describes my WFS service." ## Recommended
+		
+		"wms_feature_info_mime_type"	"text/html"
+	
+		#"wms_resx"
+		#"wms_resy"		
+
+    END
+
+    #Scale range at which web interface will operate Template and header/footer settings
+    # Only the template parameter is required to display a map. See MapServer documentation
+    TEMPLATE 'fooOnlyForWMSGetFeatureInfo'
+  END
+
+
+#Carico esternamente il mapfile con i layer:
+INCLUDE 'sismi_layers.map'
+INCLUDE 'datidibase.map'
+INCLUDE 'realtime.map'
+
+
+END #end of file map

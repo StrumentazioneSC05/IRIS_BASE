@@ -1,0 +1,771 @@
+
+LAYER
+	NAME "sism_cat"
+	TYPE POINT
+	STATUS OFF  		
+	CONNECTIONTYPE postgis
+	CONNECTION "host=localhost port=5432 dbname=sismica user=webgis password=webgis$2013%"
+	PROCESSING "CLOSE_CONNECTION=DEFER"
+	DATA "the_geom from catalogo_sismico using unique gid using srid=32632"
+	PROJECTION
+		"init=epsg:32632"
+   	END
+	EXTENT -100000 4000000 1500000 5500000
+	
+	METADATA
+   		"ows_title"		"sism_cat"
+		"ows_featureid"		"gid"
+		"ows_abstract"		"Catalogo sismico ARPA - dal 1982 al 2010"
+		"ows_srs"		"epsg:32632" ## REQUIRED, seems better if not 900913...
+		
+		"gml_include_items"     "all" ## Optional (serves all attributes for layer)
+		"queryable" "true"
+		"wms_include_items"	"all"
+		"wms_feature_info_mime_type"	"text/html"
+					
+		#"wfs_title"             "sism_cat" ##REQUIRED
+		#"gml_featureid"         "gid" ## REQUIRED
+   	END
+	
+	DUMP true
+	TOLERANCE 5
+ 		
+  	#FILTERITEM 'magnitudo'
+	FILTER ("magnitudo">=4)
+		
+	CLASSITEM 'magnitudo'
+		
+   	CLASS
+   		NAME 'sismi1'
+		#EXPRESSION ( ([magnitudo] >= -0.2) AND ([magnitudo] <= 2) )
+  		STYLE
+			SYMBOL "circle" 
+			SIZE 7.0 
+			OUTLINECOLOR 0 0 0
+    	    COLOR 255 0 0
+ 	 	END
+ 	END 	   
+END	#end layer sism_cat
+
+
+LAYER
+	NAME "sism_last15"
+	TYPE POINT
+	STATUS OFF  		
+	CONNECTIONTYPE postgis
+	CONNECTION "host=localhost port=5432 dbname=sismica user=webgis password=webgis$2013%"
+	PROCESSING "CLOSE_CONNECTION=DEFER"
+	#OLD DATA:
+	#DATA "the_geom from v_catalogo_sismico_last15 using unique gid using srid=32632"
+	#NEW STRUCTURE DATA:
+	DATA "the_geom from v_sisma_catalogo_last using unique gid using srid=32632"
+	PROJECTION
+		"init=epsg:32632"
+   	END
+	EXTENT -100000 4000000 1500000 5500000
+	
+	METADATA
+   		"ows_title"		"sisma_last15" ##REQUIRED
+		"ows_featureid"		"gid" ##REQUIRED
+		"ows_abstract"		"Sismi rete RSNI - ultimi 15 giorni"
+		"ows_srs"		"epsg:32632" ## REQUIRED, seems better if not 900913...
+		"ows_enable_request"	"*"
+		
+		"gml_include_items"     "all" ## Optional (serves all attributes for layer)
+		"queryable" 		"true"
+		"wms_include_items"	"all"
+		"wms_feature_info_mime_type"		"text/html"
+					
+   	END
+	
+	DUMP true
+	TOLERANCE 5
+ 		
+  	#FILTERITEM 'magnitudo'
+	#FILTER ("magnitudo">=4)
+		
+	CLASSITEM 'magnitudo'
+		
+   	CLASS
+   		NAME 'sismi1'
+		#EXPRESSION ( ([magnitudo] >= -0.2) AND ([magnitudo] <= 2) )
+  		STYLE
+			SYMBOL "circle" 
+			SIZE 7.0 
+			OUTLINECOLOR 0 0 0
+    	    COLOR 255 0 0
+ 	 	END
+ 	END 	   
+END #end layer sism_last15
+
+
+LAYER
+	NAME "sism_ev_staz_last15"
+	TYPE POINT
+	STATUS OFF  		
+	CONNECTIONTYPE postgis
+	CONNECTION "host=localhost port=5432 dbname=sismica user=webgis password=webgis$2013%"
+	PROCESSING "CLOSE_CONNECTION=DEFER"
+	#OLD STRUCTURE DATA:
+	#DATA "the_geom from v_sisma_evento_stazione_last15 using unique gid using srid=32632"
+	#NEW DATA FROM GENOVA
+	DATA "the_geom from v_sisma_evento_staz_last using unique gid using srid=32632"
+	PROJECTION
+		"init=epsg:32632"
+   	END
+	EXTENT -100000 4000000 1500000 5500000
+	
+	METADATA
+   		"ows_title"		"sism_ev_staz_last15"
+		"ows_featureid"		"gid"
+		"ows_abstract"		"Stazioni registranti i sismi degli ultimi 15 giorni"
+		"ows_srs"		"epsg:32632" ## REQUIRED, seems better if not 900913...
+		
+		"gml_include_items"     "all" ## Optional (serves all attributes for layer)
+		"queryable" "true"
+		"wms_include_items"	"all"
+		"wms_feature_info_mime_type"		"text/html"
+					
+		#"wfs_title"             "sism_ev_staz_last15" ##REQUIRED
+		#"gml_featureid"         "gid" ## REQUIRED
+   	END
+	
+	DUMP true
+	TOLERANCE 5
+ 		
+  	#FILTERITEM 'magnitudo'
+	#FILTER ("magnitudo">=4)
+		
+	CLASSITEM 'ndb'
+		
+   	CLASS
+   		NAME 'sismi1'
+		#EXPRESSION ( ([magnitudo] >= -0.2) AND ([magnitudo] <= 2) )
+  		STYLE
+			SYMBOL "circle" 
+			SIZE 7.0 
+			OUTLINECOLOR 0 0 0
+    	    COLOR 255 0 0
+ 	 	END
+ 	END 	   
+END #end layer sism_ev_staz_last15	
+
+
+LAYER
+	NAME "sism_staz"
+	TYPE POINT
+	STATUS OFF  		
+	CONNECTIONTYPE postgis
+	CONNECTION "host=localhost port=5432 dbname=sismica user=webgis password=webgis$2013%"
+	#CONNECTION "host=localhost port=5432 dbname=sismi_web user=webgis password=ARTURO"
+	PROCESSING "CLOSE_CONNECTION=DEFER"
+  	DATA "the_geom from v_sisma_stazioni using unique gid using srid=32632"
+	PROJECTION
+		"init=epsg:32632"
+   	END
+	EXTENT 200000 4500000 1000000 5500000
+	
+	METADATA
+		"ows_title"		"sism_staz"
+		"ows_featureid"		"gid"
+		"ows_abstract"		"Stazioni sismiche acquisite dalla rete RSNI"
+		"ows_srs"		"epsg:32632" ## REQUIRED, seems better if not 900913...
+		
+		"gml_include_items"     "all" ## Optional (serves all attributes for layer)
+		"queryable"		"true"
+		"wms_include_items"	"all"
+		"wms_feature_info_mime_type"	"text/html"
+					
+		#"wfs_title"             "sism_staz" ##REQUIRED
+		#"gml_featureid"         "gid" ## REQUIRED
+   	END
+	
+	DUMP true
+	TOLERANCE 5
+ 		
+  	#FILTERITEM 'id_rete_monit'
+  	#Vecchio filtro:
+	#FILTER (("id_rete_monit"<>'IV' AND "id_rete_monit"<>'MN') AND "utm_x"<560000 AND ("tempo_reale"='S' OR "tempo_reale"='N'))
+	#Proviamo a metter dentro piu stazioni:
+	FILTER (("id_rete_monit"<>'MN') AND "utm_x"<900000 AND ("tempo_reale"='S' OR "tempo_reale"='N'))
+	#"id_rete_monit" <> 'SE' AND 
+		
+	#CLASSITEM 'id_rete_monit'
+		
+   	CLASS
+   		NAME 'sism_staz1'
+		#EXPRESSION ( ([magnitudo] >= -0.2) AND ([magnitudo] <= 2) )
+  		STYLE
+			SYMBOL "circle" 
+			SIZE 7.0 
+			OUTLINECOLOR 0 0 0
+    	    COLOR 0 255 0
+ 	 	END
+ 	END 	   
+END #end layer sism_staz
+
+	
+LAYER
+	NAME "sism_cpti04"
+	TYPE POINT
+	STATUS OFF  		
+	CONNECTIONTYPE postgis
+	CONNECTION "host=localhost port=5432 dbname=sismica user=webgis password=webgis$2013%"
+	PROCESSING "CLOSE_CONNECTION=DEFER"
+	DATA "the_geom from dati_ospiti.sisma_cpti04 using unique gid using srid=32632"
+	PROJECTION
+		"init=epsg:32632"
+   	END
+	EXTENT 200000 4000000 1500000 5500000
+	
+	METADATA
+		"ows_title"		"sism_cpti04"
+		"ows_featureid"		"gid"
+		"ows_abstract"		"Catalogo parametrico dei terremoti italiani (CPTI04 - 2002)"
+		"ows_srs"		"epsg:32632" ## REQUIRED, seems better if not 900913...
+		
+		"gml_include_items"     "all" ## Optional (serves all attributes for layer)
+		"queryable"		"true"
+		"wms_include_items"	"all"
+		"wms_feature_info_mime_type"	"text/html"
+					
+		#"wfs_title"             "sism_cpti04" ##REQUIRED
+		#"gml_featureid"         "gid" ## REQUIRED
+   	END
+	
+	DUMP true
+	TOLERANCE 5
+ 		
+	#FILTERITEM 'magnitudo'
+	FILTER ("utm_x" < 800000  AND "utm_y" > 4800000)
+	#FILTER '>3'
+		
+	#CLASSITEM 'magnitudo'
+		
+   	CLASS
+   		NAME 'sism_cpti041'
+		#EXPRESSION ( ([magnitudo] >= -0.2) AND ([magnitudo] <= 2) )
+  		STYLE
+			SYMBOL "circle" 
+			SIZE 7.0 
+			OUTLINECOLOR 0 0 0
+    	    COLOR 0 255 0
+ 	 	END
+ 	END 	   
+END #end layer sism_cpti04
+
+
+LAYER
+        NAME "sism_cpti11"
+        TYPE POINT
+        STATUS OFF
+        CONNECTIONTYPE postgis
+        CONNECTION "host=localhost port=5432 dbname=sismica user=webgis password=webgis$2013%"
+        PROCESSING "CLOSE_CONNECTION=DEFER"
+        DATA "the_geom from dati_ospiti.sisma_cpti11 using unique gid using srid=32632"
+        PROJECTION
+                "init=epsg:32632"
+        END
+        EXTENT 200000 4000000 1500000 5500000
+
+        METADATA
+                "ows_title"             "sism_cpti11"
+                "ows_featureid"         "gid"
+                "ows_abstract"          "Catalogo parametrico dei terremoti italiani (CPTI11 - 2011)"
+                "ows_srs"               "epsg:32632" ## REQUIRED, seems better if not 900913...
+
+                "gml_include_items"     "all" ## Optional (serves all attributes for layer)
+                "queryable"             "true"
+                "wms_include_items"     "all"
+                "wms_feature_info_mime_type"	"text/html"
+
+                #"wfs_title"             "sism_cpti11" ##REQUIRED
+                #"gml_featureid"         "gid" ## REQUIRED
+        END
+
+        DUMP true
+        TOLERANCE 5
+
+        #FILTERITEM 'magnitudo'
+        FILTER ("utm_x" < 800000  AND "utm_y" > 4800000)
+        #FILTER '>3'
+
+        #CLASSITEM 'magnitudo'
+
+        CLASS
+                NAME 'sism_cpti111'
+                #EXPRESSION ( ([magnitudo] >= -0.2) AND ([magnitudo] <= 2) )
+                STYLE
+                        SYMBOL "circle"
+                        SIZE 7.0
+                        OUTLINECOLOR 0 0 0
+            COLOR 0 255 0
+                END
+        END
+END #end layer sism_cpti11
+
+
+LAYER
+	NAME "clax_sismi"
+	TYPE POLYGON
+	STATUS OFF  		
+	CONNECTIONTYPE postgis
+	CONNECTION "host=localhost port=5432 dbname=sismica user=webgis password=webgis$2013%"
+	PROCESSING "CLOSE_CONNECTION=DEFER"
+	DATA "the_geom from comuni_istat2010 using unique gid using srid=32632"
+	PROJECTION
+		"init=epsg:32632"
+   	END
+	EXTENT 200000 3500000 1500000 5500000
+	
+	METADATA
+   		"ows_title"		"clax_sismi"
+		"ows_featureid"		"gid"
+		"ows_abstract"		"Classificazione sismica comunale"
+		"ows_srs"		"epsg:32632" ## REQUIRED, seems better if not 900913...
+		
+		"gml_include_items"     "all" ## Optional (serves all attributes for layer)
+		"queryable"		"true"
+		"wms_include_items"	"all"
+		"wms_feature_info_mime_type"	"text/html"
+					
+		#"wfs_title"             "clax_sismi" ##REQUIRED
+		#"gml_featureid"         "gid" ## REQUIRED
+   	END
+	
+	DUMP true
+	TOLERANCE 5
+ 		
+	#FILTERITEM 'zs_2006'
+	FILTER ("nome_reg" = 'PIEMONTE' AND ("zs_2006" <> 4 AND "zs_2006" <> 0))
+	#FILTER '>3'
+		
+	CLASSITEM 'zs_2006'
+		
+   	CLASS
+   		NAME 'clax_sismi_A'
+		#EXPRESSION ( ([magnitudo] >= -0.2) AND ([magnitudo] <= 2) )
+  		STYLE
+			#SYMBOL "circle" 
+			#SIZE 7.0 
+			OUTLINECOLOR 0 0 0
+    	    COLOR 0 255 0
+ 	 	END
+ 	END
+END #end layer clax_sismi
+
+
+LAYER
+        NAME "clax_sismi2012"
+        TYPE POLYGON
+        STATUS OFF
+        CONNECTIONTYPE postgis
+        CONNECTION "host=localhost port=5432 dbname=sismica user=webgis password=webgis$2013%"
+        PROCESSING "CLOSE_CONNECTION=DEFER"
+        DATA "the_geom from comuni_istat2010 using unique gid using srid=32632"
+        PROJECTION
+                "init=epsg:32632"
+        END
+        EXTENT 200000 3500000 1500000 5500000
+
+        METADATA
+                "ows_title"             "clax_sismi2012"
+                "ows_featureid"         "gid"
+                "ows_abstract"          "Classificazione sismica comunale 2012"
+                "ows_srs"               "epsg:32632" ## REQUIRED, seems better if not 900913...
+
+                "gml_include_items"     "all" ## Optional (serves all attributes for layer)
+                "queryable"             "true"
+                "wms_include_items"     "all"
+                "wms_feature_info_mime_type"    "text/html"
+
+                #"wfs_title"             "clax_sismi" ##REQUIRED
+                #"gml_featureid"         "gid" ## REQUIRED
+        END
+
+        DUMP true
+        TOLERANCE 5
+
+        #FILTERITEM 'zs_2006'
+        FILTER ("nome_reg" = 'PIEMONTE' AND "zs_2010" <> '4')
+        #FILTER '>3'
+
+        CLASSITEM 'zs_2010'
+
+        CLASS
+                NAME 'clax_sismi_A'
+                #EXPRESSION ( ([magnitudo] >= -0.2) AND ([magnitudo] <= 2) )
+                STYLE
+                        #SYMBOL "circle"
+                        #SIZE 7.0
+                        OUTLINECOLOR 0 0 0
+            COLOR 0 255 0
+                END
+        END
+END #end layer clax_sismi2012
+
+
+LAYER
+        NAME "cluster"
+        TYPE POLYGON
+        STATUS OFF
+        CONNECTIONTYPE postgis
+        CONNECTION "host=localhost port=5432 dbname=sismica user=webgis password=webgis$2013%"
+        PROCESSING "CLOSE_CONNECTION=DEFER"
+        DATA "the_geom from v_cluster using unique gid using srid=32632"
+        PROJECTION
+                "init=epsg:32632"
+        END
+        EXTENT 200000 3500000 1500000 5500000
+
+        METADATA
+                "ows_title"             "cluster"
+                "ows_featureid"         "gid"
+                "ows_abstract"          "Cluster sismici"
+                "ows_srs"               "epsg:32632" ## REQUIRED, seems better if not 900913...
+
+                "gml_include_items"     "all" ## Optional (serves all attributes for layer)
+                "queryable"             "true"
+                "wms_include_items"     "all"
+                "wms_feature_info_mime_type"	"text/html"
+
+                #"wfs_title"             "cluster" ##REQUIRED
+                #"gml_featureid"         "gid" ## REQUIRED
+        END
+
+        DUMP true
+        TOLERANCE 5
+
+        #FILTERITEM 'zs_2006'
+        #FILTER ("nome_reg" = 'PIEMONTE' AND ("zs_2006" <> 4 AND "zs_2006" <> 0))
+        #FILTER '>3'
+
+        CLASSITEM 'cluster_id'
+
+        CLASS
+                NAME 'cluster_A'
+                #EXPRESSION ( ([magnitudo] >= -0.2) AND ([magnitudo] <= 2) )
+                STYLE
+                        #SYMBOL "circle"
+                        #SIZE 7.0
+                        OUTLINECOLOR 0 0 0
+            COLOR 0 255 0
+                END
+        END
+END #end layer cluster
+
+LAYER
+        NAME "cluster_sismi"
+        TYPE POINT
+        STATUS OFF
+        CONNECTIONTYPE postgis
+        CONNECTION "host=localhost port=5432 dbname=sismica user=webgis password=webgis$2013%"
+        PROCESSING "CLOSE_CONNECTION=DEFER"
+        DATA "the_geom from v_cluster_sismi_last using unique gid using srid=32632"
+        PROJECTION
+                "init=epsg:32632"
+        END
+        EXTENT 200000 3500000 1500000 5500000
+
+        METADATA
+                "ows_title"             "cluster_sismi"
+                "ows_featureid"         "gid"
+                "ows_abstract"          "Sismi appartenenti a dei cluster"
+                "ows_srs"               "epsg:32632" ## REQUIRED, seems better if not 900913...
+
+                "gml_include_items"     "all" ## Optional (serves all attributes for layer)
+                "queryable"             "true"
+                "wms_include_items"     "all"
+                "wms_feature_info_mime_type"            "text/html"
+
+                #"wfs_title"             "cluster" ##REQUIRED
+                #"gml_featureid"         "gid" ## REQUIRED
+        END
+
+        DUMP true
+        TOLERANCE 5
+
+        #FILTERITEM 'zs_2006'
+        #FILTER ("nome_reg" = 'PIEMONTE' AND ("zs_2006" <> 4 AND "zs_2006" <> 0))
+        #FILTER '>3'
+
+        CLASSITEM 'cluster_id'
+
+        CLASS
+                NAME 'cluster_A'
+                #EXPRESSION ( ([magnitudo] >= -0.2) AND ([magnitudo] <= 2) )
+                STYLE
+                        SYMBOL "circle"
+                        SIZE 7.0
+                        OUTLINECOLOR 0 0 0
+            COLOR 0 255 0
+                END
+        END
+END #end layer cluster_sismi
+
+LAYER
+        NAME "faglie"
+        TYPE LINE
+        STATUS OFF
+        CONNECTIONTYPE postgis
+        CONNECTION "host=localhost port=5432 dbname=sismica user=webgis password=webgis$2013%"
+        PROCESSING "CLOSE_CONNECTION=DEFER"
+        DATA "the_geom from faglie using unique gid using srid=23032"
+        PROJECTION
+                "init=epsg:23032"
+        END
+        EXTENT 200000 3500000 1500000 5500000
+
+        METADATA
+                "ows_title"             "faglie"
+                "ows_featureid"         "gid"
+                "ows_abstract"          "Faglie - dal lavoro di Perrone, UniTo"
+                "ows_srs"               "epsg:23032" ## REQUIRED, seems better if not 900913...
+		"ows_enable_request"	"*"
+
+                #"gml_include_items"     "all" ## Optional (serves all attributes for layer)
+                "queryable"             "true"
+                #"wms_include_items"     "all"
+                "wms_feature_info_mime_type"            "text/html"
+
+                #"wfs_title"             "cluster" ##REQUIRED
+                #"gml_featureid"         "gid" ## REQUIRED
+        END
+
+        DUMP true
+        TOLERANCE 5
+
+        #FILTERITEM 'zs_2006'
+        #FILTER ("nome_reg" = 'PIEMONTE' AND ("zs_2006" <> 4 AND "zs_2006" <> 0))
+        #FILTER '>3'
+
+        CLASSITEM 'tipo_id'
+
+        CLASS
+                NAME 'faglie_A'
+                #EXPRESSION ( ([magnitudo] >= -0.2) AND ([magnitudo] <= 2) )
+                STYLE
+                        #SYMBOL "circle"
+                        SIZE 7.0
+                        OUTLINECOLOR 0 0 0
+            COLOR 0 255 0
+                END
+        END
+END #end layer faglie
+
+
+LAYER
+        NAME "mwsource"
+        TYPE POLYGON
+        STATUS OFF
+        CONNECTIONTYPE postgis
+        CONNECTION "host=localhost port=5432 dbname=sismica user=webgis password=webgis$2013%"
+        PROCESSING "CLOSE_CONNECTION=DEFER"
+        DATA "the_geom from dati_ospiti.mwsources_region using unique gid using srid=4326"
+        PROJECTION
+                "init=epsg:4236"
+        END
+        EXTENT 6 36 20 50
+
+        METADATA
+                "ows_title"             "mwsource"
+                "ows_featureid"         "gid"
+                "ows_abstract"          "mwsource region"
+                "ows_srs"               "epsg:4326" ## REQUIRED, seems better if not 900913...
+
+                "gml_include_items"     "all" ## Optional (serves all attributes for layer)
+                "queryable"             "true"
+                "wms_include_items"     "all"
+                "wms_feature_info_mime_type"    "text/html"
+
+                #"wfs_title"             "mwsource" ##REQUIRED
+                #"gml_featureid"         "gid" ## REQUIRED
+        END
+
+        DUMP true
+        TOLERANCE 5
+
+        #FILTERITEM 'zs_2006'
+        #FILTER ("nome_reg" = 'PIEMONTE' AND ("zs_2006" <> 4 AND "zs_2006" <> 0))
+        #FILTER '>3'
+
+        #CLASSITEM 'cluster_id'
+
+        CLASS
+                NAME 'mwsource_A'
+                #EXPRESSION ( ([magnitudo] >= -0.2) AND ([magnitudo] <= 2) )
+                STYLE
+                        #SYMBOL "circle"
+                        #SIZE 7.0
+                        OUTLINECOLOR 0 0 0
+            		COLOR 0 255 0
+                END
+        END
+END #end layer mwsource
+
+
+LAYER
+        NAME "issource"
+        TYPE POLYGON
+        STATUS OFF
+        CONNECTIONTYPE postgis
+        CONNECTION "host=localhost port=5432 dbname=sismica user=webgis password=webgis$2013%"
+        PROCESSING "CLOSE_CONNECTION=DEFER"
+        DATA "the_geom from dati_ospiti.issources_region using unique gid using srid=4326"
+        PROJECTION
+                "init=epsg:4236"
+        END
+        EXTENT 3 34 30 50
+
+        METADATA
+                "ows_title"             "issource"
+                "ows_featureid"         "gid"
+                "ows_abstract"          "mwsource region"
+                "ows_srs"               "epsg:4326" ## REQUIRED, seems better if not 900913...
+
+                "gml_include_items"     "all" ## Optional (serves all attributes for layer)
+                "queryable"             "true"
+                "wms_include_items"     "all"
+                "wms_feature_info_mime_type"    "text/html"
+
+                #"wfs_title"             "issource" ##REQUIRED
+                #"gml_featureid"         "gid" ## REQUIRED
+        END
+
+        DUMP true
+        TOLERANCE 5
+
+        #FILTERITEM 'zs_2006'
+        #FILTER ("nome_reg" = 'PIEMONTE' AND ("zs_2006" <> 4 AND "zs_2006" <> 0))
+        #FILTER '>3'
+
+        #CLASSITEM 'cluster_id'
+
+        CLASS
+                NAME 'issource_A'
+                #EXPRESSION ( ([magnitudo] >= -0.2) AND ([magnitudo] <= 2) )
+                STYLE
+                        #SYMBOL "circle"
+                        #SIZE 7.0
+                        OUTLINECOLOR 0 0 0
+                        COLOR 0 255 0
+                END
+        END
+END #end layer issource
+
+
+LAYER
+        NAME "cssource"
+        TYPE POLYGON
+        STATUS OFF
+        CONNECTIONTYPE postgis
+        CONNECTION "host=localhost port=5432 dbname=sismica user=webgis password=webgis$2013%"
+        PROCESSING "CLOSE_CONNECTION=DEFER"
+        DATA "the_geom from dati_ospiti.cssources_region using unique gid using srid=4326"
+        PROJECTION
+                "init=epsg:4236"
+        END
+        EXTENT 3 34 30 50
+
+        METADATA
+                "ows_title"             "cssource"
+                "ows_featureid"         "gid"
+                "ows_abstract"          "mwsource region"
+                "ows_srs"               "epsg:4326" ## REQUIRED, seems better if not 900913...
+
+                "gml_include_items"     "all" ## Optional (serves all attributes for layer)
+                "queryable"             "true"
+                "wms_include_items"     "all"
+                "wms_feature_info_mime_type"    "text/html"
+
+                #"wfs_title"             "cssource" ##REQUIRED
+                #"gml_featureid"         "gid" ## REQUIRED
+        END
+
+        DUMP true
+        TOLERANCE 5
+
+        #FILTERITEM 'zs_2006'
+        #FILTER ("nome_reg" = 'PIEMONTE' AND ("zs_2006" <> 4 AND "zs_2006" <> 0))
+        #FILTER '>3'
+
+        #CLASSITEM 'cluster_id'
+
+        CLASS
+                NAME 'cssource_A'
+                #EXPRESSION ( ([magnitudo] >= -0.2) AND ([magnitudo] <= 2) )
+                STYLE
+                        #SYMBOL "circle"
+                        #SIZE 7.0
+                        OUTLINECOLOR 0 0 0
+                        COLOR 0 255 0
+                END
+        END
+END #end layer cssource
+
+
+LAYER
+        NAME "poly_pgv"
+        TYPE POLYGON
+        STATUS OFF
+        CONNECTIONTYPE postgis
+        CONNECTION "host=localhost port=5432 dbname=sismica user=webgis password=webgis$2013%"
+        PROCESSING "CLOSE_CONNECTION=DEFER"
+        DATA "the_geom from poly_pgv using unique gid using srid=4326"
+        PROJECTION
+                "init=epsg:4236"
+        END
+        EXTENT 3 34 30 50
+
+        METADATA
+                "ows_title"             "poly_pgv"
+                "ows_featureid"         "gid"
+                "ows_abstract"          "shakemap PGV"
+                "ows_srs"               "epsg:4326" ## REQUIRED, seems better if not 900913...
+
+                "gml_include_items"     "all" ## Optional (serves all attributes for layer)
+                "queryable"             "true"
+                "wms_include_items"     "all"
+                "wms_feature_info_mime_type"    "text/html"
+        END
+
+        DUMP true
+        TOLERANCE 5
+
+        #FILTERITEM 'zs_2006'
+        #FILTER ("nome_reg" = 'PIEMONTE' AND ("zs_2006" <> 4 AND "zs_2006" <> 0))
+        #FILTER '>3'
+        #CLASSITEM 'cluster_id'
+        CLASS
+                NAME 'poly_pgv_A'
+                #EXPRESSION ( ([magnitudo] >= -0.2) AND ([magnitudo] <= 2) )
+                STYLE
+                        #SYMBOL "circle"
+                        #SIZE 7.0
+                        OUTLINECOLOR 0 0 0
+                        COLOR 0 255 0
+                END
+        END
+END #end layer poly_pgv
+
+
+############## LAYER IN SVILUPPO-TEST ##################
+
+#NON FUNZIONA!!!!!
+#LAYER
+#    NAME sism_cat2
+#    TYPE POINT
+#    CONNECTIONTYPE oraclespatial
+#    CONNECTION "meteo/meteo@interreg_BDMPST10.csi.it"
+#    DATA "GEOMETRIE FROM catalogo_sismico_sde USING SRID 32632"
+#    DUMP TRUE
+#    CLASS
+#        STYLE
+#            OUTLINECOLOR 0 0 0
+#            COLOR 0 128 128
+#        END
+#    END
+#END #end layer sism_cat2
+  
+
+

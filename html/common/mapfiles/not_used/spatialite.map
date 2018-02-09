@@ -1,0 +1,89 @@
+MAP
+	NAME "METEO"
+	# Map image size
+	SIZE 600 600
+	UNITS meters
+	STATUS OFF
+	
+	EXTENT 350000 4000000 1600000 7000000
+	PROJECTION
+		"init=epsg:900913"
+	END
+	
+
+
+	# Web interface definition. Only the template parameter is required to display a map. See MapServer documentation
+	WEB
+	# Set IMAGEPATH to the path where MapServer should write its output.
+#		IMAGEPATH 'tmp/'
+    # Set IMAGEURL to the url that points to IMAGEPATH
+    # as defined in your web server configuration
+#		IMAGEURL 'tmp/'
+
+	# WMS-WFS server settings
+		METADATA
+			## ows sono le caratteristiche comuni per i servizi WMS e WFS
+			"ows_enable_request"            "*"
+			"ows_title"                     "METEO-MAP"
+			"ows_onlineresource"            "http://remotesensing.arpa.piemonte.it/cgi-bin/mapserv?map=/var/www/html/common/mapfiles/spatialite.map&"       
+			"ows_srs"                       "epsg:900913 epsg:4326 epsg:32632 epsg:3785"
+			"ows_abstract"                  "This text describes my WFS service." ## Recommended
+			
+			#"wms_feature_info_mime_type" "text/html"
+		END
+
+    #Scale range at which web interface will operate
+    # Template and header/footer settings
+    # Only the template parameter is required to display a map. See MapServer documentation
+    TEMPLATE 'fooOnlyForWMSGetFeatureInfo'
+	END
+	
+	
+
+	
+	LAYER
+		NAME "bacini_lite"
+		CONNECTIONTYPE OGR
+		CONNECTION "bacini_defense.sqlite"
+		DATA "bacini_defense"        
+        STATUS ON
+        TYPE POLYGON
+
+		PROJECTION
+			"init=epsg:23032"
+		END
+        
+		EXTENT 300000 4500000 500000 5200000
+
+        METADATA
+                "ows_title"             "bacini_lite"
+                "ows_featureid"         "gid"
+                "ows_srs"               "epsg:23032" ## REQUIRED, seems better if not 900913...
+                "ows_abstract"          "Bacini idrografici con superamento negli ultimi 15 giorni"
+
+                "gml_include_items"     "all" ## Optional (serves all attributes for layer)
+                "queryable"             "true"
+                "wms_include_items"     "all"
+                "wms_feature_info_mime_type" "text/html"
+		END
+
+        DUMP true
+        TOLERANCE 5
+        #FILTERITEM 'classe'
+        #FILTER '>3'
+        #FILTER ("data"::text like '2011-05-19')
+        CLASSITEM 'comune'
+        CLASS
+			NAME 'bacini_lite'
+			#EXPRESSION ( [classe] = 1 )
+			STYLE
+				OUTLINECOLOR 215 215 215
+			COLOR 0 255 255 #cyan
+			#WIDTH 0.1
+			END
+		END		
+		
+END #end layer bacini_lite	
+	
+	
+END #end of file map

@@ -1,0 +1,90 @@
+#per piogge cumulate 24h
+        CLASS
+                NAME '<10 mm'
+                STYLE
+                        SYMBOL "square"
+                        SIZE 7
+                        COLOR 224 255 255
+                END
+        END
+        CLASS
+                NAME '10-20 mm'
+                STYLE
+                        SYMBOL "square"
+                        SIZE 7
+                        COLOR 152 245 255
+                END
+        END
+        CLASS
+                NAME '20-40 mm'
+                STYLE
+                        SYMBOL "square"
+                        SIZE 7
+                        COLOR 0 245 255
+                END
+        END
+        CLASS
+                NAME '40-60 mm'
+                STYLE
+                        SYMBOL "square"
+                        SIZE 7
+                        COLOR 0 191 255
+                END
+        END
+        CLASS
+                NAME '60-80 mm'
+                STYLE
+                        SYMBOL "square"
+                        SIZE 7
+                        COLOR 30 144 255
+                END
+        END
+        CLASS
+                NAME '80-100 mm'
+                STYLE
+                        SYMBOL "square"
+                        SIZE 7
+                        COLOR 0 0 205
+                END
+        END
+        CLASS
+                NAME '100-150 mm'
+                STYLE
+                        SYMBOL "square"
+                        SIZE 7
+                        COLOR 72 61 139
+                END
+        END
+        CLASS
+                NAME '150-200 mm'
+                STYLE
+                        SYMBOL "square"
+                        SIZE 7
+                        COLOR 230 230 250
+                END
+        END
+        CLASS
+                NAME '200-250 mm'
+                STYLE
+                        SYMBOL "square"
+                        SIZE 7
+                        COLOR 238 174 238
+                END
+        END
+        CLASS
+                NAME '250-300 mm'
+                STYLE
+                        SYMBOL "square"
+                        SIZE 7
+                        COLOR 238 0 238
+                END
+        END
+        CLASS
+                NAME '>300 mm'
+                STYLE
+                        SYMBOL "square"
+                        SIZE 7
+                        COLOR 139 71 137
+                END
+        END
+

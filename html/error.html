@@ -1,0 +1,46 @@
+<html id=html_doc>
+<head>        
+
+<TITLE> ERROR </TITLE>
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE6" />
+<meta name="Author" content="Armando Riccardo Gaeta">
+<meta name="Email" content="ar_gaeta@yahoo.it">
+<meta name="Subject" content="INDEX">
+
+<style>
+html {
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: 100% 100%;
+}
+</style>
+
+<script type="text/javascript">
+
+/////////////// RETRIEVE PARAMETERS FROM URL ////////////////
+function gup(name)
+{
+        name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+        var regexS = "[\\?&]"+name+"=([^&#]*)";
+        var regex = new RegExp( regexS );
+        var results = regex.exec( window.location.href );
+        if( results == null )
+                return "";
+        else
+                return results[1];
+}
+
+var root_dir_html = gup("root_dir_html");
+
+html_doc=document.getElementById('html_doc');
+html_doc.style.background = 'url(' + root_dir_html + '/sfondo_errore.png) no-repeat center center fixed';
+        
+</script>
+		
+</head>
+
+<body>
+</body>
+	
+</html>

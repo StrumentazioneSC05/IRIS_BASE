@@ -1,0 +1,68 @@
+<html>
+<head>
+
+<TITLE>
+Integrated Radar Information System (IRIS)
+</TITLE>
+
+</head>
+
+<body>
+
+<p>
+
+Uno strumento molto utile per analizzare i file di log del web-server in tempo reale, oltretutto disponibile nei repository di CentOS.
+<br/>
+
+<a href="https://goaccess.io"> GoAccess </a>
+
+<br/>
+<br/>
+Per installarlo:
+<br/>
+
+yum install goaccess.x86_64
+<br/>
+
+<br/>
+** per qualunque versione bisogna lanciare goaccess con i privilegi di root per poter leggere il file access_log **
+<br/>
+
+<br/>
+<b>Versione 1.2-1</b>
+<br/>
+
+<br/>
+Per la creazione del file statico lanciare il comando:
+<br/>
+
+goaccess -f /var/log/httpd/access_log -a > /var/www/html/report.html
+<br/>
+
+<br/>
+Un'analisi più accurata pare sia possibile con il comando:
+<br/>
+
+goaccess /var/log/httpd/access_log -o /var/www/html/report.html --log-format=COMBINED
+<br/>
+
+<br/>
+Una nuova funzione real-time è stata introdotta, lanciando il comando:
+<br/>
+
+goaccess /var/log/httpd/access_log -o /var/www/html/report.html --log-format=COMBINED --real-time-html
+<br/>
+
+<br/>
+Per filtrare i report in base a delle pagine specifiche personalizzando il titolo della pagina:
+<br/>
+
+zgrep -h -i 'TYPE=iris_base'  /var/log/httpd/access_log* | goaccess --html-report-title='IRIS BASE' -a -o /var/www/html/goaccess_reports/iris_base-report.html --log-format=COMBINED
+<br/>
+
+</p>
+
+
+</body>
+
+</html>

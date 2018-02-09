@@ -1,0 +1,439 @@
+<html>
+
+<!--
+Pagina per realizzare grafici multipli utilizzando la libreria Highcharts.
+
+Ottimizzazioni:
+- evitare di fare piu query sul DB, fare una sola query e produrre cosi' un solo JSON per costruire i grafici
+- accoppiare alcuni grafici insieme. Parzialmente riuscito devo solo far comparire il tooltip in modo corretto, ed aggiornare i pulsanti con le variabili da accendere/spegnere
+- generare in maniera dinamica i button
+
+-->
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+  <title>Multiplot</title>
+
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE6" />
+<meta name="Author" content="Armando Riccardo Gaeta">
+<meta name="Email" content="ar_gaeta@yahoo.it">
+<meta name="Subject" content="WebGIS portable">
+<meta name="Description" content="Gestione semplice di un WebGIS portatile">
+<meta name="viewport" content="user-scalable=no, width=device-width" />
+
+<script>
+//Recupero info dall'url:
+function gup(name)
+{
+        name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+        var regexS = "[\\?&]"+name+"=([^&#]*)";
+        var regex = new RegExp( regexS );
+        var results = regex.exec( window.location.href );
+        if( results == null )
+                return "";
+        else
+                return results[1];
+}
+//var id_bacino = parseInt(gup("bacino"));
+var root_dir_html = gup("root_dir_html");
+var codice_istat = gup("codice_istat");
+var progr_punto = gup("progr_punto");
+var parametri = new Array();
+var param_str = gup("parametri");
+param_str_pipe = param_str.replace(/\|/g, '_'); //il PIPE fa poi casini se dato come ID agli elementi html
+parametri = param_str_pipe.split(",");
+console.log(parametri);
+var index_t = parametri.indexOf('DEW'); //nel caso vi sia DEW lo sostituisco con TERMA
+parametri[index_t] = 'TERMA';
+var sorgente = gup("sorgente"); 
+if (sorgente=='meteoidro_lm') var url_php = root_dir_html + '/common/scripts/extract_dbdata_plot_lombardia.php?';
+else if (sorgente=='test_lm') var url_php = root_dir_html + '/common/scripts/extract_dbdata_plot_iris_lm.php?';
+else var url_php = root_dir_html + '/common/scripts/extract_dbdata_plot.php?';
+
+document.write("<link rel='stylesheet' href='" + root_dir_html + "/jQuery/bootstrap-theme.min.css'\/>");
+document.write("<link rel='stylesheet' href='" + root_dir_html + "/jQuery/jquery-ui.css'\/>");
+
+document.write("<script type='text/javascript' src='" + root_dir_html +"/jQuery/jquery-1.10.2.js'><\/script>");
+document.write("<script type='text/javascript' src='" + root_dir_html +"/jQuery/jquery-ui.js'><\/script>");
+//document.write("<script type='text/javascript' src='" + root_dir_html +"/Highcharts-3.0.9/js/highcharts.js'><\/script>");
+document.write("<script type='text/javascript' src='https://code.highcharts.com/highcharts.js'><\/script>");
+</script>
+
+<style type="text/css">
+.chart {
+    min-width: 320px;
+    max-width: 800px;
+    height: 150px;
+    margin: 0 auto;
+}
+.highcharts-title { /*non viene preso*/
+    font-size: 14px;
+}
+</style>
+
+<script>
+//Funzione da Internet per stile checkbox, parte al caricamento della pagina:
+//Cerca su google "Code Snippet jQuery Checkbox Buttons using HTML jQuery"
+//$(function () { design_checkboxes(); });
+function design_checkboxes() {
+    $('.button-checkbox').each(function () {
+        // Settings
+        var $widget = $(this),
+            $button = $widget.find('button'),
+            $checkbox = $widget.find('input:checkbox'),
+            color = $button.data('color')
+            ,settings = {
+                on: { icon: 'glyphicon' }, //on: { icon: 'glyphicon glyphicon-check' },
+                off: { icon: 'glyphicon' } //off: { icon: 'glyphicon glyphicon-unchecked' }
+            }
+            ;
+        // Event Handlers
+        $button.on('click', function () {
+            $checkbox.prop('checked', !$checkbox.is(':checked'));
+            $checkbox.triggerHandler('change');
+	//PERSONALIZZO LA FUNZIONE:
+	//param_raw=$checkbox.context.innerText; //metodo non riconosciuto da firefox
+	param_raw=$checkbox.context.textContent;
+	param = param_raw.replace(/\s+/g, ''); //strip all spaces
+	//Se il parametro non e' presente nell'array lo aggiungo altrimenti lo tolgo:
+	var index = parametri.indexOf(param);
+	if (index<0) parametri.push(param);
+	else parametri.splice(index, 1);
+	console.log(parametri);
+	lancia_costruzione_grafici(parametri); //questa funzione rilancia la costruzione di tutti i grafici
+	//spegni_accendi_serie(parametri); //per evitare di fare mille query e' possibile spegenre/accendere i dati da javascript??
+            updateDisplay();
+        });
+        $checkbox.on('change', function () {
+            updateDisplay();
+        });
+        // Actions
+        function updateDisplay() {
+            var isChecked = $checkbox.is(':checked');
+            // Set the button's state
+            $button.data('state', (isChecked) ? "on" : "off");
+            // Set the button's icon
+            $button.find('.state-icon')
+                .removeClass()
+                .addClass('state-icon ' + settings[$button.data('state')].icon);
+            // Update the button's color
+            if (isChecked) {
+                $button
+                    .removeClass('btn-default')
+                    .addClass('btn-' + color + ' active');
+            }
+            else {
+                $button
+                    .removeClass('btn-' + color + ' active')
+                    .addClass('btn-default');
+            }
+        }
+        // Initialization
+        function init() {
+            updateDisplay();
+            // Inject the icon if applicable
+            if ($button.find('.state-icon').length === 0) {
+                $button.prepend('<i class="state-icon ' + settings[$button.data('state')].icon + '"></i>');
+            }
+        }
+        init();
+    });
+};
+
+</script>
+
+</head>
+
+<body>
+
+<p style="margin:auto; text-align:center;">*** Questi grafici si intendono semplificati per avere una visione di insieme sui dati orari. Per maggiori dettagli vedere i grafici sui singoli sensori ***</p>
+
+
+<table class="layer_tb" id="layer_tb2" style="margin: auto;">
+<tr id="p_2" class="tablerow">
+<script type='text/javascript'>
+var $tabella_elem = $("#p_2");
+//in base ai parametri disponibili per la stazioni creo i pulsanti:
+for (var i=0; i<parametri.length; i++) {
+  var parametro = parametri[i].replace('|', '_'); //il PIPE fa casini con jQuery!
+  $tabella_elem.append("<td class='select' style='text-align:center;'> \
+<span class='button-checkbox' id='" + parametro+ "'> \
+<button type='button' class='btn' data-color='warning' disabled>" + parametro+ "</button> \
+<input type='checkbox' style='display:none;' class='hidden' unchecked /> \
+</span> \
+</td>");
+}
+</script>
+</tr>
+</table>
+
+<!--Pulsanti statici sarebbe bene crearli in maniera dinamica
+<table class="layer_tb" id="layer_tb" style="margin: auto;">
+<tr id="p_1" class="tablerow">
+<td class='select' style='text-align:center;'>
+	<span class='button-checkbox' id='TERMA'> 
+		<button type='button' class='btn' data-color='warning' disabled>TERMA</button> 
+		<input type='checkbox' style='display:none;' class='hidden' unchecked /> 
+	</span>
+</td>
+<td class='highlight' style='text-align:center;'>
+	<span class='button-checkbox' id='PLUV'>
+		<button type='button' class='btn' data-color='info' disabled>PLUV</button>
+		<input type='checkbox' style='display:none;' class='hidden' unchecked />
+	</span>
+</td>
+<td class='visible' style='text-align:center;'>
+	<span class='button-checkbox' id='IGRO'>
+		<button type='button' class='btn' data-color='success' disabled>IGRO</button>
+		<input type='checkbox' style='display:none;' class='hidden' unchecked />
+	</span>
+</td>
+<td class='visible' style='text-align:center;'>
+        <span class='button-checkbox' id='NIVO'>
+                <button type='button' class='btn' data-color='primary' disabled>NIVO</button>
+                <input type='checkbox' style='display:none;' class='hidden' unchecked />
+        </span>
+</td>
+</tr>
+</table>
+-->
+
+<div id="container"></div>
+
+<script type='text/javascript'>
+
+//in base ai parametri disponibili per la stazioni disabilito alcuni pulsanti e ne accendo altri:
+for (var i=0; i<parametri.length; i++) {
+  $('#'+parametri[i]+' button').prop('disabled', false);
+  $('#'+parametri[i]+' input').prop('checked', true);
+}
+
+design_checkboxes(); //lancio la funzione per i checkbox
+
+lancia_costruzione_grafici(parametri); //lancio la costruzione dei grafici
+
+/***************** Spengo/accendo le serie dati nel grafico gia' costruito - NON FUNZIONA al momento ******************/
+//questa funzione sarebbe meglio da richiamare per evitare di fare mille chiamate al php e dunque al db per recuperare il JSOn coi dati
+function spegni_accendi_serie(parametri) {
+  var chart = $('#container').highcharts();
+//come accedo ai grafici? il rigo precedente non funziona...
+//forse con: $('#container')[0].childNodes[0]
+//oppure: chart=Highcharts.charts[index]; vedi http://stackoverflow.com/questions/13049977/how-can-i-get-access-to-a-highcharts-chart-through-a-dom-container
+  for (var i=0; i<parametri.length; i++) {
+    var series = chart.get(parametri[i]);
+    series.show();
+  }
+}
+
+/***************** Costruico il grafico  ******************/
+/*
+The purpose of this demo is to demonstrate how multiple charts on the same page can be linked
+through DOM and Highcharts events and API methods. It takes a standard Highcharts config with a
+small variation for each data set, and a mouse/touch event handler to bind the charts together.
+*/
+
+/*
+ * In order to synchronize tooltips and crosshairs, override the
+ * built-in events with handlers defined on the parent element.
+ */
+//Metto dentro una funzione tutto questo per vedere se riesco a fare un refresh dei dati:
+function lancia_costruzione_grafici(parametri) {
+//svuotiamo eventualmetne il div:
+$( "#container" ).empty();
+
+$('#container').bind('mousemove touchmove touchstart', function (e) {
+    var chart,
+        point,
+        i,
+        event;
+
+    for (i = 0; i < Highcharts.charts.length; i = i + 1) {
+        chart = Highcharts.charts[i];
+        event = chart.pointer.normalize(e.originalEvent); // Find coordinates within the chart
+        point = chart.series[0].searchPoint(event, true); // Get the hovered point
+
+        if (point) {
+            point.highlight(e);
+        }
+    }
+});
+/*
+ * Override the reset function, we don't need to hide the tooltips and crosshairs.
+ */
+Highcharts.Pointer.prototype.reset = function () {
+    return undefined;
+};
+
+/**
+ * Highlight a point by showing tooltip, setting hover state and draw crosshair
+ */
+Highcharts.Point.prototype.highlight = function (event) {
+    this.onMouseOver(); // Show the hover marker
+    this.series.chart.tooltip.refresh(this); // Show the tooltip
+    this.series.chart.xAxis[0].drawCrosshair(event, this); // Show the crosshair
+};
+
+/**
+ * Synchronize zooming through the setExtremes event handler.
+ */
+function syncExtremes(e) {
+    var thisChart = this.chart;
+
+    if (e.trigger !== 'syncExtremes') { // Prevent feedback loop
+        Highcharts.each(Highcharts.charts, function (chart) {
+            if (chart !== thisChart) {
+                if (chart.xAxis[0].setExtremes) { // It is null while updating
+                    chart.xAxis[0].setExtremes(e.min, e.max, undefined, false, { trigger: 'syncExtremes' });
+                }
+            }
+        });
+    }
+}
+
+// Get the data. The contents of the data file can be viewed at
+// https://github.com/highcharts/highcharts/blob/master/samples/data/activity.json
+//$.getJSON('https://www.highcharts.com/samples/data/jsonp.php?filename=activity.json&callback=?', function (activity) {
+//Definisco url da cui prelevare JSON con i dati da plottare:
+stringa_url = 'params='+parametri+'&root_dir_html='+root_dir_html+'&codice_istat='+codice_istat+'&progr_punto='+progr_punto;
+$.getJSON( url_php + stringa_url, function (activity) {
+    var numero_grafici = activity.datasets.length; //numero totale delle serie che andro a plottare
+    $.each(activity.datasets, function (i, dataset) {
+
+        // Add X values
+        dataset.data = Highcharts.map(dataset.data, function (val, j) {
+            return [activity.xData[j], val];
+        });
+
+	/* IN SVILUPPO per aggregare PLOT */
+	/*
+	//provo a mettere insieme 2 plot: il problema sono i tooltip e quando si riaggiorna che perde questo accoppiamento perche il chart non e piu [0] ma cambia numerazione:
+	if (dataset.name=='IGRO') {
+	//Per trovare il chart che mi serve loop dentro array:
+	var chart;
+	for (var i = 0; i < Highcharts.charts.length; i++) {
+	  chart_title = Highcharts.charts[i].title.textStr;
+	  if (chart_title=='TERMA') chart = Highcharts.charts[i];
+	}
+	//var chart = Highcharts.charts[0];
+	chart.addAxis({ // Secondary yAxis
+       	     id: 'igro-axis',  min: 0, max: 100,
+       	     title: { text: null },
+       	     //lineWidth: 1, //lineColor: 'green',
+       	     opposite: true
+       	     ,labels: {
+		 format: '{value} %',
+       	         style: { color: 'orange', fontWeight:'bold' }
+       	         ,align: 'right', x: 0, y: -2
+	     }
+	});
+	chart.addSeries({
+	      //xAxis: 'mainx',
+	      yAxis: 'igro-axis',
+	      data: dataset.data,
+	      name: dataset.name,
+	      type: dataset.type,
+	      color: Highcharts.getOptions().colors[i],
+	      fillOpacity: 0.3,
+	      tooltip: {
+	          valueSuffix: ' ' + dataset.unit
+	      }
+	});
+	chart.xAxis[0].update({
+	  events: { setExtremes: syncExtremes }
+	 });
+	}*/
+
+	//per avere l'asse x con label solo nell'ultmo plot:
+	if (i==numero_grafici-1) xLabel = true;
+	else xLabel = false;
+
+        $('<div class="chart">')
+            .appendTo('#container')
+            .highcharts({
+                chart: {
+		    id: dataset.name,
+                    marginLeft: 40, // Keep all charts left aligned
+                    spacingTop: 0,
+                    spacingBottom: 0
+                },
+                title: {
+                    text: dataset.name,
+                    align: 'left',
+                    margin: -1,
+                    x: 30
+                },
+                credits: {
+                    enabled: false
+                },
+                legend: {
+                    enabled: false
+                },
+                xAxis: {
+                    crosshair: true,
+                    events: {
+                        setExtremes: syncExtremes
+                    },
+                    /*labels: {
+                        format: '{value} km'
+                    }*/
+		    labels: { enabled: xLabel },
+		    type: 'datetime'
+                    ,gridLineWidth: 1
+                    ,ordinal: false
+                    ,tickmarkPlacement: 'on'
+                    /*,title: {
+                        text: 'Data e ora (UTC)'
+                    }*/
+
+                },
+                yAxis: {
+                    title: {
+                        text: null
+                    }
+		    //, tickInterval: tick_interval_y
+		    //, tickInterval: 45 //serve solo per avere il plot della DV su 360gradi max...
+		    , max: dataset.maxY
+		    , min: dataset.minY
+                },
+                tooltip: {
+                    positioner: function () {
+                        return {
+                            x: this.chart.chartWidth - this.label.width, // right aligned
+                            y: -1 // align to title
+                        };
+                    },
+                    borderWidth: 0,
+                    backgroundColor: 'none',
+                    pointFormat: '{point.y} - {point.x:%H:%M} ' + dataset.timezone,
+                    headerFormat: '',
+                    shadow: false,
+                    style: {
+                        fontSize: '16px'
+                    },
+                    valueDecimals: dataset.valueDecimals
+                },
+                series: [{
+		    id: dataset.name,
+                    data: dataset.data,
+                    name: dataset.name,
+                    type: dataset.type,
+		    step: (dataset.step=='f') ? false : dataset.step,
+                    color: Highcharts.getOptions().colors[i],
+                    fillOpacity: 0.3,
+                    tooltip: {
+                        valueSuffix: '' + dataset.unit
+                    }
+                }]
+            });
+    }); //fine each dataset
+});
+
+}
+</script>
+
+
+
+</body>
+
+</html>

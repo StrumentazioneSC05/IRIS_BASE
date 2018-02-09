@@ -1,0 +1,56 @@
+SYMBOLSET
+    SYMBOL
+        NAME 'circle' 
+        TYPE ellipse 
+        FILLED true 
+        POINTS
+          1 1 
+        END 
+    END
+    
+    SYMBOL
+  	NAME "crossX"
+  	TYPE vector
+  	POINTS
+    		0.0 0.0
+    		4.0 4.0
+    		-99 -99
+    		4.0 0.0
+    		0.0 4.0
+  	END
+    END
+    
+    SYMBOL
+  	NAME "crossT"
+  	TYPE vector
+  	POINTS
+    		2.0 0.0
+    		2.0 4.0
+    		-99 -99
+    		0.0 2.0
+    		4.0 2.0
+  	END
+    END    
+
+
+	SYMBOL
+	NAME 'square'
+	TYPE VECTOR
+	FILLED TRUE
+	POINTS 0 0 0 1 1 1 1 0 0 0 
+	END
+	END
+
+
+    SYMBOL
+        NAME 'xmarks-png'
+        TYPE PIXMAP
+        IMAGE 'xmarks.png'
+    END
+
+    SYMBOL
+        NAME 'home-png'
+        TYPE PIXMAP
+        IMAGE 'home.png'
+    END
+END

@@ -1,0 +1,692 @@
+#Al momento, ottobre 2011, questo e' il file map piu OTTIMIZZATO ch'io abbia concepito
+
+
+LAYER
+        NAME "aree_allertamento"
+        STATUS OFF
+        TYPE POLYGON
+        CONNECTIONTYPE POSTGIS
+        CONNECTION "host=localhost port=5432 dbname=radar user=webgis password=webgis$2013%"
+        PROCESSING "CLOSE_CONNECTION=DEFER"
+        #PROCESSING "ITEMS=classe" #sembra essere piu veloce da caricare come WFS...
+        DATA "the_geom from realtime.v_allertamento using unique gid using srid=23032"
+
+        PROJECTION
+                "init=epsg:23032"
+        END
+        EXTENT 300000 4500000 500000 5200000
+	#EXTENT 730000 5465000 1050000 5860000
+
+        METADATA
+                "ows_title"                     "zone_di_allerta"
+                "ows_featureid"                 "gid"
+                "ows_srs"                       "epsg:23032" ## REQUIRED, seems better if not 900913...
+                "ows_abstract"                  "Aree di allertamento piemontesi"
+
+                "gml_include_items"             "all" ## Optional (serves all attributes for layer)
+                "queryable"                     "true"
+                "wms_include_items"             "all"
+                "wms_feature_info_mime_type" "text/html"
+        END
+
+        DUMP true
+        TOLERANCE 5
+        #FILTERITEM 'gruppo'
+        #FILTER '>3'
+        FILTER (cod_area like 'Piem%' or cod_area like 'VdAo%')
+	LABELITEM    "cod_area"
+        CLASSITEM 'stato_allertamento'
+        CLASS
+		NAME 'Situazione Ordinaria'
+		EXPRESSION '0'
+                STYLE
+		    #OPACITY 80
+                    OUTLINECOLOR 0 0 0
+                    #COLOR 93 89 89 #Light grayish red
+		    COLOR "#6eba00"
+                    WIDTH 2
+                END
+		LABEL
+                  COLOR  0 0 0
+                  OUTLINECOLOR 255 255 255
+                  FONT "Vera"
+                  TYPE truetype
+                  SIZE 14
+                  ANTIALIAS TRUE
+                  POSITION AUTO
+                  PARTIALS FALSE
+        	END
+        END
+	CLASS
+                NAME 'Ordinaria Criticita'
+                EXPRESSION '1'
+                STYLE
+		    #OPACITY 80
+                    OUTLINECOLOR 0 0 0
+                    #COLOR 100 100 60 #Very light yellow
+		    COLOR "#ffd800"
+                    WIDTH 2
+                END
+		LABEL
+                  COLOR  0 0 0
+                  OUTLINECOLOR 255 255 255
+                  FONT "Vera"
+                  TYPE truetype
+                  SIZE 14
+                  ANTIALIAS TRUE
+                  POSITION AUTO
+                  PARTIALS FALSE
+                END
+        END
+	CLASS
+                NAME 'Codice 2'
+                EXPRESSION '2'
+                STYLE
+                    OPACITY 20
+                    OUTLINECOLOR 0 0 0
+                    #COLOR 100 65 0 #orange
+                    COLOR "#FFA500"
+                    WIDTH 2
+                END
+                LABEL
+                  COLOR  0 0 0
+                  OUTLINECOLOR 255 255 255
+                  FONT "Vera"
+                  TYPE truetype
+                  SIZE 14
+                  ANTIALIAS TRUE
+                  POSITION AUTO
+                  PARTIALS FALSE
+                END
+        END
+	CLASS
+                NAME 'Codice 3'
+                EXPRESSION '3'
+                STYLE
+                    OPACITY 20
+                    OUTLINECOLOR 0 0 0
+                    #COLOR 100 0 0 #red
+		    COLOR "#FF0000"
+                    WIDTH 2
+                END
+                LABEL
+                  COLOR  0 0 0
+                  OUTLINECOLOR 255 255 255
+                  FONT "Vera"
+                  TYPE truetype
+                  SIZE 14
+                  ANTIALIAS TRUE
+                  POSITION AUTO
+                  PARTIALS FALSE
+                END
+        END
+END #end layer aree allertamento
+
+
+LAYER
+        NAME "radar_visibility4000"
+        STATUS ON
+        TYPE POLYGON
+        CONNECTIONTYPE POSTGIS
+        CONNECTION "host=localhost port=5432 dbname=radar user=webgis password=webgis$2013%"
+        PROCESSING "CLOSE_CONNECTION=DEFER"
+        #PROCESSING "ITEMS=classe" #sembra essere piu veloce da caricare come WFS...
+        DATA "the_geom from dati_di_base.radar_visibility4000poly using unique gid using srid=23032"
+
+        PROJECTION
+                "init=epsg:23032"
+        END
+        EXTENT 300000 4500000 500000 5200000
+
+        METADATA
+                "ows_title"                     "radar_visibility4000"
+                "ows_featureid"                 "gid"
+                "ows_srs"                       "epsg:23032" ## REQUIRED, seems better if not 900913...
+                "ows_abstract"                  "Visibilita' radar 4000mt"
+
+                "gml_include_items"             "all" ## Optional (serves all attributes for layer)
+                "queryable"                     "true"
+                "wms_include_items"             "all"
+                "wms_feature_info_mime_type" "text/html"
+    END
+
+        DUMP true
+        TOLERANCE 5
+        #FILTERITEM 'gruppo'
+        #FILTER '>3'
+        CLASSITEM 'id'
+        CLASS
+                NAME 'radar_visib1'
+                STYLE
+                        OUTLINECOLOR 215 215 215
+                        COLOR 0 255 255 #cyan
+                        #WIDTH 0.1
+                END
+        END
+END #end layer radar_visibility4000
+
+LAYER
+        NAME "stabilimenti_rir"
+        STATUS ON
+        TYPE POLYGON
+        CONNECTIONTYPE POSTGIS
+        CONNECTION "host=localhost port=5432 dbname=radar user=webgis password=webgis$2013%"
+        PROCESSING "CLOSE_CONNECTION=DEFER"
+        #PROCESSING "ITEMS=classe" #sembra essere piu veloce da caricare come WFS...
+        DATA "the_geom from dati_di_base.stabilimenti_rir using unique gid using srid=32632"
+
+        PROJECTION
+                "init=epsg:32632"
+        END
+        EXTENT 300000 4500000 500000 5200000
+
+        METADATA
+                "ows_title"                     "stabilimenti_rir"
+                "ows_featureid"                 "gid"
+                "ows_srs"                       "epsg:32632" ## REQUIRED, seems better if not 900913...
+                "ows_abstract"                  "Stabilimenti RIR"
+
+                "gml_include_items"             "all" ## Optional (serves all attributes for layer)
+                "queryable"                     "true"
+                "wms_include_items"             "all"
+                "wms_feature_info_mime_type" "text/html"
+    END
+
+        DUMP true
+        TOLERANCE 5
+        #FILTERITEM 'gruppo'
+        #FILTER '>3'
+        CLASSITEM 'id_stabilimento'
+        CLASS
+                NAME 'Stabilimenti Art. 6,7,8 D.Lgs. 334/1999 e succ.'
+     		EXPRESSION ( [stato] = 0 )
+                STYLE
+                        OUTLINECOLOR 215 215 215
+                        COLOR 0 255 255 #cyan
+                        #WIDTH 0.1
+                END
+        END
+        CLASS
+                NAME 'Stabilimenti Esenti/Sottosoglia'
+     		EXPRESSION ( [stato] > 0 )
+                STYLE
+                        OUTLINECOLOR 215 215 215
+                        COLOR 60 180 180 #cyan
+                        #WIDTH 0.1
+                END
+        END
+END #end layer stabilimenti_rir
+
+
+LAYER
+  	NAME "bacini"
+  	STATUS ON
+  	TYPE POLYGON
+  	CONNECTIONTYPE POSTGIS
+  	CONNECTION "host=localhost port=5432 dbname=radar user=webgis password=webgis$2013%"
+	PROCESSING "CLOSE_CONNECTION=DEFER"
+	#PROCESSING "ITEMS=classe" #sembra essere piu veloce da caricare come WFS...
+  	DATA "the_geom from dati_di_base.bacini_defense using unique gid using srid=23032"
+  	
+	PROJECTION
+		"init=epsg:23032"
+	END
+	EXTENT 300000 4500000 500000 5200000
+	
+  	METADATA	
+		"ows_title"			"bacini"
+		"ows_featureid"			"gid"
+		"ows_srs"			"epsg:23032" ## REQUIRED, seems better if not 900913...
+		"ows_abstract"			"Bacini idrografici piemontesi"
+		
+		"gml_include_items"		"all" ## Optional (serves all attributes for layer)
+		"queryable"			"true"
+		"wms_include_items"		"all"
+		"wms_feature_info_mime_type" "text/html"
+    END
+	
+	DUMP true
+	TOLERANCE 5		
+  	#FILTERITEM 'classe'
+  	#FILTER '>3'	
+  	#FILTER ("data"::text like '2011-05-19')		
+	CLASSITEM 'classe'	
+	CLASS
+      		NAME 'bacini1'
+     		EXPRESSION ( [classe] = 1 )
+       		STYLE
+				OUTLINECOLOR 215 215 215
+    	     	COLOR 0 255 255 #cyan
+    	     	#WIDTH 0.1
+			END
+ 	END
+	CLASS
+      		NAME 'bacini2'
+     		EXPRESSION ( [classe] = 2 )
+       		STYLE
+				OUTLINECOLOR 215 215 215
+    	     	COLOR 144 238 144 #light green
+    	     	#WIDTH 0.1
+			END
+ 	END
+	CLASS
+      		NAME 'bacini3'
+     		EXPRESSION ( [classe] = 3 )
+       		STYLE
+				OUTLINECOLOR 215 215 215
+    	     	COLOR 240 128 128 #lightcoral
+    	     	#WIDTH 0.1
+			END
+ 	END
+END #end layer bacini
+
+
+LAYER
+  	NAME "rete_meteoidro"
+  	STATUS ON
+  	TYPE POINT
+  	CONNECTIONTYPE POSTGIS
+  	CONNECTION "host=localhost port=5432 dbname=radar user=webgis password=webgis$2013%"
+	PROCESSING "CLOSE_CONNECTION=DEFER" #sembra essere piu veloce da caricare come WFS...
+	#PROCESSING "ITEMS=dn" 
+  	DATA "the_geom from dati_di_base.rete_meteoidrografica using unique gid using srid=23032"
+	
+	PROJECTION
+		"init=epsg:23032"
+	END
+	EXTENT 300000 4600000 700000 5200000  	
+
+  	METADATA	
+		"ows_title"		"rete_meteoidro"
+		"ows_featureid"		"gid"
+		"ows_srs"		"epsg:23032" ## REQUIRED, seems better if not 900913...
+		"ows_abstract"		"Rete stazioni meteo idrografiche piemontesi Rupar"
+		
+		"gml_include_items"	"all" ## Optional (serves all attributes for layer)
+		"queryable"		"true"
+		"wms_include_items"	"all"
+		"wms_feature_info_mime_type" "text/html"
+        END
+  	
+	DUMP true
+	TOLERANCE 5
+		
+  	#FILTERITEM 'MAGNITUDO'
+        #FILTER ("flag_rupar" = 'S')
+	#il valore -32 e' NODATA, ma fino a ZERO la sensibilita' del radar e' trascurabile
+	CLASSITEM 'id_rete_monit'
+	CLASS
+        NAME 'rete_meteoidroA'
+        STYLE
+            SYMBOL "circle"
+            SIZE 7.0
+            OUTLINECOLOR 255 0 0
+            COLOR 255 215 0
+        END
+    END
+END #end layer rete_meteoidro
+
+
+LAYER
+        NAME "rete_previdro"
+        STATUS ON
+        TYPE POINT
+        CONNECTIONTYPE POSTGIS
+        CONNECTION "host=localhost port=5432 dbname=radar user=webgis password=webgis$2013%"
+        PROCESSING "CLOSE_CONNECTION=DEFER" #sembra essere piu veloce da caricare come WFS...
+        #PROCESSING "ITEMS=dn"
+        DATA "the_geom from dati_di_base.rete_meteoidrografica using unique gid using srid=23032"
+
+    PROJECTION
+                "init=epsg:23032"
+    END
+        EXTENT 300000 4600000 700000 5200000
+
+        METADATA
+                "ows_title"             "rete_meteoidro"
+                "ows_featureid"         "gid"
+                "ows_srs"               "epsg:23032" ## REQUIRED, seems better if not 900913...
+                "ows_abstract"          "Rete stazioni meteo idrografiche piemontesi Rupar"
+
+                "gml_include_items"     "all" ## Optional (serves all attributes for layer)
+                "queryable"             "true"
+                "wms_include_items"     "all"
+                "wms_feature_info_mime_type" "text/html"
+    END
+
+        DUMP true
+        TOLERANCE 5
+
+        #FILTERITEM 'flag_idro'
+        FILTER ("flag_idro" = '1')
+        #il valore -32 e' NODATA, ma fino a ZERO la sensibilitàel radar èrascurabile
+        CLASSITEM 'id_rete_monit'
+        CLASS
+        NAME 'rete_meteoidroA'
+        #EXPRESSION (([dn] < 95) AND ([dn] >= 0))
+        STYLE
+            SYMBOL "circle"
+            SIZE 7.0
+            OUTLINECOLOR 255 0 0
+            COLOR 255 215 0
+        END
+    END
+END #end layer rete_previdro
+
+
+LAYER
+        NAME "rete_previpo"
+        STATUS ON
+        TYPE POINT
+        CONNECTIONTYPE POSTGIS
+        CONNECTION "host=localhost port=5432 dbname=radar user=webgis password=webgis$2013%"
+        PROCESSING "CLOSE_CONNECTION=DEFER" #sembra essere piu veloce da caricare come WFS...
+        #PROCESSING "ITEMS=dn"
+        DATA "the_geom from dati_di_base.rete_meteoidrografica using unique gid using srid=23032"
+
+    PROJECTION
+                "init=epsg:23032"
+    END
+        EXTENT 300000 4600000 700000 5200000
+
+        METADATA
+                "ows_title"             "rete_meteoidro po"
+                "ows_featureid"         "gid"
+                "ows_srs"               "epsg:23032" ## REQUIRED, seems better if not 900913...
+                "ows_abstract"          "Rete stazioni meteo idrografiche piemontesi - sezione po"
+
+                "gml_include_items"     "all" ## Optional (serves all attributes for layer)
+                "queryable"             "true"
+                "wms_include_items"     "all"
+                "wms_feature_info_mime_type" "text/html"
+    END
+
+        DUMP true
+        TOLERANCE 5
+
+        #FILTERITEM 'flag_idro'
+        FILTER ("flag_po" = '1')
+        #il valore -32 e' NODATA, ma fino a ZERO la sensibilitàel radar èrascurabile
+        CLASSITEM 'id_rete_monit'
+        CLASS
+        NAME 'rete_meteoidroA'
+        #EXPRESSION (([dn] < 95) AND ([dn] >= 0))
+        STYLE
+            SYMBOL "circle"
+            SIZE 7.0
+            OUTLINECOLOR 255 0 0
+            COLOR 255 215 0
+        END
+    END
+END #end layer rete_previpo
+
+
+LAYER
+        NAME "reticolo_idro_nw1"
+        STATUS ON
+        TYPE LINE
+        CONNECTIONTYPE POSTGIS
+        CONNECTION "host=localhost port=5432 dbname=radar user=webgis password=webgis$2013%"
+        PROCESSING "CLOSE_CONNECTION=DEFER" #sembra essere piùoce da caricare come WFS...
+        #PROCESSING "ITEMS=dn"
+        DATA "the_geom from dati_di_base.reticolo_idro_nw using unique gid using srid=32632"
+
+    PROJECTION
+                "init=epsg:32632"
+    END
+        EXTENT 300000 4600000 700000 5200000
+
+        METADATA
+                "ows_title"             "reticolo_idro_nw1"
+                "ows_featureid"         "gid"
+                "ows_srs"               "epsg:32632" ## REQUIRED, seems better if not 900913...
+                "ows_abstract"          "Reticolo drografico dell'Italia NordOccidentale NW-1"
+
+                "gml_include_items"	"all" ## Optional (serves all attributes for layer)
+                "queryable"		"true"
+    END
+
+        DUMP true
+        TOLERANCE 5
+
+        #FILTERITEM 'MAGNITUDO'
+        FILTER (("tipo" IS NOT NULL) AND ("foglio_igm" IN ('TORINO','IMPERIA','GENOVA','CUNEO','MILANO','LUGANO','NA')))
+        #il valore -32 èO_DATA, ma fino a ZERO la sensibilitàel radar èrascurabile
+        CLASSITEM 'id_fiume'
+        CLASS
+        NAME 'reticolo_idro_nwA'
+        #EXPRESSION (([dn] < 95) AND ([dn] >= 0))
+        STYLE
+            #SYMBOL "circle"
+            SIZE 7.0
+            OUTLINECOLOR 255 0 0
+            COLOR 255 215 0
+        END
+    END
+END #end layer reticolo_idro_nw1
+
+
+LAYER
+        NAME "reticolo_idro_nw2"
+        STATUS ON
+        TYPE LINE
+        CONNECTIONTYPE POSTGIS
+        CONNECTION "host=localhost port=5432 dbname=radar user=webgis password=webgis$2013%"
+        PROCESSING "CLOSE_CONNECTION=DEFER" #sembra essere piùoce da caricare come WFS...
+        #PROCESSING "ITEMS=dn"
+        DATA "the_geom from dati_di_base.reticolo_idro_nw using unique gid using srid=32632"
+
+    PROJECTION
+                "init=epsg:32632"
+    END
+        EXTENT 300000 4600000 700000 5200000
+
+        METADATA
+                "ows_title"             "reticolo_idro_nw2"
+                "ows_featureid"         "gid"
+                "ows_srs"               "epsg:32632" ## REQUIRED, seems better if not 900913...
+                "ows_abstract"          "Reticolo drografico dell'Italia NordOccidentale NW-2"
+
+                "gml_include_items"	"all" ## Optional (serves all attributes for layer)
+                "queryable"		"true"
+    END
+
+        DUMP true
+        TOLERANCE 5
+
+        #FILTERITEM 'MAGNITUDO'
+        FILTER (("tipo" IS NOT NULL) AND ("foglio_igm" IN ('VERONA','GROSSETO','BOLZANO','PERUGIA','FIRENZE','BOLOGNA','RAVENNA')))
+	#il valore -32 èO_DATA, ma fino a ZERO la sensibilitàel radar èrascurabile
+        CLASSITEM 'id_fiume'
+        CLASS
+        NAME 'reticolo_idro_nwB'
+        #EXPRESSION (([dn] < 95) AND ([dn] >= 0))
+        STYLE
+            #SYMBOL "circle"
+            SIZE 7.0
+            OUTLINECOLOR 255 0 0
+            COLOR 255 215 0
+        END
+    END
+END #end layer reticolo_idro_nw2
+
+
+LAYER
+        NAME "comtraps"
+        STATUS ON
+        TYPE POLYGON
+        CONNECTIONTYPE POSTGIS
+        CONNECTION "host=localhost port=5432 dbname=radar user=webgis password=webgis$2013%"
+        PROCESSING "CLOSE_CONNECTION=DEFER"
+        #PROCESSING "ITEMS=valore" #sembra essere più veloce da caricare come WFS...
+        DATA "the_geom from dati_di_base.comtraps using unique gid using srid=23032"
+
+        PROJECTION
+                "init=epsg:23032"
+    END
+        EXTENT 300000 4500000 500000 5200000
+
+        METADATA
+                "ows_title"                     "comtraps"
+                "ows_featureid"         "gid"
+                "ows_srs"                       "epsg:23032" ## REQUIRED, seems better if not 900913...
+                "ows_abstract"          "Comuni caratterizzati da frane profonde - Langhe"
+
+                "gml_include_items"             "all" ## Optional (serves all attributes for layer)
+                "queryable"                             "true"
+                "wms_include_items"             "all"
+                "wms_feature_info_mime_type" "text/html"
+    END
+
+        DUMP true
+        TOLERANCE 5
+        #FILTERITEM 'classe'
+        #FILTER '>3'
+        #FILTER ("data"::text like '2011-05-19')
+        CLASSITEM 'istat'
+        CLASS
+                NAME 'comtraps'
+                #EXPRESSION ( [classe] = 1 )
+                STYLE
+                	OUTLINECOLOR 215 215 215
+                COLOR 0 255 255 #cyan
+                #WIDTH 0.1
+                        END
+        END
+END #end layer comtraps
+
+
+LAYER
+        NAME "coni"
+        STATUS ON
+        TYPE POLYGON
+        CONNECTIONTYPE POSTGIS
+        CONNECTION "host=localhost port=5432 dbname=radar user=webgis password=webgis$2013%"
+        PROCESSING "CLOSE_CONNECTION=DEFER"
+        #PROCESSING "ITEMS=valore" #sembra essere più veloce da caricare come WFS...
+        DATA "the_geom from dati_di_base.coni using unique gid using srid=23032"
+
+        PROJECTION
+                "init=epsg:23032"
+    END
+        EXTENT 300000 4500000 500000 5200000
+
+        METADATA
+                "ows_title"		"coni"
+                "ows_featureid"         "gid"
+                "ows_srs"               "epsg:23032" ## REQUIRED, seems better if not 900913...
+                "ows_abstract"          "Perimetrazione dei principali apparati deposizionali dei piccoli bacini montani"
+
+                "gml_include_items"     "all" ## Optional (serves all attributes for layer)
+                "queryable"             "true"
+                "wms_include_items"     "all"
+                "wms_feature_info_mime_type" "text/html"
+    END
+
+        DUMP true
+        TOLERANCE 5
+        #FILTERITEM 'classe'
+        #FILTER '>3'
+        #FILTER ("data"::text like '2011-05-19')
+        CLASSITEM 'id_conoide'
+        CLASS
+                NAME 'coni'
+                #EXPRESSION ( [classe] = 1 )
+                STYLE
+                        OUTLINECOLOR 215 215 215
+                COLOR 0 255 255 #cyan
+                #WIDTH 0.1
+                        END
+        END
+END #end layer coni
+
+
+LAYER
+        NAME "smartws"
+        STATUS ON
+        TYPE POLYGON
+        CONNECTIONTYPE POSTGIS
+        CONNECTION "host=localhost port=5432 dbname=radar user=webgis password=webgis$2013%"
+        PROCESSING "CLOSE_CONNECTION=DEFER"
+        #PROCESSING "ITEMS=valore" #sembra essere più veloce da caricare come WFS...
+        DATA "the_geom from dati_di_base.smartws using unique gid using srid=23032"
+
+        PROJECTION
+                "init=epsg:23032"
+    END
+        EXTENT 300000 4500000 500000 5200000
+
+        METADATA
+                "ows_title"             "smartws"
+                "ows_featureid"         "gid"
+                "ows_srs"               "epsg:23032" ## REQUIRED, seems better if not 900913...
+                "ows_abstract"          "Zone omogenee di allerta per innesco frane superficiali"
+
+                "gml_include_items"     "all" ## Optional (serves all attributes for layer)
+                "queryable"             "true"
+                "wms_include_items"     "all"
+                "wms_feature_info_mime_type" "text/html"
+    END
+
+        DUMP true
+        TOLERANCE 5
+        #FILTERITEM 'classe'
+        #FILTER '>3'
+        #FILTER ("data"::text like '2011-05-19')
+        CLASSITEM 'cod_area'
+        CLASS
+                NAME 'smartws'
+                #EXPRESSION ( [classe] = 1 )
+                STYLE
+                        OUTLINECOLOR 215 215 215
+                COLOR 0 255 255 #cyan
+                #WIDTH 0.1
+                        END
+        END
+END #end layer smartws
+
+
+LAYER
+        NAME "pluvsmartz"
+        STATUS ON
+        TYPE POINT
+        CONNECTIONTYPE POSTGIS
+        CONNECTION "host=localhost port=5432 dbname=radar user=webgis password=webgis$2013%"
+        PROCESSING "CLOSE_CONNECTION=DEFER"
+        #PROCESSING "ITEMS=valore" #sembra essere piu' veloce da caricare come WFS...
+        DATA "the_geom from dati_di_base.smart_pluvio using unique gid using srid=23032"
+
+        PROJECTION
+                "init=epsg:23032"
+    END
+        EXTENT 300000 4500000 500000 5200000
+
+        METADATA
+                "ows_title"             "pluvsmartz"
+                "ows_featureid"         "gid"
+                "ows_srs"               "epsg:23032" ## REQUIRED, seems better if not 900913...
+                "ows_abstract"          "Pluviometri utilizzati dal modello SMART per operare le simulazioni"
+
+                "gml_include_items"     "all" ## Optional (serves all attributes for layer)
+                "queryable"             "true"
+                "wms_include_items"     "all"
+                "wms_feature_info_mime_type" "text/html"
+    END
+
+        DUMP true
+        TOLERANCE 5
+        #FILTERITEM 'classe'
+        #FILTER '>3'
+        #FILTER ("data"::text like '2011-05-19')
+        CLASSITEM 'stazione'
+        CLASS
+                NAME 'pluvsmartz'
+                #EXPRESSION ( [classe] = 1 )
+                STYLE
+                        OUTLINECOLOR 215 215 215
+                COLOR 0 255 255 #cyan
+                #WIDTH 0.1
+                        END
+        END
+END #end layer pluvsmartz
+

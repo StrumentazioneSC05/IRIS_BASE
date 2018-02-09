@@ -1,0 +1,99 @@
+	CLASS
+		NAME 'pioviggine'
+    		EXPRESSION ([DN] = 20)
+    		STYLE
+			SYMBOL "square"
+			SIZE 7
+      		COLOR 0 130 0
+    		END
+  	END  	
+  	CLASS
+		NAME 'pioggia debole'
+    		EXPRESSION ([DN] = 25)
+    		STYLE
+			SYMBOL "square"
+			SIZE 7
+      		COLOR 0 180 0
+    		END
+  	END  	
+  	CLASS
+		NAME 'pioggia moderata'
+    		EXPRESSION ([DN] = 40)
+    		STYLE
+			SYMBOL "square"
+			SIZE 7
+      		COLOR 0 255 0
+    		END
+  	END  	
+  	CLASS
+		NAME 'pioggia forte'
+    		EXPRESSION ([DN] = 50)
+    		STYLE
+			SYMBOL "square"
+			SIZE 7
+      		COLOR 255 255 0
+    		END
+  	END  	
+  	CLASS
+		NAME 'pioggia molto forte'
+    		EXPRESSION ([DN] = 60)
+    		STYLE
+			SYMBOL "square"
+			SIZE 7
+      		COLOR 225 140 0
+    		END
+  	END 	
+  	 CLASS
+                NAME 'neve bagnata moderata'
+                EXPRESSION ([DN] = 121.5)
+                STYLE
+                        SYMBOL "square"
+                        SIZE 7
+                COLOR 254 137 242
+                END
+        END
+        CLASS
+                NAME 'neve bagnata forte'
+                EXPRESSION ([DN] = 122)
+                STYLE
+                        SYMBOL "square"
+                        SIZE 7
+                COLOR 235 1 211
+                END
+        END
+	CLASS
+		NAME 'nevischio'
+    		EXPRESSION ([DN] = 70)
+    		STYLE
+			SYMBOL "square"
+			SIZE 7
+      		COLOR 0 190 255
+    		END
+  	END  	
+  	CLASS
+		NAME 'neve debole'
+    		EXPRESSION ([DN] = 80)
+    		STYLE
+			SYMBOL "square"
+			SIZE 7
+      		COLOR 0 140 255
+    		END
+  	END  	
+  	CLASS
+		NAME 'neve moderata'
+    		EXPRESSION ([DN] = 90)
+    		STYLE
+			SYMBOL "square"
+			SIZE 7
+      		COLOR 0 90 255
+    		END
+  	END  	
+  	CLASS
+		NAME 'neve forte'
+    		EXPRESSION ([DN] = 121)
+    		STYLE
+			SYMBOL "square"
+			SIZE 7
+      		COLOR 0 0 255
+    		END
+  	END  	

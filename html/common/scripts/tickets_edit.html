@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+  <head>
+    <title>Insert new ticket</title>
+
+<script>
+function init() {
+document.getElementById('browser').value = BrowserDetect.browser + BrowserDetect.version;
+document.getElementById('so').value = BrowserDetect.OS;
+}
+
+function gup(name)
+{
+        name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+        var regexS = "[\\?&]"+name+"=([^&#]*)";
+        var regex = new RegExp( regexS );
+        var results = regex.exec( window.location.href );
+        if( results == null )
+                return "";
+        else
+                return results[1];
+}
+var root_dir_html = gup("root_dir_html");
+document.write("<script type='text/javascript' src='" + root_dir_html +"/common/scripts/browser_detect.js'><\/script>");
+</script>
+
+  </head>
+
+<body onload="init();" >
+
+<form name=ticket action="tickets_edit.php" method="POST">
+
+	<div style="text-align:center; font-family:arial; font-size:12px;">
+	<p><b><font size=+1>Tipo della richiesta:</font></b><br/>
+	
+	<select name=tipo>
+		<option value="baco">baco</option>
+		<option value="sviluppo">sviluppo</option>
+		<option value="osservazione">osservazione</option>
+	</select>
+	<br/>
+	* baco: errori, crash, rallentamenti rilevati, etc<br/>
+	* sviluppo: layer o strumenti da aggiungere al sistema<br/>
+	* osservazione: dubbi vari
+	</p>
+
+
+	<center>
+	<table style="text-align:center;align:center;">
+        <tr>
+        <th> Autore richiesta:<br/>(nomecogn)</th>
+	<th>   </th>
+        <th> WebGIS di riferimento: </th>
+	</tr>
+        <tr>
+	<td> <input type="text" size="10" value="" name=autore /> </td>
+	<td style="color:white;"> -----------  </td>
+	<td>
+	<select name=webgis>
+                <option value="generico">generico</option>
+                <option value="centrofunzionale">centrofunzionale</option>
+		<option value="pubblico">pubblico-DPC</option>
+                <option value="rischioindustriale">rischioindustriale</option>
+                <option value="arpalombardia">arpalombardia</option>
+        </select>
+	</td>
+	</tr>
+        </table>
+	</center>
+
+
+	<p><b>Richiesta:</b><br/>
+	(max 250 caratteri - non superare la dimensione dell'area!)<br/>
+	(EVITARE apici, doppi apici, caratteri particolari e le lettere accentate)<br/>
+	<textarea type="text" rows="5" cols="50" value="" name=richiesta wrap=virtual></textarea>
+	</p>
+
+	<center>
+	<table>
+	<tr>
+	<th align=center>Browser utilizzato:<br/>(nome e versione)</th>
+	<th align=center>Sistema Operativo<br/>(nome e versione)</th>
+	</tr>
+	<tr>
+	<td align=center> <input type="text" size="32" value="" name='browser' id='browser' /> </td>
+	<td align=center> <input type="text" size="32" value="" name='so' id='so' /> </td>
+	</tr>
+	</table>
+	</center>
+
+	<br/>
+
+	<p> Clicca su "OK" per creare il nuovo ticket, oppure su "Cancella" per resettare tutto.<br/>
+
+	<center>
+	<table>
+	<tr>
+		<td><input type="button" onClick="history.go(0)" VALUE="Cancella" /> </td>
+		<td><input type="submit" value="OK" name="B1" /> </td>
+	</tr>
+	</table>
+	</center>
+
+	</p>
+
+	</div>
+	
+</form>
+
+	
+	</body>  
+</html>
+

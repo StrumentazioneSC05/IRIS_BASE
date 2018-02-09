@@ -1,0 +1,61 @@
+html, body {height: 100%;}
+#mainpanel {height: 100%; position:relative;}
+#footer {position: absolute; top: 0.4em; left:12em;}
+.olControlLoadingPanelold {
+    #background-image: url(/common/icons/loading.gif);
+    margin-left: 50%;
+    margin-top: 40%;
+    position: relative;
+    width: 195px;
+    height: 11px;
+    background-position:center;
+    background-repeat:no-repeat;
+    display: none;
+}
+.olControlLoadingPanel {
+        #background-image: url(/common/icons/loading_ext.gif);
+        /*      background-image:
+        url(http://extjs.cachefly.net/ext-3.3.1/resources/images/default/tree/loading.gif); */
+        background-repeat: no-repeat;
+        /* background-color: #E8E8E8;   */
+        background-color: #D2E0F2;
+        background-position: 5px;
+        display: none;
+        color: #000000;
+        font: normal 12px sans-serif;
+        margin-left: 50px;
+        margin-top: 50px;
+        padding-left: 40px;
+        padding-top: 16px;
+        position: relative;
+        width: 130px;
+        height: 32px;
+        border: solid 1px;
+        border-bottom-color: #aaaaaa;
+        border-right-color: #aaaaaa;
+        border-top-color: #ddd;
+        border-left-color: #ddd;
+        border-radius: 3px;
+        -moz-border-radius: 3px;
+        -webkit-border-radius: 3px;
+        box-shadow: 2px 2px 2px #000;
+        -moz-box-shadow: 2px 2px 2px #000;
+        -webkit-box-shadow: 2px 2px 2px #000;
+}
+.gray_grid_row {
+  background-color: #A9A9A9;
+}
+.orange_grid_row {
+  background-color: #FF8C00;
+}
+.red_grid_row {
+  background-color: #F84E4E;
+}
+.bold-column {
+    font-weight: bold;
+}
+#logo {/*box-shadow:5px 5px 10px rgba(0,0,0,.5);*/ left:3em; height:50px; position:absolute; top:2.5em; z-index:903;}
+#logo_expo_pub {/*box-shadow:5px 5px 10px rgba(0,0,0,.5);*/ right:1em; height:50px; position:absolute; top:1em; z-index:903;}
+#localtime {font-weight:bold; font-size:12px;}
+.olControlAttribution {left: 3px;bottom: 0.5em;text-align:left;}
+

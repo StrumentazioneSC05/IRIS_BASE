@@ -1,0 +1,73 @@
+CLASS
+	NAME '> 300 cm'
+	STYLE
+		SYMBOL "square"
+		SIZE 7
+	COLOR 0 0 100
+	END
+END
+CLASS
+	NAME '< 300 cm'
+	STYLE
+		SYMBOL "square"
+		SIZE 7
+	COLOR 0 0 200
+	END
+END
+CLASS
+	NAME '< 100 cm'
+	STYLE
+		SYMBOL "square"
+		SIZE 7
+	COLOR 0 0 255
+	END
+END
+CLASS
+	NAME '< 50 cm'
+	STYLE
+		SYMBOL "square"
+		SIZE 7
+	COLOR 26 26 255
+	END
+END
+CLASS
+	NAME '< 10 cm'
+	STYLE
+		SYMBOL "square"
+		SIZE 7
+	COLOR 55 55 255
+	END
+END
+CLASS
+	NAME '< 5 cm'
+	STYLE
+		SYMBOL "square"
+		SIZE 7
+	COLOR 110 110 255
+	END
+END
+CLASS
+	NAME '< 2 cm'
+	STYLE
+		SYMBOL "square"
+		SIZE 7
+	COLOR 137 137 255
+	END
+END
+CLASS
+	NAME '< 1 cm'
+	STYLE
+		SYMBOL "square"
+		SIZE 7
+	COLOR 192 192 255
+	END
+END
+CLASS
+	NAME '< 0.5 cm'
+	STYLE
+		SYMBOL "square"
+		SIZE 7
+	COLOR 237 237 255
+	END
+END
+

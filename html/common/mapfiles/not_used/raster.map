@@ -1,0 +1,259 @@
+#Al momento, ottobre 2011, questo è il file map più OTTIMIZZATO ch'io abbia concepito
+
+
+MAP
+  NAME "METEO-raster"
+  # Map image size
+  SIZE 1000 800
+  UNITS meters
+  STATUS ON
+
+  #EXTENT 350000 4000000 1600000 7000000
+  EXTENT 250000 4000000 700000 6000000
+  SYMBOLSET '../symbols/symbols.txt'
+  PROJECTION
+		"init=epsg:900913"
+  END
+  
+
+  # Web interface definition. Only the template parameter is required to display a map. See MapServer documentation
+  WEB
+    # Set IMAGEPATH to the path where MapServer should write its output.
+#    IMAGEPATH 'tmp/'
+
+    # Set IMAGEURL to the url that points to IMAGEPATH
+    # as defined in your web server configuration
+#    IMAGEURL 'tmp/'
+
+    # WMS server settings
+    METADATA
+	
+		## ows sono le caratteristiche comuni per i servizi WMS e WFS
+		#"ows_enable_request"		"*"
+		'ows_enable_request'  'GetMap GetFeature GetFeatureInfo *'   ##necessary
+		"ows_title"			"RASTER-MAP"		
+		"ows_onlineresource"		"http://www.arpa.piemonte.gov.it/radar/cgi-bin/mapserv?map=/var/www/html/common/mapfiles/not_used/raster.map&"		
+		"ows_srs"			"epsg:900913 epsg:4326 epsg:32632 epsg:3785"
+		"ows_abstract"			"This text describes my WFS service." ## Recommended
+		
+		"wms_feature_info_mime_type"	"text/html"
+	
+		#"ows_onlineresource"		"http://localhost:8008/cgi-bin/mapserv.exe?"
+		#"wms_resx"
+		#"wms_resy"		
+		#"wfs_title"			"Raster_Meteo" ## REQUIRED
+		#"wfs_onlineresource"		"http://127.0.0.1:8008/cgi-bin/mapserv.exe?map=C:/Program Files/OSGeo/MapGuide/Web/www/meteo/raster.map&" ## Recommended
+		#"wfs_srs"			"epsg:900913 epsg:4326 epsg:32632" ## Recommended			
+
+    END
+
+    #Scale range at which web interface will operate
+    # Template and header/footer settings
+    # Only the template parameter is required to display a map. See MapServer documentation
+    TEMPLATE 'fooOnlyForWMSGetFeatureInfo'
+  END
+  
+  
+#PROVO LA GETFEATUREINFO SU UN SHAPE LAYER:
+LAYER
+        NAME "cell_f30"
+        STATUS ON
+        TYPE POLYGON
+        CONNECTIONTYPE POSTGIS
+        CONNECTION "host=localhost port=5432 dbname=radar user=webgis password=webgis$2013%"
+        PROCESSING "CLOSE_CONNECTION=DEFER"
+        DATA "the_geom from realtime.v_app_cell_f30_demo using unique id_ellipse_gid2 using srid=23032"
+        PROJECTION
+                "init=epsg:23032"
+        END
+        EXTENT 200000 4500000 700000 5500000
+        METADATA
+                "ows_title"             "cell_f30"
+                "ows_featureid"         "id_ellipse_gid2"
+                "ows_srs"               "epsg:23032" ## REQUIRED, seems better if not 900913...
+                "ows_abstract"          "Ellisse dei temporali - previsione 30 minuti"
+                "gml_include_items"     "all" ## Optional (serves all attributes for layer)
+                "queryable"             "true"
+
+		'ows_enable_request'  'GetMap GetFeature GetFeatureInfo *'   ##necessary
+
+                'wms_include_items' 'all'
+		"ows_feature_info_mime_type" "text/plain"
+
+        END
+	TEMPLATE 'dummy'
+        DUMP true
+        TOLERANCE 5
+        #FILTERITEM 'vil'
+        #FILTER ("data_num" > 201204190000)
+        CLASSITEM 'si'
+        CLASS
+                NAME 'cono'
+                #EXPRESSION '>1'
+                STYLE
+                        #SYMBOL "circle"
+                        #SIZE 7.0
+                        OUTLINECOLOR 0 0 0
+                        COLOR 150 150 150
+                END
+        END
+END #end layer cell_f30
+
+  
+LAYER
+	NAME 'rain_ist'
+	TYPE RASTER
+	PROCESSING "SCALE=0.10,94.00"
+	DUMP true
+	DEBUG ON
+	#PROCESSING "SCALE_BUCKETS=4" #non ho ben capito a cosa serva...
+	CLASSITEM '[pixel]'
+	TOLERANCE 10 #prova per GetFeatureInfo
+
+	#EXTENT 274235 4763898 674235 5163898 #in 23032
+	#EXTENT 693593.75 5281693.73 1255128.79 5846645.73 #in 3785 ovvero 900913
+	#EXTENT 211799.575646 4753898.000000 736670.424354 5173898.000000 #Extent originale, ma preso da dove?Forse da QGis? Normalmente funziona...
+	
+	STATUS ON
+	OPACITY 40
+	PROJECTION
+		#"init=epsg:23032"
+		"init=epsg:900913"
+	END
+
+	#DATA 'C:/Program Files/OSGeo/MapGuide/Web/www/meteo/raster/storm/rainist2.tif'
+	#DATA '/var/www/html/webgis/meteo/raster/storm/rainist2.tif'
+	DATA '/var/www/html/common/DATA/raster/googlemap_ist_900913.tiff'
+
+	METADATA	
+		"ows_title"			"rain_ist"
+		"ows_abstract"		"Temporali occorsi nelle ultime 3 ore"
+		"ows_srs"			"epsg:900913" ## REQUIRED, seems better if not 900913...
+		#"ows_feature_info_mime_type" "text/html"
+		"ows_feature_info_mime_type" "text/plain"
+		#"ows_feature_info_mime_type"	application/vnd.ogc.gml"
+		
+		"ows_include_items"     "all" ## Optional (serves all attributes for layer)
+		"queryable"		"true"
+
+		'ows_enable_request'  'GetMap GetFeature GetFeatureInfo *'   ##necessary
+					
+		#'wms_include_items' 'value_0' #se usi modalità text/plain questo è il modo per reperire info solo su un campo. Altrimenti, metti tu nel form html il campo che vuoi recuperare
+		'wms_include_items' 'all'
+		'gml_include_items' 'all'
+
+		#"wfs_title"             "rain_ist_wfs" ##REQUIRED		
+		#"searchfield" "[pixel]"
+		#"fields" "DO:DO"
+	END
+
+	#HEADER '../template/raster_header.html'
+	#TEMPLATE '../template/raster_query_demo.html'
+	#FOOTER '../template/raster_footer.html'
+	TEMPLATE 'dummy' #l'importante e' scrivere qlcosa, soprattutto se si usa 'text/plain' come risposta
+	
+	CLASS
+		NAME 'rain_low'
+    	EXPRESSION ([pixel] >= 0.1 AND [pixel]<3)
+    	STYLE
+      		COLOR 0 0 255
+    	END
+  	END
+  	CLASS
+		NAME 'rain_medium'
+    	EXPRESSION ([pixel] >= 3 AND [pixel]<7)
+    	STYLE
+      		COLOR 0 255 255
+    	END
+  	END
+  	CLASS
+		NAME 'rain_high'
+    	EXPRESSION ([pixel] >= 7 AND [pixel]<10)
+    	STYLE
+      		COLOR 255 215 0
+    	END
+  	END
+  	CLASS
+		NAME 'rain_veryhigh'
+    	EXPRESSION ([pixel] >= 10)
+    	STYLE
+      		COLOR 255 0 0
+    	END
+  	END
+
+END #end layer rain_ist
+
+
+LAYER
+	NAME 'rain_ist2'
+	TYPE RASTER
+	CLASSITEM '[pixel]'
+
+	#INCLUDE 'common/rain_class.txt'
+
+	DATA '/var/www/html/webgis/meteo/raster/storm/rainist.tif'
+	
+	METADATA		
+		'ows_title' 'rain_2'
+	    "ows_include_items" "all"
+		"ows_feature_info_mime_type" "text/html"
+		"queryable" "true"
+	END	
+END #end layer rain_ist2
+
+
+LAYER
+        NAME 'netcdf'
+        TYPE RASTER
+	PROCESSING "SCALE_BUCKETS=24"
+	STATUS ON
+        CLASSITEM '[pixel]'
+
+        #INCLUDE 'common/rain_class.txt'
+
+        CLASS
+                NAME 'rain_low'
+        EXPRESSION ([pixel] >= 0.1 AND [pixel]<3)
+        STYLE
+                COLOR 0 0 255
+        END
+        END
+        CLASS
+                NAME 'rain_medium'
+        EXPRESSION ([pixel] >= 3 AND [pixel]<7)
+        STYLE
+                COLOR 0 255 255
+        END
+        END
+        CLASS
+                NAME 'rain_high'
+        EXPRESSION ([pixel] >= 7 AND [pixel]<10)
+        STYLE
+                COLOR 255 215 0
+        END
+        END
+        CLASS
+                NAME 'rain_veryhigh'
+        EXPRESSION ([pixel] >= 10)
+        STYLE
+                COLOR 255 0 0
+        END
+        END
+
+
+        #DATA '/var/www/html/webgis/meteo/raster/storm/rainist.tif'
+	#DATA '/var/www/html/centrofunzionale/meteo/201305291400.001.netcdf'
+	#DATA '/var/www/html/centrofunzionale/meteo/20130529194500_rain.asc'
+	DATA '/var/www/html/centrofunzionale/meteo/20130529194500_rain.tif'
+
+        METADATA
+                'ows_title' 'rain_2'
+            "ows_include_items" "all"
+                "ows_feature_info_mime_type" "text/html"
+                "queryable" "true"
+        END
+END #end layer netcdf 
+
+
+
+END #end of file map

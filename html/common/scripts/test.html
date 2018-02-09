@@ -1,0 +1,102 @@
+<html>
+<head>
+<link rel="stylesheet" href="/jQuery/jquery-ui.css" />
+<title>Precipitazione stimata</title>
+<script src="/jQuery/jquery-1.10.2.js"></script>
+<script src="/jQuery/jquery-ui.js"></script>
+<script type="text/javascript" src="/common/proj4js-combined.js"></script>
+<script>$(function() {$("#tabs").tabs();});</script>
+<script type="text/javascript">
+Proj4js.defs["epsg:23032"] = "+proj=utm +zone=32 +ellps=intl +units=m +no_defs";
+Proj4js.defs["epsg:32632"] = "+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs";
+Proj4js.defs["epsg:900913"]= "+title= Google Mercator EPSG:900913 +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs";
+var proj4326 = new Proj4js.Proj("epsg:4326"); //LatLon WGS84
+var proj4326dd = new Proj4js.Proj("epsg:4326"); //LatLon WGS84
+var proj4230 = new Proj4js.Proj("epsg:4230"); //LatLon ED50
+var proj4230dd = new Proj4js.Proj("epsg:4230"); //LatLon ED50
+var proj32632 = new Proj4js.Proj("epsg:32632"); //UTM32N WGS84
+var proj23032 = new Proj4js.Proj("epsg:23032"); //UTM32N ED50
+var proj3785 = new Proj4js.Proj("epsg:900913"); //UTM Google 900913
+function ConvertDDToDMS(D){
+return [0|D, "d", 0|(D<0?D=-D:D)%1*60, "'", (0|D*60%1*6000)/100, '"'].join("");
+}
+var x=986690.000000
+var y=5780697.000000
+function convert_srid(new_srid) {
+var x=986690.000000
+var y=5780697.000000
+var p1 = new Proj4js.Point(x, y);
+var pp1 = Proj4js.transform(proj3785, eval(new_srid), p1);
+var x_center = pp1.x; var y_center = pp1.y;
+if (new_srid=="proj32632" || new_srid=="proj23032") $("#coords").text(x_center.toFixed(0) + " " + y_center.toFixed(0));
+else if (new_srid=="proj4326dd" || new_srid=="proj4230dd") $("#coords").text(ConvertDDToDMS(x_center) + " " + ConvertDDToDMS(y_center));
+else $("#coords").text(x_center.toFixed(5) + " " + y_center.toFixed(5));
+}
+</script>
+<style>body {font-family: Verdana,Arial,sans-serif;} h1 {font-size:1em;}</style>
+</head>
+<body>
+<h1>Data e ora: 2015-06-23 16:17 UTC</h1>
+<h1><span id='choose_srid'> &nbsp <select id="srid" onChange="convert_srid(this.value)"> <option value="proj4326">WGS84 Lat/Lon</option> <option value="proj4326dd">WGS84 Lat/Lon DMS</option> <option value="proj32632">WGS8 UTM32N</option> <option value="proj4230">ED50 Lat/Lon </option><option value="proj4230dd">ED50 Lat/Lon DMS</option> <option value="proj23032">ED50 UTM32N</option> </select> &nbsp &nbsp &nbsp</span><span id='coords'>  8.86359    46.00217 &nbsp</span></h1>
+<h1>Localita': <b> Curio -  Paese
+</b> @574 m asl (dem = 153 m)</h1>
+<h1>Comune: <b> Lugano, Ticino (Tessin) &nbsp (ISTAT:None)
+</b></h1>
+<div id='tabs'>
+<ul><li><a href='#tabs-1'>Pioggia-radar</a></li><li><a href='#tabs-4'>Meteosat</a></li><li><a href='#tabs-2'>Pioggia-rete a terra</a></li><li><a href='#tabs-3'>Neve-rete a terra</a></li><li><a href='#tabs-5'>Atlante piogge</a></li></ul>
+<div id='tabs-1'>
+<h1>Tipo di precipitazione: <b>n.d. (rit = 327 min)</b></h1>
+<h1>
+Precipitazione istantanea stimata da radar (mm/h):<table>
+<tr style='color:red;'><td>Mosaico piemontese</td> <td> &nbsp 95.9 &nbsp </td> <td>2015-06-12 10:55 UTC</td> </tr>
+<tr style='color:red;'><td>Mosaico con Lema e Linate</td> <td> &nbsp 88.8 &nbsp </td> <td>2015-06-12 10:55 UTC</td> </tr>
+<tr style='color:red;'><td>Mosaico Nord-Ovest</td> <td> &nbsp 11.2 &nbsp </td> <td>2015-06-12 10:45 UTC</td> </tr>
+<tr style='color:red;'><td>Mosaico naz. DPC</td> <td> &nbsp 56.1 &nbsp </td> <td>2015-06-12 10:40 UTC</td> </tr>
+<tr style='color:red;'><td>Banda-X mobile (Fiera Milano)</td> <td> &nbsp 30.6 &nbsp </td> <td>2015-06-12 10:55 UTC</td> </tr>
+</table></h1>
+<h1>
+Precipitazione cumulata stimata mosaico piemontese:<table>
+<tr style='color:red;'><td>Pioggia ultima 1h</td> <td> &nbsp 11.5 &nbsp </td> <td>2015-06-12 10:55 UTC</td> </tr>
+<tr style='color:red;'><td>Pioggia ultime 3h</td> <td> &nbsp 11.5 &nbsp </td> <td>2015-06-12 10:55 UTC</td> </tr>
+<tr style='color:red;'><td>Pioggia ultime 6h</td> <td> &nbsp 0.0 &nbsp </td> <td>2015-06-23 14:05 UTC</td> </tr>
+<tr style='color:red;'><td>Pioggia da ieri</td> <td> &nbsp 0.6 &nbsp </td> <td>2015-06-12 10:55 UTC</td> </tr>
+</table></h1>
+</h2><a href="http://10.102.7.210/common/DATA/xband/rhi_1.png" target="_self">X-band: RHI nord-sud</a>
+<a href="http://10.102.7.210/common/DATA/xband/rhi_2.png" target="_self">X-band: RHI bric</a>
+</div>
+<div id='tabs-4'>
+<h1>
+Caratteristiche della nube:<table>
+<tr style='color:red;'><td>Temperatura nube</td> <td> &nbsp -62.1 &deg;C &nbsp </td> <td>2015-06-12 10:30 UTC</td> </tr>
+<tr style='color:red;'><td>Altezza nube</td> <td> &nbsp 7.4 km &nbsp </td> <td>2015-06-12 10:30 UTC</td> </tr>
+<tr style='color:red;'><td>Tipo di nube</td> <td> &nbsp Nube alta  &nbsp </td> <td>2015-06-12 10:30 UTC</td> </tr>
+<tr style='color:red;'><td>Fase della nube</td> <td> &nbsp Probabile ghiaccio  &nbsp </td> <td>2015-06-12 10:30 UTC</td> </tr>
+</table></h1>
+</div>
+<div id='tabs-2'>
+<h1>
+Precipitazione cumulata da rete a terra (mm):<table>
+<tr style='color:red;'><td>Pioggia ult. ora</td> <td> &nbsp 1.0 &nbsp </td> <td>2015-06-12 10:49 UTC</td> </tr>
+<tr style='color:red;'><td>Pioggia ult. 3ore</td> <td> &nbsp 0.0 &nbsp </td> <td>2015-06-12 10:49 UTC</td> </tr>
+<tr style='color:red;'><td>Pioggia ult. 6ore</td> <td> &nbsp 3.0 &nbsp </td> <td>2015-06-12 10:49 UTC</td> </tr>
+<tr style='color:red;'><td>Pioggia ult. 12ore</td> <td> &nbsp 4.0 &nbsp </td> <td>2015-06-12 10:49 UTC</td> </tr>
+<tr style='color:red;'><td>Pioggia ult. 24ore</td> <td> &nbsp 4.0 &nbsp </td> <td>2015-06-12 10:49 UTC</td> </tr>
+</table></h1>
+</div>
+<div id='tabs-3'>
+<h1>
+Altezze neve (cm):<table>
+<tr style='color:black;'><td>Neve fresca</td> <td> &nbsp -9999 &nbsp </td> <td>2015-06-11 10:06 UTC</td> </tr>
+<tr style='color:black;'><td>Neve fresca 3gg</td> <td> &nbsp -9999 &nbsp </td> <td>2015-06-11 10:06 UTC</td> </tr>
+<tr style='color:black;'><td>Neve al suolo</td> <td> &nbsp -9999 &nbsp </td> <td>2015-06-11 10:06 UTC</td> </tr>
+</table></h1>
+</div>
+<div id='tabs-5'>
+<iframe id='myIFrame' width='100%' height='64%' src=
+'/common/scripts/plot_atl_piogge.php?x=986690&y=5780697&srid=900913&webgis=centrofunzionale&radar_prec=60,11.5@@180,11.5@@360,0.0@@1440,0.6&rete_prec=60,1.0@@180,0.0@@360,3.0@@720,4.0@@1440,4.0'
+ frameborder='0' allowtransparency='true' seamless='seamless'></iframe>
+</div>
+</div>
+</body>
+</html>
+

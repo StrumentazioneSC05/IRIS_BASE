@@ -1,0 +1,445 @@
+#Mapfile per caricare i tematismi dell'ellissi per l'APP TemporAlert
+
+MAP
+  NAME "MAP_GOOGLE-900913"
+  IMAGETYPE      PNG
+  IMAGECOLOR     255 255 255
+
+OUTPUTFORMAT
+  NAME "png"
+  DRIVER AGG/PNG
+  MIMETYPE "image/png"
+  IMAGEMODE RGBA
+  EXTENSION "png"
+  FORMATOPTION "GAMMA=0.75"
+END
+
+  # Map image size
+  #RESOLUTION 72
+  SIZE 1200 1200
+  UNITS meters
+  STATUS ON
+
+        CONFIG "ON_MISSING_DATA" "IGNORE"
+        CONFIG "PROJ_LIB" "/usr/share/proj/"
+
+  #EXTENT 350000 4000000 1600000 7000000 #extent per epsg:900913
+  EXTENT 673811.859 5310564.071 1254923.782 5881520.640
+  #Per limitare l'estensione alle sole province abilitate per l'app:
+  #EXTENT 837500 5432000 1159000 5894000 
+  SYMBOLSET 'symbols/symbols.txt'
+  PROJECTION
+        "init=epsg:900913"
+  END
+
+  # Web interface definition. Only the template parameter is required to display a map. See MapServer documentation
+  WEB
+    BROWSEFORMAT "image/png"
+
+    # Set IMAGEPATH to the path where MapServer should write its output.
+    IMAGEPATH '/var/www/html/common/DATA/app_img/'
+
+    # Set IMAGEURL to the url that points to IMAGEPATH as defined in your web server configuration
+    IMAGEURL '/common/DATA/app_img/'
+
+    # WMS-WFS server settings
+    METADATA
+
+                ## ows sono le caratteristiche comuni per i servizi WMS e WFS
+                "ows_enable_request"            "*" ## REQUIRED for v6
+                "ows_title"                     "MAP_GOOGLE-900913" ## REQUIRED
+                "ows_onlineresource"            "http://remotesensing.arpa.piemonte.it/cgi-bin/mapserv?map=/var/www/html/common/mapfiles/map900913.map&" ## Recommended
+                "ows_srs"                       "epsg:900913 epsg:32632 epsg:4326 epsg:3785" ## Recommended
+                "ows_abstract"                  "This text describes my WFS service." ## Recommended
+
+                "wms_feature_info_mime_type"    "text/html"
+
+		#"wms_resx" 1128
+		#"wms_resy" 1128
+    END
+
+    #Scale range at which web interface will operate Template and header/footer settings
+    # Only the template parameter is required to display a map. See MapServer documentation
+    TEMPLATE 'fooOnlyForWMSGetFeatureInfo'
+  END
+
+
+LAYER
+        NAME "cell_f30"
+        STATUS OFF
+        TYPE POLYGON
+        CONNECTIONTYPE POSTGIS
+        CONNECTION "host=localhost port=5432 dbname=radar user=webgis password=webgis$2013%"
+        PROCESSING "CLOSE_CONNECTION=DEFER"
+        DATA "the_geom from realtime.v_app_cell_f30_demo using unique id_ellipse_gid2 using srid=23032"
+        PROJECTION
+                "init=epsg:23032"
+        END
+        EXTENT 200000 4500000 700000 5500000
+        METADATA
+                "ows_title"             "cell_f30"
+                "ows_featureid"         "id_ellipse_gid2"
+                "ows_srs"               "epsg:23032" ## REQUIRED, seems better if not 900913...
+                "ows_abstract"          "Ellisse dei temporali - previsione 30 minuti"
+                #"gml_include_items"     "all" ## Optional (serves all attributes for layer)
+                "queryable"             "false"
+        END
+        DUMP true
+        TOLERANCE 5
+        #FILTERITEM 'vil'
+        #FILTER ("data_num" > 201204190000)
+        CLASSITEM 'si'
+        CLASS
+                NAME 'cono'
+                #EXPRESSION '>1'
+                STYLE
+                        #SYMBOL "circle"
+                        #SIZE 7.0
+                        OUTLINECOLOR 0 0 0
+                        COLOR 150 150 150
+                END
+        END
+END #end layer cell_f30
+
+LAYER
+        NAME "cell_f60"
+        STATUS OFF
+        TYPE POLYGON
+        CONNECTIONTYPE POSTGIS
+        CONNECTION "host=localhost port=5432 dbname=radar user=webgis password=webgis$2013%"
+        PROCESSING "CLOSE_CONNECTION=DEFER"
+        DATA "the_geom from realtime.v_app_cell_f60_demo using unique id_ellipse_gid2 using srid=23032"
+        PROJECTION
+                "init=epsg:23032"
+        END
+        EXTENT 200000 4500000 700000 5500000
+        METADATA
+                "ows_title"             "cell_f60"
+                "ows_featureid"         "id_ellipse_gid2"
+                "ows_srs"               "epsg:23032" ## REQUIRED, seems better if not 900913...
+                "ows_abstract"          "Ellisse dei temporali - previsione 60 minuti"
+                #"gml_include_items"     "all" ## Optional (serves all attributes for layer)
+                "queryable"             "false"
+        END
+        DUMP true
+        TOLERANCE 5
+        #FILTERITEM 'vil'
+        #FILTER ("data_num" > 201204190000)
+        CLASSITEM 'si'
+        CLASS
+                NAME 'cono'
+                #EXPRESSION '>1'
+                STYLE
+                        #SYMBOL "circle"
+                        #SIZE 7.0
+                        OUTLINECOLOR 0 0 0
+                        COLOR 150 150 150
+                END
+        END
+END #end layer cell_f60
+
+
+LAYER
+        NAME "cell0"
+        STATUS OFF
+        TYPE POLYGON
+        CONNECTIONTYPE POSTGIS
+        CONNECTION "host=localhost port=5432 dbname=radar user=webgis password=webgis$2013%"
+        PROCESSING "CLOSE_CONNECTION=DEFER"
+        DATA "the_geom from realtime.v_app_cell0_demo using unique id_ellipse_gid2 using srid=23032"
+	PROJECTION
+                "init=epsg:23032"
+	END
+	EXTENT 200000 4500000 700000 5500000
+        METADATA
+                "ows_title"             "cell0"
+                "ows_featureid"         "id_ellipse_gid2"
+                "ows_srs"               "epsg:23032" ## REQUIRED, seems better if not 900913...
+                "ows_abstract"          "Ellisse dei temporali - tempo attuale"
+                #"gml_include_items"     "all" ## Optional (serves all attributes for layer)
+                "queryable"             "false"
+	END
+        DUMP true
+        TOLERANCE 5
+        #FILTERITEM 'vil'
+        #FILTER ("data_num" > 201204190000)
+        CLASSITEM 'si'
+        CLASS
+		NAME 'basso'
+		#EXPRESSION (([area] >= 0.1) AND ('[si]' eq '')) #per recuperare SI anche quando nullo
+		EXPRESSION '3'
+		STYLE
+			#SYMBOL "circle"
+			#SIZE 7.0
+			OUTLINECOLOR 0 0 0
+			COLOR 255 215 0
+		END
+	END
+	CLASS
+                NAME 'moderato'
+                #EXPRESSION (([area] >= 0.1) AND ('[si]' eq '')) #per recuperare SI anche quando nullo
+                EXPRESSION '4'
+                STYLE
+                        #SYMBOL "circle"
+                        #SIZE 7.0
+                        OUTLINECOLOR 0 0 0
+                        COLOR 255 150 0
+                END
+        END
+	CLASS
+                NAME 'intenso'
+                #EXPRESSION (([area] >= 0.1) AND ('[si]' eq '')) #per recuperare SI anche quando nullo
+                EXPRESSION ([si]>4)
+                STYLE
+                        #SYMBOL "circle"
+                        #SIZE 7.0
+                        OUTLINECOLOR 0 0 0
+                        COLOR 255 15 0
+                END
+        END
+END #end layer cell0
+
+
+LAYER
+        NAME "cell15"
+        STATUS OFF
+        TYPE POLYGON
+        CONNECTIONTYPE POSTGIS
+        CONNECTION "host=localhost port=5432 dbname=radar user=webgis password=webgis$2013%"
+        PROCESSING "CLOSE_CONNECTION=DEFER"
+        DATA "the_geom from realtime.v_app_cell15_demo using unique id_ellipse_gid2 using srid=23032"
+        PROJECTION
+                "init=epsg:23032"
+        END
+        EXTENT 200000 4500000 700000 5500000
+        METADATA
+                "ows_title"             "cell0"
+                "ows_featureid"         "id_ellipse_gid2"
+                "ows_srs"               "epsg:23032" ## REQUIRED, seems better if not 900913...
+                "ows_abstract"          "Ellisse dei temporali - tempo attuale"
+                #"gml_include_items"     "all" ## Optional (serves all attributes for layer)
+                "queryable"             "false"
+        END
+        DUMP true
+        TOLERANCE 5
+        #FILTERITEM 'vil'
+        #FILTER ("data_num" > 201204190000)
+        CLASSITEM 'si'
+        CLASS
+                NAME 'basso'
+                #EXPRESSION (([area] >= 0.1) AND ('[si]' eq '')) #per recuperare SI anche quando nullo
+                EXPRESSION '3'
+                STYLE
+                        #SYMBOL "circle"
+                        #SIZE 7.0
+                        OUTLINECOLOR 0 0 0
+                        COLOR 255 215 0
+                END
+        END
+        CLASS
+                NAME 'moderato'
+                #EXPRESSION (([area] >= 0.1) AND ('[si]' eq '')) #per recuperare SI anche quando nullo
+                EXPRESSION '4'
+                STYLE
+                        #SYMBOL "circle"
+                        #SIZE 7.0
+                        OUTLINECOLOR 0 0 0
+                        COLOR 255 150 0
+                END
+        END
+        CLASS
+                NAME 'intenso'
+                #EXPRESSION (([area] >= 0.1) AND ('[si]' eq '')) #per recuperare SI anche quando nullo
+                EXPRESSION ([si]>4)
+                STYLE
+                        #SYMBOL "circle"
+                        #SIZE 7.0
+                        OUTLINECOLOR 0 0 0
+                        COLOR 255 15 0
+                END
+        END
+END #end layer cell15
+
+LAYER
+        NAME "cell30"
+        STATUS OFF
+        TYPE POLYGON
+        CONNECTIONTYPE POSTGIS
+        CONNECTION "host=localhost port=5432 dbname=radar user=webgis password=webgis$2013%"
+        PROCESSING "CLOSE_CONNECTION=DEFER"
+        DATA "the_geom from realtime.v_app_cell30_demo using unique id_ellipse_gid2 using srid=23032"
+        PROJECTION
+                "init=epsg:23032"
+        END
+        EXTENT 200000 4500000 700000 5500000
+        METADATA
+                "ows_title"             "cell0"
+                "ows_featureid"         "id_ellipse_gid2"
+                "ows_srs"               "epsg:23032" ## REQUIRED, seems better if not 900913...
+                "ows_abstract"          "Ellisse dei temporali - tempo attuale"
+                #"gml_include_items"     "all" ## Optional (serves all attributes for layer)
+                "queryable"             "false"
+        END
+        DUMP true
+        TOLERANCE 5
+        #FILTERITEM 'vil'
+        #FILTER ("data_num" > 201204190000)
+        CLASSITEM 'si'
+        CLASS
+                NAME 'basso'
+                #EXPRESSION (([area] >= 0.1) AND ('[si]' eq '')) #per recuperare SI anche quando nullo
+                EXPRESSION '3'
+                STYLE
+                        #SYMBOL "circle"
+                        #SIZE 7.0
+                        OUTLINECOLOR 0 0 0
+                        COLOR 255 215 0
+                END
+        END
+        CLASS
+                NAME 'moderato'
+                #EXPRESSION (([area] >= 0.1) AND ('[si]' eq '')) #per recuperare SI anche quando nullo
+                EXPRESSION '4'
+                STYLE
+                        #SYMBOL "circle"
+                        #SIZE 7.0
+                        OUTLINECOLOR 0 0 0
+                        COLOR 255 150 0
+                END
+        END
+        CLASS
+                NAME 'intenso'
+                #EXPRESSION (([area] >= 0.1) AND ('[si]' eq '')) #per recuperare SI anche quando nullo
+                EXPRESSION ([si]>4)
+                STYLE
+                        #SYMBOL "circle"
+                        #SIZE 7.0
+                        OUTLINECOLOR 0 0 0
+                        COLOR 255 15 0
+                END
+        END
+END #end layer cell30
+
+LAYER
+        NAME "cell45"
+        STATUS OFF
+        TYPE POLYGON
+        CONNECTIONTYPE POSTGIS
+        CONNECTION "host=localhost port=5432 dbname=radar user=webgis password=webgis$2013%"
+        PROCESSING "CLOSE_CONNECTION=DEFER"
+        DATA "the_geom from realtime.v_app_cell45_demo using unique id_ellipse_gid2 using srid=23032"
+        PROJECTION
+                "init=epsg:23032"
+        END
+        EXTENT 200000 4500000 700000 5500000
+        METADATA
+                "ows_title"             "cell0"
+                "ows_featureid"         "id_ellipse_gid2"
+                "ows_srs"               "epsg:23032" ## REQUIRED, seems better if not 900913...
+                "ows_abstract"          "Ellisse dei temporali - tempo attuale"
+                #"gml_include_items"     "all" ## Optional (serves all attributes for layer)
+                "queryable"             "false"
+        END
+        DUMP true
+        TOLERANCE 5
+        #FILTERITEM 'vil'
+        #FILTER ("data_num" > 201204190000)
+        CLASSITEM 'si'
+        CLASS
+                NAME 'basso'
+                #EXPRESSION (([area] >= 0.1) AND ('[si]' eq '')) #per recuperare SI anche quando nullo
+                EXPRESSION '3'
+                STYLE
+                        #SYMBOL "circle"
+                        #SIZE 7.0
+                        OUTLINECOLOR 0 0 0
+                        COLOR 255 215 0
+                END
+        END
+        CLASS
+                NAME 'moderato'
+                #EXPRESSION (([area] >= 0.1) AND ('[si]' eq '')) #per recuperare SI anche quando nullo
+                EXPRESSION '4'
+                STYLE
+                        #SYMBOL "circle"
+                        #SIZE 7.0
+                        OUTLINECOLOR 0 0 0
+                        COLOR 255 150 0
+                END
+        END
+        CLASS
+                NAME 'intenso'
+                #EXPRESSION (([area] >= 0.1) AND ('[si]' eq '')) #per recuperare SI anche quando nullo
+                EXPRESSION ([si]>4)
+                STYLE
+                        #SYMBOL "circle"
+                        #SIZE 7.0
+                        OUTLINECOLOR 0 0 0
+                        COLOR 255 15 0
+                END
+        END
+END #end layer cell45
+
+LAYER
+        NAME "cell60"
+        STATUS OFF
+        TYPE POLYGON
+        CONNECTIONTYPE POSTGIS
+        CONNECTION "host=localhost port=5432 dbname=radar user=webgis password=webgis$2013%"
+        PROCESSING "CLOSE_CONNECTION=DEFER"
+        DATA "the_geom from realtime.v_app_cell60_demo using unique id_ellipse_gid2 using srid=23032"
+        PROJECTION
+                "init=epsg:23032"
+        END
+        EXTENT 200000 4500000 700000 5500000
+        METADATA
+                "ows_title"             "cell60"
+                "ows_featureid"         "id_ellipse_gid2"
+                "ows_srs"               "epsg:23032" ## REQUIRED, seems better if not 900913...
+                "ows_abstract"          "Ellisse dei temporali - tempo attuale"
+                #"gml_include_items"     "all" ## Optional (serves all attributes for layer)
+                "queryable"             "false"
+        END
+        DUMP true
+        TOLERANCE 5
+        #FILTERITEM 'vil'
+        #FILTER ("data_num" > 201204190000)
+        CLASSITEM 'si'
+        CLASS
+                NAME 'basso'
+                #EXPRESSION (([area] >= 0.1) AND ('[si]' eq '')) #per recuperare SI anche quando nullo
+                EXPRESSION '3'
+                STYLE
+                        #SYMBOL "circle"
+                        #SIZE 7.0
+                        OUTLINECOLOR 0 0 0
+                        COLOR 255 215 0
+                END
+        END
+        CLASS
+                NAME 'moderato'
+                #EXPRESSION (([area] >= 0.1) AND ('[si]' eq '')) #per recuperare SI anche quando nullo
+                EXPRESSION '4'
+                STYLE
+                        #SYMBOL "circle"
+                        #SIZE 7.0
+                        OUTLINECOLOR 0 0 0
+                        COLOR 255 150 0
+                END
+        END
+        CLASS
+                NAME 'intenso'
+                #EXPRESSION (([area] >= 0.1) AND ('[si]' eq '')) #per recuperare SI anche quando nullo
+                EXPRESSION ([si]>4)
+                STYLE
+                        #SYMBOL "circle"
+                        #SIZE 7.0
+                        OUTLINECOLOR 0 0 0
+                        COLOR 255 15 0
+                END
+        END
+END #end layer cell60
+
+
+END #end of file map
+

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   id="Layer_1"
+   x="0px"
+   y="0px"
+   viewBox="5.0 -10.0 100.0 135.0"
+   enable-background="new 0 0 100 100"
+   xml:space="preserve"
+   height="100px"
+   width="100px"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="aeroporti.svg"><metadata
+   id="metadata26"><rdf:RDF><cc:Work
+       rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
+         rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title></dc:title></cc:Work></rdf:RDF></metadata><defs
+   id="defs24" /><sodipodi:namedview
+   pagecolor="#ffffff"
+   bordercolor="#666666"
+   borderopacity="1"
+   objecttolerance="10"
+   gridtolerance="10"
+   guidetolerance="10"
+   inkscape:pageopacity="0"
+   inkscape:pageshadow="2"
+   inkscape:window-width="1280"
+   inkscape:window-height="957"
+   id="namedview22"
+   showgrid="false"
+   inkscape:zoom="4.72"
+   inkscape:cx="48.69442"
+   inkscape:cy="28.598042"
+   inkscape:window-x="-8"
+   inkscape:window-y="-8"
+   inkscape:window-maximized="1"
+   inkscape:current-layer="Layer_1" />
+<g
+   id="Cafe">
+</g>
+<g
+   id="Dine">
+</g>
+<g
+   id="Pizza">
+</g>
+<g
+   id="Person">
+</g>
+<g
+   id="Shopping">
+</g>
+<g
+   id="Snack">
+</g>
+<g
+   id="Template"
+   display="none">
+	<path
+   display="inline"
+   fill="#000000"
+   stroke="#EC008C"
+   stroke-width="0.5"
+   stroke-miterlimit="10"
+   d="M74.907,46.97L49.995,95.154   L24.869,46.558l-0.279-0.583c-1.86-3.772-2.905-8.017-2.905-12.507C21.685,17.831,34.362,5.154,50,5.154   s28.315,12.677,28.315,28.315c0,4.773-1.181,9.271-3.267,13.216L74.907,46.97z"
+   id="path10" />
+	
+		<rect
+   x="36.5"
+   y="19.973"
+   display="inline"
+   fill="#000000"
+   stroke="#EC008C"
+   stroke-width="0.5"
+   stroke-miterlimit="10"
+   width="27"
+   height="27"
+   id="rect12" />
+	
+		<rect
+   x="38.359"
+   y="21.832"
+   display="inline"
+   fill="#000000"
+   stroke="#EC008C"
+   stroke-width="0.5"
+   stroke-miterlimit="10"
+   width="23.281"
+   height="23.281"
+   id="rect14" />
+</g>
+<path
+   d="m 54.589345,-9.0148305 c -23.042858,0 -41.722632,18.6797741 -41.722632,41.7226325 0,6.616091 1.539826,12.87117 4.280566,18.429277 l 0.411111,0.859059 37.022114,71.605552 36.709729,-70.999936 0.206292,-0.421425 c 3.073755,-5.813026 4.813979,-12.440904 4.813979,-19.474 0.0015,-23.0413854 -18.6783,-41.7211595 -41.721159,-41.7211595 z M 74.602652,41.33819 57.091376,34.667579 v 6.253606 c 0,0.58204 -0.14293,1.155238 -0.417003,1.668021 l 6.253605,4.16858 v 3.334569 l -8.338633,-3.334569 -8.338632,3.334569 v -3.334569 l 6.253605,-4.16858 C 52.230245,42.076423 52.087314,41.503225 52.087314,40.921185 V 34.667579 L 34.576039,41.33819 V 37.169611 L 52.08584,23.411384 v -9.194747 c 0,-1.694544 0.607088,-3.333095 1.710754,-4.6180019 0.19745,-0.2298682 0.486259,-0.3639588 0.791279,-0.3639588 0.305017,0 0.592352,0.132617 0.789805,0.3639588 1.103663,1.2849069 1.710752,2.9234579 1.710752,4.6180019 v 9.194747 l 17.511276,13.758227 v 4.168579 z"
+   id="path16"
+   inkscape:connector-curvature="0" />
+</svg>

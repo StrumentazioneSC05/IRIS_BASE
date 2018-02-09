@@ -1,0 +1,199 @@
+#Al momento, ottobre 2011, questo e' il file map piu' OTTIMIZZATO ch'io abbia concepito
+
+MAP
+  NAME "METEO"
+  # Map image size
+  SIZE 600 600
+  UNITS meters
+  STATUS ON
+
+  EXTENT 350000 4000000 1600000 7000000
+  SYMBOLSET 'symbols/symbols.txt'
+  PROJECTION
+		"init=epsg:900913"
+  END
+
+  #SHAPEPATH 'C:\Program Files\OSGeo\MapGuide\Web\www\meteo\shpfile\'
+  SHAPEPATH '/var/www/html/webgis/meteo/shpfile/'
+
+  # Web interface definition. Only the template parameter is required to display a map. See MapServer documentation
+  WEB
+    # Set IMAGEPATH to the path where MapServer should write its output.
+    IMAGEPATH 'tmp/'
+
+    # Set IMAGEURL to the url that points to IMAGEPATH
+    # as defined in your web server configuration
+    IMAGEURL '/common/mapfiles/tmp/'
+
+    # WMS-WFS server settings
+    METADATA
+	
+		## ows sono le caratteristiche comuni per i servizi WMS e WFS
+		"ows_enable_request"		"*"
+		"ows_title"			"METEO-MAP"		
+		"ows_onlineresource"		"http://localhost/cgi-bin/mapserv?map=/var/www/html/common/mapfiles/meteo_wms.map&"
+		"ows_srs"			"epsg:900913 epsg:4326 epsg:32632 epsg:3785"
+		"ows_abstract"			"This text describes my WFS service." ## Recommended
+		
+		"wms_feature_info_mime_type" "text/html"
+	
+		#"ows_onlineresource"		"http://localhost:8008/cgi-bin/mapserv.exe?"
+		#"wms_resx"
+		#"wms_resy"		
+		#"wfs_title"			"WFS_Meteo" ## REQUIRED
+		#"wfs_onlineresource"		"http://127.0.0.1:8008/cgi-bin/mapserv.exe?map=C:/Program Files/OSGeo/MapGuide/Web/www/meteo/storm_wfs.map&" ## Recommended
+		#"wfs_srs"			"epsg:900913 epsg:4326 epsg:32632" ## Recommended		
+
+    END
+
+    #Scale range at which web interface will operate
+    # Template and header/footer settings
+    # Only the template parameter is required to display a map. See MapServer documentation
+    #TEMPLATE 'fooOnlyForWMSGetFeatureInfo'
+	TEMPLATE 'template/map_template.html'
+  END
+  
+  
+
+LAYER
+  	NAME "rain_shp-legend"
+  	STATUS ON
+  	TYPE POINT
+	DATA 'rain_legend-point'
+	
+	PROJECTION
+		"init=epsg:23032"
+	END
+	EXTENT 200000 4500000 7000000 5000000
+	
+  	METADATA
+		"ows_title"		"rain_shp-legend"
+		"ows_featureid"		"id"
+		"ows_srs"		"epsg:23032" ## REQUIRED, seems better if not 900913...
+		"ows_abstract"		"Istantanea pioggia da shape-solo per legenda"
+    END
+  	
+	DUMP false
+	TOLERANCE 5		
+
+	INCLUDE 'legend_txt/rainist_legend.txt'
+END #end layer rain_shp-legend
+LAYER
+  	NAME "rain_shp-legend2"
+  	STATUS OFF
+  	TYPE POINT
+	DATA 'legend_txt/rain_legend-point'
+	
+	PROJECTION
+		"init=epsg:23032"
+    END
+	EXTENT 200000 4500000 7000000 5000000
+	
+  	METADATA	
+	    "ows_title" "rain_shp-legend2"  ## REQUIRED
+		"ows_featureid" "id"  ## REQUIRED			
+		"ows_srs"       "epsg:23032" ## REQUIRED, seems better if not 900913...
+		"ows_abstract"	"3h pioggia da shape-solo per legenda"
+    END
+  	
+	DUMP false
+	TOLERANCE 5		
+
+	#INCLUDE 'legend_txt/rainist_legend2.txt'
+	INCLUDE 'legend_txt/swe_legend.txt'
+END #end layer rain_shp-legend2
+LAYER
+        NAME "rain_shp-legend3"
+        STATUS OFF
+        TYPE POINT
+        DATA 'rain_legend-point'
+
+        PROJECTION
+                "init=epsg:23032"
+    END
+        EXTENT 200000 4500000 7000000 5000000
+
+        METADATA
+		"ows_title" "rain_shp-legend3"  ## REQUIRED
+                "ows_featureid" "id"  ## REQUIRED
+                "ows_srs"       "epsg:23032" ## REQUIRED, seems better if not 900913...
+                "ows_abstract"  "Cumulata ieri-oggi di pioggia da shape-solo per legenda"
+    END
+
+        DUMP false
+        TOLERANCE 5
+
+        INCLUDE 'legend_txt/rainist_legend3.txt'
+END #end layer rain_shp-legend3
+LAYER
+        NAME "rain_shp-legend4"
+        STATUS OFF
+        TYPE POINT
+        DATA 'rain_legend-point'
+
+        PROJECTION
+                "init=epsg:23032"
+    END
+        EXTENT 200000 4500000 7000000 5000000
+
+        METADATA
+                "ows_title" "rain_shp-legend4"  ## REQUIRED
+                "ows_featureid" "id"  ## REQUIRED
+                "ows_srs"       "epsg:23032" ## REQUIRED, seems better if not 900913...
+                "ows_abstract"  "Pioggia-neve da shape-solo per legenda"
+    END
+
+        DUMP false
+        TOLERANCE 5
+
+        INCLUDE 'legend_txt/rainist_legend4.txt'
+END #end layer rain_shp-legend4
+
+
+
+############## LAYER IN SVILUPPO-TEST ##################
+
+LAYER
+  	NAME "rain_shp"
+  	STATUS ON
+  	TYPE POLYGON
+	DATA 'COMP_201108051640_400'
+	
+	PROJECTION
+		"init=epsg:900913"
+    END
+	EXTENT 200000 4500000 700000 5200000
+	
+  	METADATA
+		"ows_title"			"rain_shp" ## REQUIRED
+		"ows_featureid"		"ogc_fid" ## REQUIRED
+		"ows_srs"			"epsg:900913" ## REQUIRED, seems better if not 900913...
+		"ows_abstract"		"Istantanea pioggia da raster poligonizzato a shape"
+		
+		"gml_include_items"		"all" ## Optional (serves all attributes for layer)
+		"queryable"				"true"
+		"wms_include_items"		"all"
+		"wms_feature_info_mime_type" "text/html"
+    END
+  	
+	DUMP true
+	TOLERANCE 5		
+  	#FILTERITEM 'MAGNITUDO'
+	#FILTER (([DN] >= 0) AND ([DN] < 95))
+	#il valore -32 èO_DATA, ma fino a ZERO la sensibilitàel radar èrascurabile		
+	CLASSITEM 'DN'
+	CLASS
+        NAME 'nullA'
+        #EXPRESSION (([DN] < 95) AND ([DN] >= 0))
+        STYLE
+            #SYMBOL "circle"
+            #SIZE 7.0
+            OUTLINECOLOR 255 0 0
+            #COLOR 255 215 0
+        END
+    END
+END #end layer rain_shp
+
+
+END #end of file map
+

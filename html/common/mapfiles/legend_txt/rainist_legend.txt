@@ -1,0 +1,136 @@
+	CLASS
+		NAME '0.2-0.5 mm'
+    		EXPRESSION ([DN] >= 0.1 AND [DN] < 4)
+    		STYLE
+			SYMBOL "square"
+			SIZE 7
+      		COLOR 0 0 255
+    		END
+  	END  	
+  	CLASS
+		NAME '0.5-1 mm'
+    		EXPRESSION ([DN] >= 4 AND [DN] < 8)
+    		STYLE
+			SYMBOL "square"
+			SIZE 7
+      		COLOR 0 90 255
+    		END
+  	END  	
+  	CLASS
+		NAME '1-2 mm'
+    		EXPRESSION ([DN] >= 8 AND [DN] < 12)
+    		STYLE
+			SYMBOL "square"
+			SIZE 7
+      		COLOR 0 140 255
+    		END
+  	END  	
+  	CLASS
+		NAME '2-3 mm'
+    		EXPRESSION ([DN] >= 12 AND [DN] <  16)
+    		STYLE
+			SYMBOL "square"
+			SIZE 7
+      		COLOR 0 190 255
+    		END
+  	END  	
+  	CLASS
+		NAME '3-5 mm'
+    		EXPRESSION ([DN] >= 16  AND [DN] < 20)
+    		STYLE
+			SYMBOL "square"
+			SIZE 7
+      		COLOR 0 255 225
+    		END
+  	END  	
+  	CLASS
+		NAME '5-7 mm'
+    		EXPRESSION ([DN] >= 20 AND [DN] < 24)
+    		STYLE
+			SYMBOL "square"
+			SIZE 7
+      		COLOR 0 130 255
+    		END
+  	END  	
+  	CLASS
+		NAME '7-10 mm'
+    		EXPRESSION ([DN] >= 24 AND [DN] < 28)
+    		STYLE
+			SYMBOL "square"
+			SIZE 7
+      		COLOR 0 155 0
+    		END
+  	END  	
+  	CLASS
+		NAME '10-15 mm'
+    		EXPRESSION ([DN] >= 28 AND [DN] < 32)
+    		STYLE
+			SYMBOL "square"
+			SIZE 7
+      		COLOR 0 180 0
+    		END
+  	END  	
+  	CLASS
+		NAME '15-20 mm'
+    		EXPRESSION ([DN] >= 32 AND [DN] < 36)
+    		STYLE
+			SYMBOL "square"
+			SIZE 7
+      		COLOR 0 210 0
+    		END
+  	END  	
+  	CLASS
+		NAME '20-30 mm'
+    		EXPRESSION ([DN] >= 36 AND [DN] < 40)
+    		STYLE
+			SYMBOL "square"
+			SIZE 7
+      		COLOR 0 255 0
+    		END
+  	END  	
+  	CLASS
+		NAME '30-40 mm'
+    		EXPRESSION ([DN] >= 40 AND [DN] < 44)
+    		STYLE
+			SYMBOL "square"
+			SIZE 7
+      		COLOR 255 255 0
+    		END
+  	END  	
+  	CLASS
+		NAME '40-50 mm'
+    		EXPRESSION ([DN] >= 44 AND [DN] < 48)
+    		STYLE
+			SYMBOL "square"
+			SIZE 7
+      		COLOR 255 190 0
+    		END
+  	END  	
+  	CLASS
+		NAME '50-70 mm'
+    		EXPRESSION ([DN] >= 48 AND [DN] < 52)
+    		STYLE
+			SYMBOL "square"
+			SIZE 7
+      		COLOR 255 140 0
+    		END
+  	END  	
+  	CLASS
+		NAME '70-100 mm'
+    		EXPRESSION ([DN] >= 52 AND [DN] < 56)
+    		STYLE
+			SYMBOL "square"
+			SIZE 7
+      		COLOR 255 90 0
+    		END
+  	END  	
+  	CLASS
+		NAME '>100 mm'
+    		EXPRESSION ([DN] >= 56 AND [DN] < 95)
+    		#EXPRESSION ([DN] >= 50)
+    		STYLE
+			SYMBOL "square"
+			SIZE 7
+      		COLOR 180 45 180
+    		END
+  	END
