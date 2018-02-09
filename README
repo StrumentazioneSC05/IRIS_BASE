@@ -1,5 +1,16 @@
 ############## GIT UPDATE
-Any time you want update the remote repository with your local copy you must copy the files from production environmentto the cloned local repository /var/www/IRIS_BASE/:
+To clone for the first time the repository to your local machine:
+git clone https://github.com/StrumentazioneSC05/IRIS_BASE.git
+
+To update locally the repository from the github server:
+git pull
+
+To check if your local version is up-to-date with the remote server, and see what is changed:
+git remote -v update
+git diff origin/master
+
+
+Any time you want update the remote repository with your local copy you must copy the files from production environment to the cloned local repository /var/www/IRIS_BASE/:
 
 cd /var/www/html
 cp -R common error.html goaccess_reports index.html info.php iris_base iris_base.html nonattivo.html sfondo_errore.png sfondo_index_html.png sfondo_nonattivo.png sfondo_webgis.png ../IRIS_BASE/html
