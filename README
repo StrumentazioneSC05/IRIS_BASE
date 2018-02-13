@@ -9,6 +9,12 @@ To check if your local version is up-to-date with the remote server, and see wha
 git remote -v update
 git diff origin/master
 
+To make operational your local development version, copy the third part libraries inside the new path, /var/www/IRIS_BASE/html, and the executable mapserv and tinyows from your production environment (/var/www/cgi-bin) to your development environment (/var/www/IRIS_BASE/cgi-bin):
+cd /var/www/html
+cp -r ext-3.4.0 flanis GeoExt GXM-0.1 Highcharts-3.0.9 Highstock-1.3.9 jQuery minify-2.1.7 ol2_exportmap ol_v3.14.2-dist OpenLayers-2.13.1 sencha-touch-1.1.1 suncalc-master ../IRIS_BASE/html/
+cd /var/www/cgi-bin
+cp tinyows mapserv ../IRIS_BASE/cgi-bin/
+
 
 Any time you want update the remote repository with your local copy you must copy the files from production environment to the cloned local repository /var/www/IRIS_BASE/:
 
@@ -18,6 +24,7 @@ cp -R common error.html goaccess_reports index.html info.php iris_base iris_base
 cd /var/www/cgi-bin
 cp *.py ../IRIS_BASE/cgi-bin/
 
+Or just copy the modified files if you track them.
 
 Then git commit the difference and upload to the server with git push.
 
