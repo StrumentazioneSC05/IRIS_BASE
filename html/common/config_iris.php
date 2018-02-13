@@ -1,8 +1,9 @@
 <?php
 //RICORDARSI DI AGGIORNARE DI CONSEGUENZA ANCHE /var/www/cgi-bin/config.py
 
-$root_dir_html = ''; //senza reverseproxy
+$root_dir_html = '/devel'; //senza reverseproxy = ''
 //$root_dir_html = '/radar'; //nel caso in cui la ROOT del sistema sia diversa (ad es. reverseproxy)
+$root_dir_html_ext = ''; //senza un REALE reverseproxy per la libreria Ext caricata da Minify che altrimenti non trova alcune immagini = ''
 $root_dir_cgi = '/cgi-bin';
 $root_dir_script = '/common/webgis_central.php';
 $proxies_http = 'http://proxy.arpa.piemonte.it';
@@ -16,7 +17,8 @@ $dns = "postgresql://radar:dirac0@localhost:5432/iris_base"; //permessi di scrit
 
 //In maniera piu' elegante, ma che mi costringerebbe a modificare tutti gli script...:
 //$config['root_dir'] = '/radar'; //nel caso in cui la ROOT del sistema sia diversa (ad es. reverseproxy)
-$config['root_dir'] = ''; //senza reverseproxy
+$config['root_dir'] = '/devel'; //senza reverseproxy = ''
+$config['root_dir_ext'] = ''; //senza un REALE reverseproxy per la libreria Ext caricata da Minify che altrimenti non trova alcune immagini = ''
 $config['dbname'] = 'iris_base';
 $config['dbuser'] = 'webgis';
 $config['pwd'] = 'webgis$2013%';

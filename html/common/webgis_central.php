@@ -181,7 +181,7 @@ echo $jquery_css;
 
 //Recupero alcuni fogli di stile con Minify:
 $open_css = '<link rel="stylesheet" type="text/css" href="../minify-2.1.7/min/?f=';
-$open_css .= $root_dir_html.'/ext-3.4.0/resources/css/ext-all.css,';
+$open_css .= $root_dir_html_ext.'/ext-3.4.0/resources/css/ext-all.css,';
 $open_css .= '/GeoExt/resources/css/geoext-all.css,';
 $open_css .= '/OpenLayers-2.13.1/theme/default/style.css,';
 $open_css .= '/OpenLayers-2.13.1/theme/default/scalebar-thin.css,';
