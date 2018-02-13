@@ -31,27 +31,50 @@ By adding under the "<IfModule alias_module>" section the follow lines:
 
     ScriptAlias /devel/cgi-bin/ "/var/www/IRIS_BASE/cgi-bin/"
     Alias /devel "/var/www/IRIS_BASE/html"
+
+And just outside this section:
     <Directory "/var/www/IRIS_BASE/html">
       Options +Indexes +FollowSymLinks +ExecCGI
       AddHandler php-fastcgi .php
-      Action php-fastcgi /cgi-bin/php.fastcgi
-      AllowOverride All
-      Order allow,deny
-      Allow from all
-      #Require all granted
+      Action php-fastcgi /devel/cgi-bin/php.fastcgi
+      AllowOverride None
+      Require all granted
     </Directory>
     <Directory "/var/www/IRIS_BASE/cgi-bin">
       AllowOverride None
-      #Options +ExecCGI -MultiViews +SymLinksIfOwnerMatchù
-      Options None
+      Options +ExecCGI
       Require all granted
     </Directory>
 
 
-Made executable all the files in the path /var/www/IRIS_BASE/html and /var/www/IRIS_BASE/cgi-bin/ by entering each path and launch:
+Made executable the proper files in the path /var/www/IRIS_BASE/html and /var/www/IRIS_BASE/cgi-bin/ by entering each path and launch:
 chmod +x .
 
 
-Restart the httpd service:
+Maybe the executable files inside the new cgi-bin directory coul not have the necessary permission mode.
+To set, copy these settings from the "original" folder. For example launch:
+ls -la --context /var/www/cgi-bin/
+
+And then to set the new context authorization:
+chown root:root /var/www/IRIS_BASE/cgi-bin/ /var/www/IRIS_BASE/html/
+chown root:root /var/www/IRIS_BASE/cgi-bin/tinyows /var/www/IRIS_BASE/cgi-bin/mapserv
+
+chcon system_u:object_r:httpd_sys_script_exec_t:s0 /var/www/IRIS_BASE/cgi-bin
+chcon unconfined_u:object_r:httpd_sys_script_exec_t:s0 /var/www/IRIS_BASE/cgi-bin/*
+chcon system_u:object_r:httpd_sys_content_t:s0 /var/www/IRIS_BASE/html/
+chcon system_u:object_r:httpd_sys_content_t:s0 IRIS_BASE
+
+
+If some problem persist, for example for mapserv, it could be useful to see the selinux log file or the journal file:
+journalctl -b | grep "cgi"
+sealert -a /var/log/audit/audit.log
+
+Or if on the machine is installed ABRT (optional):
+abrt-cli list
+
+The command sealert will give you the solution, if any.
+
+
+In any case, restart the httpd service:
 service httpd restart
  
