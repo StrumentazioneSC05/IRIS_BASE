@@ -11,7 +11,7 @@ MAP
   EXTENT 350000 4000000 1600000 7000000
   SYMBOLSET 'symbols/symbols.txt'
   PROJECTION
-		"init=epsg:900913"
+	"init=epsg:900913"
   END
 
 # LEGEND object
@@ -30,7 +30,7 @@ END
 
   #SHAPEPATH 'C:\Program Files\OSGeo\MapGuide\Web\www\meteo\shpfile\'
   #SHAPEPATH '/var/www/html/webgis/meteo/shpfile/'
-  SHAPEPATH '/var/www/html/common/mapfiles/legend_txt/'
+  SHAPEPATH '/var/www/IRIS_BASE/html/common/mapfiles/legend_txt/'
 
   # Web interface definition. Only the template parameter is required to display a map. See MapServer documentation
   WEB
@@ -38,7 +38,7 @@ END
     IMAGEPATH 'tmp/'
 
     # Set IMAGEURL to the url that points to IMAGEPATH as defined in your web server configuration
-    IMAGEURL '/radar/common/mapfiles/tmp/'
+    IMAGEURL '/common/mapfiles/tmp/'
 
     # WMS-WFS server settings
     METADATA
