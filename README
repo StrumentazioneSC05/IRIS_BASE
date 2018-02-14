@@ -85,3 +85,10 @@ The command sealert will give you the solution, if any.
 In any case, restart the httpd service:
 service httpd restart
  
+
+############## DEVEL VERSION
+To test on the browser this devel version, you need to modify the file /var/www/IRIS_BASE/html/common/config.php, setting the variable:
+root_dir_html = '/devel';
+
+Same job to do in the mapfiles (for example for the SHAPEPATH) and other dependencies.
+
