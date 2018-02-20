@@ -65,7 +65,7 @@ pg_close($conn_config);
 
 
 
---> Sul DB tabella "config.webgis_indici" aggiungere le colonne:
+--> Sul DB tabella "config.webgis_indici" aggiungere le colonne, e popolarle di conseguenza:
 
 ALTER TABLE config.webgis_indici ADD COLUMN local_path character varying(255) NOT NULL DEFAULT '/iris_base/';
 COMMENT ON COLUMN config.webgis_indici.local_path IS 'percorso con gli script specifici del servizio';
@@ -83,4 +83,17 @@ ALTER TABLE config.webgis_indici ADD COLUMN url_tinyows_sigeo character varying(
 COMMENT ON COLUMN config.webgis_indici.url_tinyows_sigeo IS 'percorso eseguibile tinyows secondario per caricare eventuali altri dati da un altro DB';
 ALTER TABLE config.webgis_indici ADD COLUMN titlelogo character varying(32) NOT NULL DEFAULT 'WebGis IRIS';
 ALTER TABLE config.webgis_indici ADD COLUMN id_logo_div character varying(32) NOT NULL DEFAULT 'logo';
+
+
+
+--> Riportato allo stato originale il file "ol_v3.14.2-dist/ol3-layerswitcher.css" modificandolo dunque da:
+background-image: url('/radar/common/icons/map_legend32.png');
+a:
+background-image: url('logo.png');
+
+Modificato di conseguenza l'unica dipendenza di questo css e cioe' il file "cgi-bin/manage_webgis_service_from_db.py" aggiungendo all'interno della funzione "$( document ).ready(function() {" le seguenti righe:
+
+/*immagine per il menulayer, invece di scriverla in "ol_v3.14.2-dist/ol3-layerswitcher.css" la definisco qui*/
+$('.layer-switcher button').css('background-image', 'url(' + root_dir_html + '/common/icons/map_legend32.png' + ')');
+
 
