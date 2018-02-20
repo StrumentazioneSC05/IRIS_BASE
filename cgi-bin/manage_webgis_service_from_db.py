@@ -105,6 +105,10 @@ document.namespaces; //altrimenti IE da errore...
 
 $( document ).ready(function() {
     %(document_ready_fn)s;
+
+    /*immagine per il menulayer, invece di scriverla in "ol_v3.14.2-dist/ol3-layerswitcher.css" la definisco qui*/
+    $('.layer-switcher button').css('background-image', 'url(' + root_dir_html + '/common/icons/map_legend32.png' + ')');
+
     //Proviamo ad allineare alcuni div - poi sarebbe da portare nel python se funziona:
     /*$("#map2").position({
             my: "center",
@@ -336,6 +340,7 @@ function selectORhighlight(value) {
 
 //Variabili importate da PYTHON:
 %(variables_from_py)s
+
 </script>
 <style>
 /*Usando jquery mobile devo definire gli stili in modo diverso*/
@@ -382,6 +387,7 @@ label.centerInput{
 div.centerText, input.centerText{
     text-align: center;
 }
+
 </style>
 </head>
 <body>

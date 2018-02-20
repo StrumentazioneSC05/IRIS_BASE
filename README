@@ -80,6 +80,9 @@ Or if on the machine is installed ABRT (optional):
 abrt-cli list
 
 The command sealert will give you the solution, if any.
+For example, for MapServer, could be necessary to launch:
+ ausearch -c 'mapserv' --raw | audit2allow -M my-mapserv
+ semodule -i my-mapserv.pp
 
 
 In any case, restart the httpd service:
