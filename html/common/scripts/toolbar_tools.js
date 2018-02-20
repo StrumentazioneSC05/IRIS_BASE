@@ -407,7 +407,7 @@ toolbarItems.push(new Ext.Toolbar.Spacer({width: 5}));
                 toggleGroup: "controls", group: "controls",
                 control: heading,
                 map: map,
-                tooltip: "misura un angolo"
+                tooltip: "misura azimuth"
                 ,xtype:'tbbutton', cls:'x-btn-icon'
                 ,icon:root_dir_html+'/common/icons/toolbar_icons/misuraheading.png', scale:'medium'
         });

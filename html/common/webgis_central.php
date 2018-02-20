@@ -101,37 +101,6 @@ if(isset($_COOKIE[$webgis_type])) {
 
 /* *********** FINE COOKIE ************/
 
-//Definisco percorsi in base al tipo di webgis:
-$themes_path = "/common/tematismi";//percorso dei tematismi
-$scripts_path = "/common/scripts";//percorso di altri script js
-$nomelogo = $root_dir_html . "/common/icons/logo_ArpaPiemonte_transp.png";
-$urllogo = "http://www.arpa.piemonte.gov.it/";
-$map_path = "/var/www/html/common/mapfiles/"; //percorso dei file .map di mapserver
-$url_tinyows = $root_dir_html . "/cgi-bin/tinyows"; //percorso eseguibile tinyows
-$url_tinyows_sigeo = $root_dir_html . "/cgi-bin/tinyows_sigeo"; //percorso eseguibile tinyows
-$titlelogo = "";
-$id_logo_div = "logo";
-
-switch($webgis_type)
-{
-case "iris_base":
-        $local_path = "/iris_base/";
-	/*
-	$nomelogo = $root_dir_html . "PNG_PATH";
-	$urllogo = "URL_TO_REDIRECT_FROM_LOGO";
-	$titlelogo = "LOGO TITLE";
-	$id_logo_div = "LOGO ID";
-	$themes_path = "PATH_TO_THEME_JS_FILES";
-	$scripts_path = "PATH_TO_SCRIPTS_JS_FILES";
-        $map_path = "PATH_TO_MAPFILES_MAP_FILES";
-        $url_tinyows = $root_dir_html . "/cgi-bin/tinyows";
-	*/
-        break;
-default:
-        $local_path = "/iris_base/";
-}
-$local_script = $webgis_type . '.js';
-
 ?>
 
 <!DOCTYPE html>

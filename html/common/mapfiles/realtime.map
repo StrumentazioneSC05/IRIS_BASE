@@ -6,7 +6,7 @@ LAYER
   	STATUS ON
   	TYPE POINT
   	CONNECTIONTYPE POSTGIS
-  	CONNECTION "host=localhost port=5432 dbname=radar user=webgis password=webgis$2013%"
+  	CONNECTION "host=localhost port=5432 dbname=iris_base user=webgis password=webgis$2013%"
 	PROCESSING "CLOSE_CONNECTION=DEFER"
   	DATA "the_geom from realtime.g_dbstorm_3ore using unique id using srid=23032"
   	#DATA "the_geom from realtime.g_dbstorm using unique gid2 using srid=23032"
@@ -58,7 +58,7 @@ LAYER
   	STATUS ON
   	TYPE POLYGON
   	CONNECTIONTYPE POSTGIS
-  	CONNECTION "host=localhost port=5432 dbname=radar user=webgis password=webgis$2013%"
+  	CONNECTION "host=localhost port=5432 dbname=iris_base user=webgis password=webgis$2013%"
 	PROCESSING "CLOSE_CONNECTION=DEFER"
   	DATA "the_geom from realtime.ellipse_3ore using unique gid using srid=23032"
 	
@@ -103,7 +103,7 @@ LAYER
         STATUS ON
         TYPE POLYGON
         CONNECTIONTYPE POSTGIS
-        CONNECTION "host=localhost port=5432 dbname=radar user=webgis password=webgis$2013%"
+        CONNECTION "host=localhost port=5432 dbname=iris_base user=webgis password=webgis$2013%"
         PROCESSING "CLOSE_CONNECTION=DEFER"
         DATA "the_geom from realtime.forecast_envelope using unique gid using srid=23032"
 
@@ -147,7 +147,7 @@ LAYER
         STATUS ON
         TYPE POLYGON
         CONNECTIONTYPE POSTGIS
-        CONNECTION "host=localhost port=5432 dbname=radar user=webgis password=webgis$2013%"
+        CONNECTION "host=localhost port=5432 dbname=iris_base user=webgis password=webgis$2013%"
         PROCESSING "CLOSE_CONNECTION=DEFER"
         DATA "the_geom from realtime.arrow_3ore using unique gid using srid=23032"
 
@@ -191,7 +191,7 @@ LAYER
   	STATUS ON
   	TYPE LINE
   	CONNECTIONTYPE POSTGIS
-  	CONNECTION "host=localhost port=5432 dbname=radar user=webgis password=webgis$2013%"
+  	CONNECTION "host=localhost port=5432 dbname=iris_base user=webgis password=webgis$2013%"
 	PROCESSING "CLOSE_CONNECTION=DEFER"
   	DATA "the_geom from realtime.g_stormpath_3ore using unique id using srid=23032"
   	# DATA "the_geom from realtime.g_pathstorm using unique id using srid=23032"
@@ -241,7 +241,7 @@ LAYER
         STATUS ON
         TYPE POLYGON
         CONNECTIONTYPE POSTGIS
-        CONNECTION "host=localhost port=5432 dbname=radar user=webgis password=webgis$2013%"
+        CONNECTION "host=localhost port=5432 dbname=iris_base user=webgis password=webgis$2013%"
         PROCESSING "CLOSE_CONNECTION=DEFER"
         #PROCESSING "ITEMS=valore" #sembra essere piu' veloce da caricare come WFS...
         DATA "the_geom from realtime.v_defense_last using unique gid using srid=32632"
@@ -286,7 +286,7 @@ LAYER
         STATUS ON
         TYPE POLYGON
         CONNECTIONTYPE POSTGIS
-        CONNECTION "host=localhost port=5432 dbname=radar user=webgis password=webgis$2013%"
+        CONNECTION "host=localhost port=5432 dbname=iris_base user=webgis password=webgis$2013%"
 	PROCESSING "CLOSE_CONNECTION=DEFER"
         #PROCESSING "ITEMS=valore" #sembra essere piu' veloce da caricare come WFS...
         DATA "the_geom from realtime.v_comuni_last using unique gid using srid=32632"
@@ -331,7 +331,7 @@ LAYER
         STATUS ON
         TYPE POLYGON
         CONNECTIONTYPE POSTGIS
-        CONNECTION "host=localhost port=5432 dbname=radar user=webgis password=webgis$2013%"
+        CONNECTION "host=localhost port=5432 dbname=iris_base user=webgis password=webgis$2013%"
 	PROCESSING "CLOSE_CONNECTION=DEFER"
         #PROCESSING "ITEMS=valore" #sembra essere piu' veloce da caricare come WFS...
         DATA "the_geom from realtime.v_smart_previmedie using unique gid using srid=23032"
@@ -376,7 +376,7 @@ LAYER
         STATUS ON
         TYPE POINT
         CONNECTIONTYPE POSTGIS
-        CONNECTION "host=localhost port=5432 dbname=radar user=webgis password=webgis$2013%"
+        CONNECTION "host=localhost port=5432 dbname=iris_base user=webgis password=webgis$2013%"
         PROCESSING "CLOSE_CONNECTION=DEFER"
         #PROCESSING "ITEMS=valore" #sembra essere piu' veloce da caricare come WFS...
         DATA "the_geom from realtime.v_smartstaz_last using unique gid using srid=23032"
@@ -421,7 +421,7 @@ LAYER
         STATUS ON
         TYPE POLYGON
         CONNECTIONTYPE POSTGIS
-        CONNECTION "host=localhost port=5432 dbname=radar user=webgis password=webgis$2013%"
+        CONNECTION "host=localhost port=5432 dbname=iris_base user=webgis password=webgis$2013%"
         PROCESSING "CLOSE_CONNECTION=DEFER"
         #PROCESSING "ITEMS=gid" #sembra essere piu' veloce da caricare come WFS.. Pero' forse si carica solo quel campo!
         DATA "the_geom from realtime.v_traps_last using unique gid using srid=23032"
@@ -466,7 +466,7 @@ LAYER
         STATUS ON
         TYPE POINT
         CONNECTIONTYPE POSTGIS
-        CONNECTION "host=localhost port=5432 dbname=radar user=webgis password=webgis$2013%"
+        CONNECTION "host=localhost port=5432 dbname=iris_base user=webgis password=webgis$2013%"
         PROCESSING "CLOSE_CONNECTION=DEFER" #sembra essere piu veloce da caricare come WFS...
         #PROCESSING "ITEMS=dn"
         DATA "the_geom from realtime.v_temperatura using unique gid using srid=23032"

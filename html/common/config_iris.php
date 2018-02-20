@@ -23,5 +23,57 @@ $config['dbname'] = 'iris_base';
 $config['dbuser'] = 'webgis';
 $config['pwd'] = 'webgis$2013%';
 
+/* VARIABILI DI DEFAULT */
+//Ogni servizio WebGis avra' poi le sue variabili definite da DB
+$local_path = "/iris_base/";
+$themes_path = "/common/tematismi";//percorso dei tematismi
+$scripts_path = "/common/scripts";//percorso di altri script js
+$nomelogo = $root_dir_html . "/common/icons/logo_ArpaPiemonte_transp.png";
+$urllogo = "http://www.arpa.piemonte.gov.it/";
+$map_path = "/var/www/html/common/mapfiles/"; //percorso dei file .map di mapserver
+$url_tinyows = $root_dir_html . "/cgi-bin/tinyows"; //percorso eseguibile tinyows
+$url_tinyows_sigeo = $root_dir_html . "/cgi-bin/tinyows_sigeo"; //percorso eseguibile tinyows
+$titlelogo = "WebGis IRIS";
+$id_logo_div = "logo";
+
+$local_script = $webgis_type . '.js';
+
+//Recupero da DB le impostazioni personalizzate del servizio:
+$conn_config = pg_connect($conn_string);
+if (!$conn_config) { // Check if valid connection
+        $error_message = "Error Connecting to database";
+        pg_close($conn_config);
+        die("<script>location.href = '" . $root_dir_html . "/error.html?error=". $error_message ."&root_dir_html=". $root_dir_html ."'</script>");
+}
+else {
+    //Faccio una prima query per recuperare alcune variabili sui percorsi specifici del servizio:
+    $query_config = "SELECT local_path, themes_path, scripts_path, nomelogo, urllogo, map_path, url_tinyows, url_tinyows_sigeo, titlelogo, id_logo_div FROM config.webgis_indici WHERE webgis_name = '$webgis_type';";
+    $result_config = pg_query($conn_config, $query_config);
+    if (!$result_config) {
+        $error_message = "Error on the query indice";
+        pg_close($conn_config);
+        die("<script>location.href = '" . $root_dir_html . "/error.html?error=". $error_message ."&root_dir_html=". $root_dir_html ."'</script>");
+        //echo "<script>console.log('". $error_message ."')</script>";
+        //exit;
+    }
+    else {
+        //Recupero alcune impostazioni di base del servizio:
+        $fetch_config = pg_fetch_array($result_config, 0); //prendo il primo record
+
+        //Ridefinisco alcune variabili da DB dipendenti dal servizio:
+        $local_path = $fetch_config['local_path'];
+        $themes_path = $fetch_config['themes_path'];
+        $scripts_path = $fetch_config['scripts_path'];
+        $nomelogo = $root_dir_html . $fetch_config['nomelogo'];
+        $urllogo = $fetch_config['urllogo'];
+        $map_path = $fetch_config['map_path'];
+        $url_tinyows = $root_dir_html . $fetch_config['url_tinyows'];
+        $url_tinyows_sigeo = $root_dir_html . $fetch_config['url_tinyows_sigeo'];
+        $titlelogo = $fetch_config['titlelogo'];
+        $id_logo_div = $fetch_config['id_logo_div'];
+    }
+}
+pg_close($conn_config);
+
 ?>
 
