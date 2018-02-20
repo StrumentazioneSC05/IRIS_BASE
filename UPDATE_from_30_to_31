@@ -1,0 +1,80 @@
+--> righe da mettere in "config.php" e da ELIMINARE su "webgis_central.php":
+--> su webgis_central.php ELIMINI anche tutta la parte dello SWITCH
+
+<?php
+
+/* VARIABILI DI DEFAULT */
+//Ogni servizio WebGis avra' poi le sue variabili definite da DB
+$local_path = "/iris_base/";
+$themes_path = "/common/tematismi";//percorso dei tematismi
+$scripts_path = "/common/scripts";//percorso di altri script js
+$nomelogo = $root_dir_html . "/common/icons/logo_ArpaPiemonte_transp.png";
+$urllogo = "http://www.arpa.piemonte.gov.it/";
+$map_path = "/var/www/html/common/mapfiles/"; //percorso dei file .map di mapserver
+$url_tinyows = $root_dir_html . "/cgi-bin/tinyows"; //percorso eseguibile tinyows
+$url_tinyows_sigeo = $root_dir_html . "/cgi-bin/tinyows_sigeo"; //percorso eseguibile tinyows
+$titlelogo = "WebGis IRIS";
+$id_logo_div = "logo";
+
+$local_script = $webgis_type . '.js';
+
+//Recupero da DB le impostazioni personalizzate del servizio:
+$conn_config = pg_connect($conn_string);
+if (!$conn_config) { // Check if valid connection
+        $error_message = "Error Connecting to database";
+        pg_close($conn_config);
+        die("<script>location.href = '" . $root_dir_html . "/error.html?error=". $error_message ."&root_dir_html=". $root_dir_html ."'</script>");
+}
+else {
+    //Faccio una prima query per recuperare alcune variabili sui percorsi specifici del servizio:
+    $query_config = "SELECT local_path, themes_path, scripts_path, nomelogo, urllogo, map_path, url_tinyows, url_tinyows_sigeo, titlelogo, id_logo_div FROM config.webgis_indici WHERE webgis_name = '$webgis_type';";
+    $result_config = pg_query($conn_config, $query_config);
+    if (!$result_config) {
+        $error_message = "Error on the query indice";
+        pg_close($conn_config);
+        die("<script>location.href = '" . $root_dir_html . "/error.html?error=". $error_message ."&root_dir_html=". $root_dir_html ."'</script>");
+        //echo "<script>console.log('". $error_message ."')</script>";
+        //exit;
+    }
+    else {
+        //Recupero alcune impostazioni di base del servizio:
+        $fetch_config = pg_fetch_array($result_config, 0); //prendo il primo record
+
+        //Ridefinisco alcune variabili da DB dipendenti dal servizio:
+        $local_path = $fetch_config['local_path'];
+        $themes_path = $fetch_config['themes_path'];
+        $scripts_path = $fetch_config['scripts_path'];
+        $nomelogo = $root_dir_html . $fetch_config['nomelogo'];
+        $urllogo = $fetch_config['urllogo'];
+        $map_path = $fetch_config['map_path'];
+        $url_tinyows = $root_dir_html . $fetch_config['url_tinyows'];
+        $url_tinyows_sigeo = $root_dir_html . $fetch_config['url_tinyows_sigeo'];
+        $titlelogo = $fetch_config['titlelogo'];
+        $id_logo_div = $fetch_config['id_logo_div'];
+    }
+}
+pg_close($conn_config);
+
+?>
+
+
+
+--> Sul DB tabella "config.webgis_indici" aggiungere le colonne:
+
+ALTER TABLE config.webgis_indici ADD COLUMN local_path character varying(255) NOT NULL DEFAULT '/iris_base/';
+COMMENT ON COLUMN config.webgis_indici.local_path IS 'percorso con gli script specifici del servizio';
+ALTER TABLE config.webgis_indici ADD COLUMN themes_path character varying(255) NOT NULL DEFAULT '/common/tematismi';
+COMMENT ON COLUMN config.webgis_indici.themes_path IS 'percorso con la definizione js dei tematismi';
+ALTER TABLE config.webgis_indici ADD COLUMN scripts_path character varying(255) NOT NULL DEFAULT '/common/scripts';
+COMMENT ON COLUMN config.webgis_indici.scripts_path IS 'percorso di altri script js';
+ALTER TABLE config.webgis_indici ADD COLUMN nomelogo character varying(255) NOT NULL DEFAULT '/common/icons/logo_ArpaPiemonte_transp.png';
+ALTER TABLE config.webgis_indici ADD COLUMN urllogo character varying(255) NOT NULL DEFAULT 'http://www.arpa.piemonte.gov.it/';
+ALTER TABLE config.webgis_indici ADD COLUMN map_path character varying(255) NOT NULL DEFAULT '/var/www/html/common/mapfiles/';
+COMMENT ON COLUMN config.webgis_indici.map_path IS 'percorso dei file .map di mapserver';
+ALTER TABLE config.webgis_indici ADD COLUMN url_tinyows character varying(255) NOT NULL DEFAULT '/cgi-bin/tinyows';
+COMMENT ON COLUMN config.webgis_indici.url_tinyows IS 'percorso eseguibile tinyows principale';
+ALTER TABLE config.webgis_indici ADD COLUMN url_tinyows_sigeo character varying(255) NOT NULL DEFAULT '/cgi-bin/tinyows_sigeo';
+COMMENT ON COLUMN config.webgis_indici.url_tinyows_sigeo IS 'percorso eseguibile tinyows secondario per caricare eventuali altri dati da un altro DB';
+ALTER TABLE config.webgis_indici ADD COLUMN titlelogo character varying(32) NOT NULL DEFAULT 'WebGis IRIS';
+ALTER TABLE config.webgis_indici ADD COLUMN id_logo_div character varying(32) NOT NULL DEFAULT 'logo';
+
