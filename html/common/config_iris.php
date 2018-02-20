@@ -23,7 +23,14 @@ $config['dbname'] = 'iris_base';
 $config['dbuser'] = 'webgis';
 $config['pwd'] = 'webgis$2013%';
 
+
 /* VARIABILI DI DEFAULT */
+//Questa sezione da attivare solo nel caso in cui sia stata definita la variabile $webgis_type ovvero se si e' gia' dentro il servizio:
+if (!isset($webgis_type)) {
+    //echo "Variabile webgis_type non definita, non recupero altre info dal DB.";
+    return;
+}
+
 //Ogni servizio WebGis avra' poi le sue variabili definite da DB
 $local_path = "/iris_base/";
 $themes_path = "/common/tematismi";//percorso dei tematismi

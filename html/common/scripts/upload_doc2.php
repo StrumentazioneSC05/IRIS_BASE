@@ -1,6 +1,8 @@
 <?php
-$conn_string = "host=localhost port=5432 dbname=radar user=rischioindustriale password=Seveso_200";
-$conn = pg_connect($conn_string);
+//Carico le configurazioni di base da un file esterno:
+include_once('config_iris.php');
+
+$conn = pg_connect($conn_string_edit);
 if (!$conn) { // Check if valid connection
         echo "Error Connecting to database <br>";
         die();
