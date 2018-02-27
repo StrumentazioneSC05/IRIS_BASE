@@ -3,7 +3,7 @@
 
 $root_dir_html = '/devel'; //senza reverseproxy = ''
 //$root_dir_html = '/radar'; //nel caso in cui la ROOT del sistema sia diversa (ad es. reverseproxy)
-$root_dir_html_ext = ''; //senza un REALE reverseproxy per la libreria Ext caricata da Minify che altrimenti non trova alcune immagini = ''
+//$root_dir_html_ext = ''; //senza un REALE reverseproxy per la libreria Ext caricata da Minify che altrimenti non trova alcune immagini = '' - LO TOLGO DAL MINIFY per evitare problemi
 $root_dir_cgi = '/cgi-bin';
 $root_dir_script = '/common/webgis_central.php';
 $proxies_http = 'http://proxy.arpa.piemonte.it';
@@ -18,7 +18,7 @@ $dns = "postgresql://radar:dirac0@localhost:5432/iris_base"; //permessi di scrit
 //In maniera piu' elegante, ma che mi costringerebbe a modificare tutti gli script...:
 //$config['root_dir'] = '/radar'; //nel caso in cui la ROOT del sistema sia diversa (ad es. reverseproxy)
 $config['root_dir'] = '/devel'; //senza reverseproxy = ''
-$config['root_dir_ext'] = ''; //senza un REALE reverseproxy per la libreria Ext caricata da Minify che altrimenti non trova alcune immagini = ''
+//$config['root_dir_ext'] = ''; //senza un REALE reverseproxy per la libreria Ext caricata da Minify che altrimenti non trova alcune immagini = '' - LO TOLGO DAL MINIFY per evitare problemi
 $config['dbname'] = 'iris_base';
 $config['dbuser'] = 'webgis';
 $config['pwd'] = 'webgis$2013%';
@@ -81,6 +81,27 @@ else {
     }
 }
 pg_close($conn_config);
+
+
+/*THEMES to LOAD with MINIFY:*/
+//customize as you need
+$lista_js2load = array();
+
+array_push($lista_js2load, $themes_path . "/base_layers.js"); //better let this file loading
+array_push($lista_js2load, $themes_path . "/theme_stili.js"); //better let this file loading
+
+array_push($lista_js2load, $themes_path . "/theme_datidibase.js");
+array_push($lista_js2load, $themes_path . "/theme_realtime.js");
+array_push($lista_js2load, $themes_path . "/theme_sigeo.js");
+array_push($lista_js2load, $themes_path . "/theme_sismica.js");
+array_push($lista_js2load, $themes_path . "/theme_idro.js");
+array_push($lista_js2load, $themes_path . "/theme_rasters.js");
+array_push($lista_js2load, $themes_path . "/theme_spatialite.js");
+array_push($lista_js2load, $themes_path . "/theme_wms.js");
+array_push($lista_js2load, $themes_path . "/theme_ri0307.js");
+array_push($lista_js2load, $themes_path . "/theme_expo.js");
+array_push($lista_js2load, $themes_path . "/theme_modelli.js");
+array_push($lista_js2load, $themes_path . "/theme_fews.js");
 
 ?>
 

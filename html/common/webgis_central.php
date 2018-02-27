@@ -148,9 +148,13 @@ var url_tinyows_sigeo = "<?php echo $url_tinyows_sigeo; ?>"; //percorso eseguibi
 $jquery_css = '<link rel="stylesheet" href="'.$root_dir_html.'/jQuery/jquery-ui.css">';
 echo $jquery_css;
 
+$extall_css = '<link rel="stylesheet" href="'.$root_dir_html.'/ext-3.4.0/resources/css/ext-all.css">';
+echo $extall_css;
+
 //Recupero alcuni fogli di stile con Minify:
-$open_css = '<link rel="stylesheet" type="text/css" href="../minify-2.1.7/min/?f=';
-$open_css .= $root_dir_html_ext.'/ext-3.4.0/resources/css/ext-all.css,';
+//$open_css = '<link rel="stylesheet" type="text/css" href="../minify-2.1.7/min/?f=';
+$open_css = '<link rel="stylesheet" type="text/css" href="../min/?f=';
+//$open_css .= $root_dir_html_ext.'/ext-3.4.0/resources/css/ext-all.css,'; //LO TOLOGO DAL MINIFY onde evitare problemi di proxy o versioni di sviluppo
 $open_css .= '/GeoExt/resources/css/geoext-all.css,';
 $open_css .= '/OpenLayers-2.13.1/theme/default/style.css,';
 $open_css .= '/OpenLayers-2.13.1/theme/default/scalebar-thin.css,';
@@ -171,7 +175,7 @@ echo $script_js;
 
 <?php
 //Recupero alcuni script con Minify:
-$first_script = '<script type="text/javascript" src="../minify-2.1.7/min/?f=';
+$first_script = '<script type="text/javascript" src="../min/?f=';
 $first_script .= '/OpenLayers-2.13.1/lib/OpenLayers/Control/LoadingPanel_2.js,';
 $first_script .= '/OpenLayers-2.13.1/lib/OpenLayers/Control/TooltTips.js,';
 $first_script .= '/GeoExt/olExtToolTips.js,';
@@ -211,39 +215,21 @@ echo $script_js_3nd;
 
 <?php
 //Carico l'html di base:
-$preliminar_script = '<script type="text/javascript" src="../minify-2.1.7/min/?f=';
-$preliminar_script .= '/common/webgis_js_base.js';
+$preliminar_script = '<script type="text/javascript" src="../min/?f=';
+$preliminar_script .= '/common/webgis_js_base.js,';
+$preliminar_script .= $scripts_path . '/browser_detect.js,';
+$preliminar_script .= $scripts_path . '/js_functions.js';
 $preliminar_script .= '"></script>';
 echo $preliminar_script;
 
-$project_scripts = '<script type="text/javascript" src="../minify-2.1.7/min/?f=';
+$project_scripts = '<script type="text/javascript" src="../min/?f=';
 
-//require $_SERVER['DOCUMENT_ROOT'] . '/minify-2.1.7/min/utils.php';
+//THEMES to LOAD --> defined under common/config_iris.php
 
-$lista_js2load = array();
-
-/*THEMES da CARICARE:*/
-array_push($lista_js2load, $scripts_path . "/browser_detect.js");
-array_push($lista_js2load, $themes_path . "/base_layers.js");
-array_push($lista_js2load, $scripts_path . "/js_functions.js");
-array_push($lista_js2load, $themes_path . "/theme_stili.js");
-array_push($lista_js2load, $themes_path . "/theme_datidibase.js");
-array_push($lista_js2load, $themes_path . "/theme_realtime.js");
-array_push($lista_js2load, $themes_path . "/theme_sigeo.js");
-array_push($lista_js2load, $themes_path . "/theme_sismica.js");
-array_push($lista_js2load, $themes_path . "/theme_idro.js");
-array_push($lista_js2load, $themes_path . "/theme_rasters.js");
-array_push($lista_js2load, $themes_path . "/theme_spatialite.js");
-array_push($lista_js2load, $themes_path . "/theme_wms.js");
-array_push($lista_js2load, $themes_path . "/theme_ri0307.js");
-array_push($lista_js2load, $themes_path . "/theme_expo.js");
-array_push($lista_js2load, $themes_path . "/theme_modelli.js");
-array_push($lista_js2load, $themes_path . "/theme_fews.js");
+//adding other custom libraries:
 array_push($lista_js2load, $scripts_path . "/credit_tab.js");
 array_push($lista_js2load, $scripts_path . "/help_tab.js");
-//array_push($lista_js2load, $scripts_path . "/info_panel.js");
-//array_push($lista_js2load, $scripts_path . "/tickets_panel.js");
-//array_push($lista_js2load, $scripts_path . "/filter_strategy.js"); //vecchio script perche' compare ancora qui? CONTROLLA!
+
 $project_scripts .= implode(",", $lista_js2load);
 
 $project_scripts .= '">';
@@ -254,10 +240,10 @@ echo $project_scripts;
 require('local_script_db.php');
 
 //Carico i javascript della toolbar. Li carico dopo il local_script_db in modo tale da avere le cartelle dei cookie_settings per i layer definitie in maniera dinamica secondo il DB.
+$project_scripts3 = '<script type="text/javascript" src="../min/?f=';
 $lista_js3load = array();
 array_push($lista_js3load, $scripts_path . "/toolbar_panels.js");
 array_push($lista_js3load, $scripts_path . "/toolbar_tools.js");
-$project_scripts3 = '<script type="text/javascript" src="../minify-2.1.7/min/?f=';
 $project_scripts3 .= implode(",", $lista_js3load);
 $project_scripts3 .= '">';
 $project_scripts3 .= ' </script>';
@@ -306,7 +292,7 @@ else console.log('startcondition NON ben codificata');
 <?php
 
 //Carico i JS restanti:
-$project_scripts3 = '<script type="text/javascript" src="../minify-2.1.7/min/?f=';
+$project_scripts3 = '<script type="text/javascript" src="../min/?f=';
 $lista_js3load = array();
 //JS PRINCIPALE:
 array_push($lista_js3load, $scripts_path . "/geoext_general_produzione.js");
