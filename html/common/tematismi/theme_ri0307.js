@@ -390,7 +390,7 @@ var stabrir2 = new OpenLayers.Layer.Vector(default_layer_name, {
 });
 var format = new OpenLayers.Format.SLD();
 OpenLayers.Request.GET({
-	url: "/common/tematismi/prova_1.sld",
+	url: "/common/tematismi/prova_sld_v100.sld",
 	success: sldparser
 });
 function sldparser(req) {

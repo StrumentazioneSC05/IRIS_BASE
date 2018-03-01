@@ -172,8 +172,13 @@ except:
 #### PRELEVO IL COMUNE DI INTERSEZIONE ####
 con_db1 = pg.connect(dbname=db_name, host=db_host, user=db_user, passwd=db_pwd)
 query_com = "select localita, provincia, regione, istat from dati_di_base.limiti_amministrativi where st_intersects(ST_Transform(ST_GeomFromText('POINT(%s %s)', %s), 32632), the_geom);" % (x, y, srid)
-results_com = con_db1.query(query_com).getresult()
-con_db1.close()
+results_com = None
+try:
+  results_com = con_db1.query(query_com).getresult()
+except Exception as e:
+  print str(e)
+finally:
+  con_db1.close()
 
 if results_com:
   print "<h1>Comune: <b> %s, %s (%s) &nbsp (ISTAT:%s) \n</b></h1>" % (results_com[0][0], results_com[0][1], results_com[0][2], results_com[0][3])

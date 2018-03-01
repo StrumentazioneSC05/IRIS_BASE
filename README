@@ -87,7 +87,26 @@ For example, for MapServer, could be necessary to launch:
 
 In any case, restart the httpd service:
 service httpd restart
+
  
+############## DEVEL VERSION on MINIFY
+To load correctly the minified version of some js and css, a modification in the min/config.php file is needed.
+
+Change the variable "$min_symlinks" in:
+ $min_symlinks = array(
+    '/var/www/devel' => '/var/www/IRIS_BASE/html'
+ );
+
+Add:
+ $min_serveOptions['minApp']['allowDirs'] = array(
+    '//',                 // allow from the normal DOC_ROOT
+    '/var/www/IRIS_BASE/html' // allow from our alias target
+ );
+
+If you want to execute some debug on Minify:
+$min_allowDebugFlag = true; //to use the flag "&debug" at the end of the min call
+$min_errorLogger = true; //to use the Mozilla's Firebug Fire-PHP
+
 
 ############## DEVEL VERSION
 To test on the browser this devel version, you need to modify the file /var/www/IRIS_BASE/html/common/config.php, setting the variable:

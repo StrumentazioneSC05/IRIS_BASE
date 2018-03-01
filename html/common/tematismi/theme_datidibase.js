@@ -348,6 +348,74 @@ var rete_meteoidro = new OpenLayers.Layer.Vector(default_layer_name, {
             featureNS: "http://mapserver.gis.umn.edu/mapserver"
         })
 });
+
+//////////// PROVO STILE SLD da QGis
+//
+// 2 problemi:
+//
+// 1- SLD salvato da QGis 2.x e' nella versione 1.1.0 NON riconosciuta da OL 2.x. Occorre sostituire:
+// 1.1.0 --> 1.0.0
+// se: --> '' (cioe' niente)
+// SvgParameters --> CssParameters
+//
+// 2- le label NON vengono salvate da QGis nel file SLD. Si possono aggiungere a mano sul file SLD (delirio) oppure indicarle come al solito nel file js, come di seguito ho provato a fare
+//
+
+var format = new OpenLayers.Format.SLD();
+
+var label_rete_meteoidro_sld = new OpenLayers.Rule({symbolizer: {label: "${denominazione}\n\n${quota_int} m asl", fontWeight: "bold", fontFamily: "sans-serif", labelAlign: "cm"}});
+var minzoom_rete_meteoidro_sld = new OpenLayers.Rule({
+	title: " ",
+                minScaleDenominator: 250000,
+                symbolizer: {fontSize: "0px", strokeWidth:0.6}
+        });
+var maxzoom_rete_meteoidro_sld = new OpenLayers.Rule({
+        title: " ",
+                maxScaleDenominator: 250000,
+                symbolizer: { fontSize: "12px" }
+        });
+
+//Provo ad associare l'sld ad uno styleMap invece che direttamente al layer (come in fondo)
+//In questo modo pero' non funziona piu' la selezione e l'hover...
+var styleMap_meteoidro_sld = new OpenLayers.StyleMap({
+        "default": '',
+        "select": new OpenLayers.Style({pointRadius: 8, fillColor: "blue", fillOpacity: 0.8})
+        ,"temporary": new OpenLayers.Style({pointRadius: 8, fontSize: 13, cursor: "pointer"})
+});
+OpenLayers.Request.GET({
+        url: root_dir_html + '/common/tematismi/rete_meteoidro_label.sld',
+        success: function (req) {
+            sld = format.read(req.responseXML || req.responseText);
+            styles = sld.namedLayers['rete_meteoidrografica'].userStyles[0];
+	    styles.addRules([label_rete_meteoidro_sld, minzoom_rete_meteoidro_sld, maxzoom_rete_meteoidro_sld]);
+            styleMap_meteoidro_sld.styles.default = styles;
+        }
+});
+
+var rete_meteoidro_sld = new OpenLayers.Layer.Vector(default_layer_name, {
+        styleMap: styleMap_meteoidro_sld,
+        strategies: [new OpenLayers.Strategy.BBOX()],
+        protocol: new OpenLayers.Protocol.WFS({
+            url: urlMS_datidibase,
+            featureType: "rete_meteoidro",
+            featureNS: "http://mapserver.gis.umn.edu/mapserver"
+        })
+});
+
+/*OpenLayers.Request.GET({
+        url: root_dir_html + '/common/tematismi/rete_meteoidro_label.sld',
+        success: function (req) {
+            sld = format.read(req.responseXML || req.responseText);
+            styles = sld.namedLayers['rete_meteoidrografica'].userStyles[0];
+	    //styles.addRules([label_rete_meteoidro_sld]);
+            rete_meteoidro_sld.styleMap.styles.default = styles;
+        }
+});*/
+//rete_meteoidro_sld.setVisibility(false);
+
+//
+//////////// FINE PROVA SLD
+
 var filter_meteoidro_not_lombardia = new OpenLayers.Filter.Logical({
 	type: OpenLayers.Filter.Logical.NOT,
 	filters: [
