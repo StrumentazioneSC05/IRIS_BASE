@@ -1,0 +1,53 @@
+backcolor=0x800000
+controls=startstop, speed, zoom, show, looprock, /refresh, location/on, probe/on
+bottom_controls=overlay,toggle
+#controls=setframe
+
+#active_zoom=true
+bottom_controls = toggle
+#no_controls=true
+
+content_position=20,20
+start_frame = 1
+toggle_onoff = 1,0,1
+
+zoom_scale = 10.0
+controls_gap=1
+probe_style=0xff00ff,0x00ff00
+use_caching=true
+use_anti_caching = false
+filenames = play/TIR0.GIF, play/TIR1.GIF, play/TIR2.GIF
+frame_label = one, two, three
+#frame_label_style=0x000000, 0xffffff,20,30 
+overlay_filenames = play/TSFC0.GIF&play/TSFC1.GIF&play/TSFC2.GIF, play/mask0.gif&play/mask1.gif&play/mask2.gif
+
+transparency = 0x000000
+#dwell_rates=300,500,1000
+image_preserve=0,0,640,20, 100,380,200,400
+
+debug=false
+
+coordinates=50,-109,30,-76
+coordinates_style = 0x40808080, 0x000000, , LAT=, LONG=, 3
+location_label=LatLon
+map_scale=10
+
+toggle_size=5,10,20
+
+overlay_labels=Surface Data, Some Data/mask
+overlay_labels_placement = 10&0, 10&20
+overlay_labels_color=0xff00ff,0xffff00
+overlay_labels_mouseover_color=0xffffff,0x00ff00
+#pause=100
+minimum_dwell = 10
+rate = 100
+#rocking=true
+keep_zoom=true
+
+#hotspot=0,0,10,10,url,http://testing
+#hotspot1=10,10,10,10,fof,my_fof.txt
+#hotspot2=100,100,10,10,popup,my_fof.txt
+#hotspot3=150,150,10,10,fof,my_fof.txt150
+#hotspot4=200,200,10,10,fof,my_fof.txt200
+
+

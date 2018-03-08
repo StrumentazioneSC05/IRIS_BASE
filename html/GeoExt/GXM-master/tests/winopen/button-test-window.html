@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<title>GXM: The GXM.Button- and SegmentedButton-class</title>
+
+<meta name="viewport"
+	content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+<link rel="stylesheet"
+	href="http://cdn.sencha.io/touch/sencha-touch-2.0.1/resources/css/sencha-touch.css"
+	type="text/css">
+<link rel="stylesheet"
+	href="http://openlayers.org/api/2.11/theme/default/style.css"
+	type="text/css">
+<link rel="stylesheet" href="../../resources/css/gxm.css"
+	type="text/css">
+<link rel="stylesheet" href="../../examples/examples.css"
+	type="text/css">
+
+<script type="text/javascript"
+	src="http://cdn.sencha.io/touch/sencha-touch-2.0.1/sencha-touch-all.js"></script>
+<script type="text/javascript"
+	src="http://openlayers.org/api/2.11/OpenLayers.js"></script>
+
+<!-- load test helper functions -->
+<script type="text/javascript" src="../helperfunctions.js"></script>
+
+<script type="text/javascript">
+        
+        Ext.Loader.setConfig({
+            enabled: true,
+            disableCaching: false,
+            paths: {
+                GXM: "../../src/GXM",
+                Ext: "http://cdn.sencha.io/touch/sencha-touch-2.0.1/src"
+            }
+        });
+
+        Ext.require([
+            'GXM.Button',
+            'GXM.Map'
+        ]);
+
+var viewport;
+
+// This object is read out in the test page
+window.btnLogger = {
+    zoomIn: {
+        handlerCalled: false,
+        triggerCalled: false
+    },
+    zoomOut: {
+        handlerCalled: false,
+        triggerCalled: false
+    }
+};
+window.btnNavStates = [];
+
+
+
+Ext.setup({
+    onReady: function(){
+        // OpenLayers specific
+        var map = new OpenLayers.Map({
+            controls: [],
+            allOverlays: true
+        });
+        
+        map.zoomIn = function() {
+            window.btnLogger.zoomIn.triggerCalled = true;
+            OpenLayers.Map.prototype.zoomIn.apply(this, arguments);
+        };
+        map.zoomOut = function() {
+            window.btnLogger.zoomOut.triggerCalled = true;
+            OpenLayers.Map.prototype.zoomOut.apply(this, arguments);
+        };
+        
+        var layer = new OpenLayers.Layer.WMS(
+            "OpenLayers WMS", 
+            "http://vmap0.tiles.osgeo.org/wms/vmap0", 
+            {
+                layers: "basic"
+            }
+        );
+        
+        map.addLayers([layer]);
+        
+        var mapPanel = Ext.create('GXM.Map', {
+            map: map
+        });
+        
+        var btnClickCallback = function(btn){
+             window.btnLogger[btn.getText()].handlerCalled = true;
+             // Ext.Msg.alert('Callback defined in application', 'You tapped the "' + btn.text + '"-button.');
+        };
+        
+        var zoomin = new OpenLayers.Control.ZoomIn();
+        var zoomout = new OpenLayers.Control.ZoomOut();
+
+        var btnZoomIn = Ext.create('GXM.Button', {
+            id: 'zoomin-btn',
+            control: zoomin,
+            map: mapPanel,
+            text: 'zoomIn',
+            iconCls: 'add',
+            iconMask: true,
+            handler: Ext.bind(btnClickCallback)
+        });
+        
+        var btnZoomOut = {
+            id: 'zoomout-btn',
+            xtype: 'gxm_button',
+            control: zoomout,
+            map: mapPanel,
+            text: 'zoomOut',
+            iconCls: 'minus',
+            iconMask: true,
+            handler: Ext.bind(btnClickCallback)
+        };
+         
+        var nav = new OpenLayers.Control.TouchNavigation();
+        
+        var btnNavigation = {
+            id: 'navigation-btn',
+            xtype: 'gxm_button',
+            exclusiveGroup: 'working-on-map',
+            map: mapPanel,
+            text: 'Navigation',
+            control: nav,
+            pressed: true,
+            handler: function(btn, evt, obj, listener, activeState){
+                window.btnNavStates.push((activeState ? 'true' : 'false'));
+            }
+        };
+        
+        var navBtn = {
+        		xtype: 'segmentedbutton',
+        		items: [btnNavigation]
+        };
+        
+     // create a vector layer for drawing
+        var vector = new OpenLayers.Layer.Vector('Vector Layer', {
+            styleMap: new OpenLayers.StyleMap({
+                temporary: OpenLayers.Util.applyDefaults({
+                    pointRadius: 16
+                }, OpenLayers.Feature.Vector.style.temporary)
+            })
+        });
+     
+        map.addLayers([vector]);
+        
+        var ctrlDrawPoint = new OpenLayers.Control.DrawFeature(
+            vector, 
+            OpenLayers.Handler.Point
+        );
+        var ctrlDrawLine = new OpenLayers.Control.DrawFeature(
+            vector, 
+            OpenLayers.Handler.Path
+        );
+        var ctrlDrawPoly = new OpenLayers.Control.DrawFeature(
+            vector, 
+            OpenLayers.Handler.Polygon
+        );
+        
+        var btnDigPoint = {
+            xtype: 'gxm_button',
+            exclusiveGroup: 'working-on-map',
+            control: ctrlDrawPoint,
+            map: mapPanel,
+            text: 'Point'
+        };
+        var btnDigLine = {
+        	xtype: 'gxm_button',
+        	exclusiveGroup: 'working-on-map',
+            control: ctrlDrawLine,
+            map: mapPanel,
+            text: 'Line'
+        };
+        var btnDigPoly = {
+       		xtype: 'gxm_button',
+            control: ctrlDrawPoly,
+            exclusiveGroup: 'working-on-map',
+            map: mapPanel,
+            text: 'Poly'
+        };
+        
+        var digGroup = {
+            xtype: 'segmentedbutton',
+            items: [
+                btnDigPoint,
+                btnDigLine,
+                btnDigPoly 
+            ]
+        };
+       
+        
+        viewport  = Ext.create('Ext.Panel', {
+            fullscreen: true,
+            layout: 'fit',
+            ui: 'light',
+            items: [
+            {
+                xtype: 'toolbar',
+                docked: 'top',
+                items: [
+                    btnZoomIn, 
+                    btnZoomOut, 
+                    {xtype: 'spacer'}, 
+                    navBtn
+                ]
+            },
+            {
+                xtype: 'toolbar',
+                docked: 'bottom',
+                items: [
+                    digGroup
+                ]
+            },
+                mapPanel 
+            ]
+        });   
+        
+        
+  }
+});
+            
+        </script>
+</head>
+<body>
+	<!-- TODO: have content here that describes this example -->
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>LayerReader.test.html</title>
+        
+        <link rel="stylesheet" href="http://cdn.sencha.io/touch/sencha-touch-2.0.1/resources/css/sencha-touch.css" type="text/css">
+        <link rel="stylesheet" href="http://openlayers.org/api/2.11/theme/default/style.css" type="text/css">
+        <link rel="stylesheet" href="../../../resources/css/gxm.css" type="text/css">
+        
+        <script type="text/javascript" src="http://cdn.sencha.io/touch/sencha-touch-2.0.1/sencha-touch-all-debug.js"></script>
+        <script type="text/javascript" src="http://openlayers.org/api/2.11/OpenLayers.js"></script>
+        
+        <!--
+            Instead of using the Ext.loader-mechanism, we use a very simple 
+            script-loader, which also works in e.g. the iPad and on iOs-Phones.
+        -->
+        <script type="text/javascript">
+        window.LOAD_GXM = [
+            "../../../src/GXM/version.js",
+            "../../../src/GXM/util/Base.js",
+            "../../../src/GXM/data/LayerModel.js",
+            "../../../src/GXM/data/LayerStore.js"
+        ];
+        </script>
+        <script type="text/javascript" src="../../gxm.scriptloader.js"></script>
+        
+        <!-- load test helper functions -->
+        <script type="text/javascript" src="../../helperfunctions.js"></script>
+        
+        <script type="text/javascript">
+
+function getMap(){
+    var map = new OpenLayers.Map({
+        layers: [
+            new OpenLayers.Layer.WMS(
+                "OpenLayers WMS", 
+                "http://vmap0.tiles.osgeo.org/wms/vmap0", 
+                {
+                    layers: "basic"
+                }
+            )
+        ]
+    });
+    return map;
+}
+
+// can be copied to other testfiles, simply adjust the first variables  
+function test_definition(t) {
+    var undef,
+        xtype = 'gxm_layerstore',             // please adjust
+        className = 'GXM.data.LayerStore',    // please adjust
+        clazz = GXM.data.LayerStore || undef, // please adjust
+        minimumConf = {                       // please adjust
+        },
+        isRegistered = false,
+        cmp = null;
+    
+    t.plan(3);
+    
+    t.ok(GXM && 
+         Ext.isDefined( clazz ) 
+         && Ext.isFunction( clazz ), 'The class "' + className + '" is defined.');
+
+    isRegistered = (clazz.xtype === xtype);
+    t.ok(isRegistered, 'A xtype "' + xtype + '" is registered.');
+    
+    if (isRegistered) {
+        cmp = Ext.ComponentMgr.create( minimumConf, xtype );
+ 
+        t.ok(cmp instanceof clazz, 'The xtype "' + xtype + '" points to the class "' + className + '".');
+    } else {
+        t.ok(false, "Since the xtype is not registered, we cannot check whether it points to the right class");
+    } 
+}
+
+function test_basics(t) {
+    t.plan(4);
+    
+    var map = getMap(),
+        layerStore = Ext.create('GXM.data.LayerStore', {
+            data: map.layers
+        });
+    
+    // Does the store have the correct model?
+    t.eq(layerStore.getModel().modelName, 'GXM.data.LayerModel', 'LayerStore works on the GXM.data.LayerModel');
+    
+    // All layers in store?
+    t.eq(layerStore.getCount(), map.layers.length, 'LayerStore has the correct amount of records')
+    
+    var firstOrLast;
+    if(!Ext.isEmpty(layerStore.getSorters()) && layerStore.getSorters()[0].direction === "DESC") {
+    
+        firstOrLast = 'last'; 
+    } else {
+        firstOrLast = 'first';
+    }
+    // compairing the managed layers by id:
+    t.eq(layerStore[firstOrLast]().getLayer().id, map.layers[0].id, 'Managed layers are the same');
+    
+    // record access?
+    t.ok(layerStore.getLayerByIndex(0) instanceof OpenLayers.Layer, 'Record access via "getLayerByIndex" successful');
+}
+        
+        </script>
+    </head>
+    <body></body>
+</html>

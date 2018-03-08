@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<!-- <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/modules/exporting.js"></script>
+<script src="http://highslide-software.github.io/export-csv/export-csv.js"></script> -->
+
+<script>
+//graph_data = <?php echo json_encode($data_array); ?>;
+//cod_pozzo = <?php echo json_encode($cod_pozzo); ?>;
+//chart.setSize(width, height, doAnimation = true);
+$(function () {
+$('#container').highcharts({
+chart: {
+type: 'column'
+},
+title: {
+text: 'Serie misure pozzo'
+},
+
+xAxis: {
+type: 'Data della misura',
+labels: {
+rotation: -45,
+style: {
+fontSize: '13px',
+fontFamily: 'Verdana, sans-serif'
+}
+}
+},
+yAxis: {
+min: 0,
+title: {
+text: 'Soggiacenza (m)'
+}
+},
+legend: {
+enabled: false
+},
+tooltip: {
+pointFormat: 'Population in 2008: <b>{point.y:.1f} millions</b>'
+},
+series: [{
+name: 'Codice pozzo: ',
+data: [['2012-05-11',14.25],['2012-09-26',13.65],['2013-07-08',13.44],['2013-10-15',13.53],['2014-04-10',13.42],['2014-10-01',13.74],['2015-09-28',13.45],]
+,
+dataLabels: {
+enabled: true,
+rotation: -90,
+color: '#FFFFFF',
+align: 'right',
+format: '{point.y:.1f}', // one decimal
+y: 10, // 10 pixels down from the top
+style: {
+fontSize: '13px',
+fontFamily: 'Verdana, sans-serif'
+}
+}
+}]
+//, function (chart) { // on complete
+//chart.renderer.image('./logoarpa.png', 0, 0, 132, 50)
+//.add();
+});
+});
+</script>
+<title>Soggiacenza</title>
+
+</head>
+<style type="text/css">
+
+</style>
+</head>
+<body style='width: 100%' bgcolor='#E6EEFF'>
+
+<div id='container' style='min-width: 310px; height: 400px; max-width: 800px; margin: 0 auto'></div>
+</body>
+</html>
+

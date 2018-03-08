@@ -84,24 +84,19 @@ pg_close($conn_config);
 
 
 /*THEMES to LOAD with MINIFY:*/
-//customize as you need
-$lista_js2load = array();
+//WARNING: This funciton take all the .js files inside your $themes_path directory!
 
-array_push($lista_js2load, $themes_path . "/base_layers.js"); //better let this file loading
-array_push($lista_js2load, $themes_path . "/theme_stili.js"); //better let this file loading
+//print_r(__DIR__); ///var/www/IRIS_BASE/html/common
+$theme_realpath = __DIR__ . '/../' . $themes_path;
+$lista_js2load = preg_grep('~\.(js)$~', scandir( $theme_realpath )); //prelevo solo i file con estensione js
+//aggiungo il percorso completo all'array:
+foreach ($lista_js2load as &$value) {
+        $value = $themes_path.'/'.$value;
+}
+unset($value);
 
-array_push($lista_js2load, $themes_path . "/theme_datidibase.js");
-array_push($lista_js2load, $themes_path . "/theme_realtime.js");
-array_push($lista_js2load, $themes_path . "/theme_sigeo.js");
-array_push($lista_js2load, $themes_path . "/theme_sismica.js");
-array_push($lista_js2load, $themes_path . "/theme_idro.js");
-array_push($lista_js2load, $themes_path . "/theme_rasters.js");
-array_push($lista_js2load, $themes_path . "/theme_spatialite.js");
-array_push($lista_js2load, $themes_path . "/theme_wms.js");
-array_push($lista_js2load, $themes_path . "/theme_ri0307.js");
-array_push($lista_js2load, $themes_path . "/theme_expo.js");
-array_push($lista_js2load, $themes_path . "/theme_modelli.js");
-array_push($lista_js2load, $themes_path . "/theme_fews.js");
+//If you need to add customized javascript act as:
+//array_push($lista_js2load, "javascript_web_path" . "/your_javascript_filename");
 
 ?>
 

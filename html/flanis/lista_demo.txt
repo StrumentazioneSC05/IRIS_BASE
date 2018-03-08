@@ -1,0 +1,26 @@
+#hotspot = 250, 250, icon, expo2015.png, pan, link, http://www.ssec.wisc.edu/flanis, Expo2015,icona_expo-ist_bis-SMALL.png
+
+bckgd_black.png "3 ago 2015 h1400" overlay=sfondo_arpa-ist_bis-SMALL.png,animation_demo/googlemap_ist_bis_T1400Z.png,icona_expo-ist_bis-SMALL.png
+bckgd_black.png "3 ago 2015 h1405" overlay=sfondo_arpa-ist_bis-SMALL.png,animation_demo/googlemap_ist_bis_T1405Z.png,icona_expo-ist_bis-SMALL.png
+bckgd_black.png "3 ago 2015 h1410" overlay=sfondo_arpa-ist_bis-SMALL.png,animation_demo/googlemap_ist_bis_T1410Z.png,icona_expo-ist_bis-SMALL.png
+bckgd_black.png "3 ago 2015 h1415" overlay=sfondo_arpa-ist_bis-SMALL.png,animation_demo/googlemap_ist_bis_T1415Z.png,icona_expo-ist_bis-SMALL.png
+bckgd_black.png "3 ago 2015 h1420" overlay=sfondo_arpa-ist_bis-SMALL.png,animation_demo/googlemap_ist_bis_T1420Z.png,icona_expo-ist_bis-SMALL.png
+bckgd_black.png "3 ago 2015 h1425" overlay=sfondo_arpa-ist_bis-SMALL.png,animation_demo/googlemap_ist_bis_T1425Z.png,icona_expo-ist_bis-SMALL.png
+bckgd_black.png "3 ago 2015 h1430" overlay=sfondo_arpa-ist_bis-SMALL.png,animation_demo/googlemap_ist_bis_T1430Z.png,icona_expo-ist_bis-SMALL.png
+bckgd_black.png "3 ago 2015 h1435" overlay=sfondo_arpa-ist_bis-SMALL.png,animation_demo/googlemap_ist_bis_T1435Z.png,icona_expo-ist_bis-SMALL.png
+bckgd_black.png "3 ago 2015 h1440" overlay=sfondo_arpa-ist_bis-SMALL.png,animation_demo/googlemap_ist_bis_T1440Z.png,icona_expo-ist_bis-SMALL.png
+bckgd_black.png "3 ago 2015 h1445" overlay=sfondo_arpa-ist_bis-SMALL.png,animation_demo/googlemap_ist_bis_T1445Z.png,icona_expo-ist_bis-SMALL.png
+bckgd_black.png "3 ago 2015 h1450" overlay=sfondo_arpa-ist_bis-SMALL.png,animation_demo/googlemap_ist_bis_T1450Z.png,icona_expo-ist_bis-SMALL.png
+bckgd_black.png "3 ago 2015 h1455" overlay=sfondo_arpa-ist_bis-SMALL.png,animation_demo/googlemap_ist_bis_T1455Z.png,icona_expo-ist_bis-SMALL.png
+bckgd_black.png "3 ago 2015 h1500" overlay=sfondo_arpa-ist_bis-SMALL.png,animation_demo/googlemap_ist_bis_T1500Z.png,icona_expo-ist_bis-SMALL.png
+bckgd_black.png "3 ago 2015 h1505" overlay=sfondo_arpa-ist_bis-SMALL.png,animation_demo/googlemap_ist_bis_T1505Z.png,icona_expo-ist_bis-SMALL.png
+bckgd_black.png "3 ago 2015 h1510" overlay=sfondo_arpa-ist_bis-SMALL.png,animation_demo/googlemap_ist_bis_T1510Z.png,icona_expo-ist_bis-SMALL.png
+bckgd_black.png "3 ago 2015 h1515" overlay=sfondo_arpa-ist_bis-SMALL.png,animation_demo/googlemap_ist_bis_T1515Z.png,icona_expo-ist_bis-SMALL.png
+bckgd_black.png "3 ago 2015 h1520" overlay=sfondo_arpa-ist_bis-SMALL.png,animation_demo/googlemap_ist_bis_T1520Z.png,icona_expo-ist_bis-SMALL.png
+bckgd_black.png "3 ago 2015 h1525" overlay=sfondo_arpa-ist_bis-SMALL.png,animation_demo/googlemap_ist_bis_T1525Z.png,icona_expo-ist_bis-SMALL.png
+bckgd_black.png "3 ago 2015 h1530" overlay=sfondo_arpa-ist_bis-SMALL.png,animation_demo/googlemap_ist_bis_T1530Z.png,icona_expo-ist_bis-SMALL.png
+bckgd_black.png "3 ago 2015 h1535" overlay=sfondo_arpa-ist_bis-SMALL.png,animation_demo/googlemap_ist_bis_T1535Z.png,icona_expo-ist_bis-SMALL.png
+bckgd_black.png "3 ago 2015 h1540" overlay=sfondo_arpa-ist_bis-SMALL.png,animation_demo/googlemap_ist_bis_T1540Z.png,icona_expo-ist_bis-SMALL.png
+bckgd_black.png "3 ago 2015 h1545" overlay=sfondo_arpa-ist_bis-SMALL.png,animation_demo/googlemap_ist_bis_T1545Z.png,icona_expo-ist_bis-SMALL.png
+bckgd_black.png "3 ago 2015 h1550" overlay=sfondo_arpa-ist_bis-SMALL.png,animation_demo/googlemap_ist_bis_T1550Z.png,icona_expo-ist_bis-SMALL.png
+bckgd_black.png "3 ago 2015 h1555" overlay=sfondo_arpa-ist_bis-SMALL.png,animation_demo/googlemap_ist_bis_T1555Z.png,icona_expo-ist_bis-SMALL.png

@@ -360,6 +360,9 @@ var rete_meteoidro = new OpenLayers.Layer.Vector(default_layer_name, {
 //
 // 2- le label NON vengono salvate da QGis nel file SLD. Si possono aggiungere a mano sul file SLD (delirio) oppure indicarle come al solito nel file js, come di seguito ho provato a fare
 //
+// Vedi anche:
+// http://dev.openlayers.org/examples/sld.html
+// http://dev.openlayers.org/examples/SLDSelect.html
 
 var format = new OpenLayers.Format.SLD();
 
@@ -411,7 +414,7 @@ var rete_meteoidro_sld = new OpenLayers.Layer.Vector(default_layer_name, {
             rete_meteoidro_sld.styleMap.styles.default = styles;
         }
 });*/
-//rete_meteoidro_sld.setVisibility(false);
+rete_meteoidro_sld.setVisibility(false);
 
 //
 //////////// FINE PROVA SLD

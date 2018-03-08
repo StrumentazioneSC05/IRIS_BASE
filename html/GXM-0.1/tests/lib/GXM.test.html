@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>GXM.test.html</title>
+        <link rel="stylesheet" href="http://cdn.sencha.io/touch/1.1.0/resources/css/sencha-touch.css" type="text/css">
+        <link rel="stylesheet" href="http://openlayers.org/api/2.11/theme/default/style.css" type="text/css">
+        <link rel="stylesheet" href="../../resources/css/gxm.css" type="text/css">
+        
+        <script type="text/javascript" src="http://cdn.sencha.io/touch/1.1.0/sencha-touch.js"></script>
+        <script type="text/javascript" src="http://openlayers.org/api/2.11/OpenLayers.js"></script>
+        
+        <!-- This file loads all relevant files -->
+        <script type="text/javascript" src="../../lib/GXM.loader.js"></script>
+        
+        <script type="text/javascript">
+            
+function test_namespace(t){
+    t.plan(6);
+    t.ok(window.GXM, 'window.GXM is truthy.');
+    t.ok(GXM, 'GXM is truthy.');
+    t.ok(Ext.isDefined(GXM), 'GXM is defined');
+    t.ok(Ext.isObject(GXM), 'GXM is an object.');
+    t.ok(Ext.isDefined(GXM.version), 'GXM has a member attribute "version".');
+    t.ok(!Ext.isEmpty(GXM.version) && Ext.isString(GXM.version), 'GXM.version is a non empty string.');
+}
+        
+        </script>
+    </head>
+    <body></body>
+</html>

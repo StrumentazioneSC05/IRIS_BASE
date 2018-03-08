@@ -144,8 +144,11 @@ select_tag = '<select id="srid" onChange="convert_srid(this.value)"> <option val
 print "<h1><span id='choose_srid'> &nbsp %s &nbsp &nbsp &nbsp</span><span id='coords'> %8.5f   %9.5f &nbsp</span></h1>" % (select_tag,x2,y2)
 #print "<h1>%s: %8.0f   %9.0f   </h1>" % (geo1,x3,y3) 
 
-### Localita' ###
 
+### Localita' - reverse geooding ###
+
+## Usando MAPZEN: deprecato da febbraio 2018
+'''
 try:
   BASE_URL='https://search.mapzen.com/v1/reverse?api_key=mapzen-RWs47YQ'
   url=BASE_URL+"&point.lat="+str(y2)+"&point.lon="+str(x2)+'&size=1'
@@ -155,6 +158,19 @@ try:
   print "<h1>Localita': <b> %s\n</b> @%d m asl (dem = %d m)</h1>" % (loc, elev,res)
 except:
   print "<h1>Localita': <b> n.d. %s m asl </b>" % url
+'''
+
+## Usando GOOGLE:
+try:
+  BASE_URL='https://maps.google.com/maps/api/geocode/json?'
+  url=BASE_URL+'latlng='+str(y2)+","+str(x2)
+  response=simplejson.load(urllib2.urlopen(url))
+  loc = response['results'][0]['formatted_address']
+  print "<h1>Localita': <b> %s\n</b> @%d m asl (dem = %d m)</h1>" % (loc, elev,res)
+except Exception as e:
+  print e
+  print "<h1>Localita': <b> n.d. %s m asl </b>" % url
+
 
 #try:
 #  #BASE_URL = 'http://open.mapquestapi.com/nominatim/v1/search?format=json';
@@ -191,14 +207,18 @@ def getvalue_from_raster(filename, pubname):
     tramite la chiamata di sistema gdallocationinfo si recupera
     il valore della cella x-y dal raster
     """
-    indataset = gdal.Open(infileIDRO, GA_ReadOnly)
-    if infileIDRO == None:
-        print("<tr><td colspan='2' style='text-align:center;'>Cannot open</td></tr>", infileIDRO)
-        return None, None
+    messaggio_errore = "Cannot open %s" % (filename)
+    try:
+        indataset = gdal.Open(filename, GA_ReadOnly)
+    except:
+	return None, messaggio_errore
+    if filename== None:
+        print("<tr><td colspan='2' style='text-align:center;'>Cannot open</td></tr>", filename)
+        return None, messaggio_errore
     try:
         dataIDRO = indataset.GetMetadata()['DATETIME']
     except:
-        return None, None
+        return None, messaggio_errore
     geomatrix = indataset.GetGeoTransform()
     # Read geomatrix matrix and calculate ground coordinates
     col = int((float(x) - geomatrix[0]) / geomatrix[1])
@@ -216,7 +236,7 @@ def getvalue_from_raster(filename, pubname):
         #continue
         return None, None
     else:
-        string = "/usr/bin/gdallocationinfo -valonly -geoloc %s %s %s" % (infileIDRO,x,y)
+        string = "/usr/bin/gdallocationinfo -valonly -geoloc %s %s %s" % (filename,x,y)
         valIDRO = commands.getstatusoutput(string)
         return valIDRO, dataIDRO
 
@@ -301,6 +321,8 @@ def tipo_precipitazione(infile_path):
       inside_rows(row, infile_path)
 
       if valIDRO==None:
+	print "<h1>Tipo di precipitazione:</h1> n.d. "
+	print "<script>console.log('%s');</script>" % (dataIDRO)
         continue
 
       tdataIDRO = datetime.strptime(dataIDRO,fmt)
@@ -361,6 +383,8 @@ def precipitazione(infile_path, stop_raster):
         inside_rows(row, infile_path)
 
         if valIDRO==None:
+            print "<tr><td> n.d. </td></tr>"
+	    print "<script>console.log('%s');</script>" % (dataIDRO)
             continue
 
         val=round(float(valIDRO[1]),1)
@@ -398,7 +422,10 @@ def prec_cumulata(infile_path):
   radar_prec=[]
   for row in table2:
         inside_rows(row, infile_path)
+
         if valIDRO==None:
+	    print "<tr><td> n.d. </td></tr>"
+	    print "<script>console.log('%s');</script>" % (dataIDRO)
             continue
 
         tdataIDRO = datetime.strptime(dataIDRO,fmt)
@@ -443,6 +470,8 @@ def precipitazione_prevista(infile_path, stop_raster):
         inside_rows(row, infile_path)
 
         if valIDRO==None:
+	    print "<tr><td> n.d. </td></tr>"
+	    print "<script>console.log('%s');</script>" % (dataIDRO)
             continue
 
         val=round(float(valIDRO[1]),1)
@@ -477,7 +506,10 @@ def meteosat(infile_path):
   print "<h1>\nCaratteristiche della nube:<table>"
   for row in table1b:
         inside_rows(row, infile_path)
+
         if valIDRO==None:
+	    print "<tr><td> n.d. </td></tr>"
+	    print "<script>console.log('%s');</script>" % (dataIDRO)
             continue
 
         if ("clm_bt_" in fname):
@@ -560,7 +592,10 @@ def raster_idro(infile_path):
   print "<h1>\nPrecipitazione cumulata da rete a terra (mm):<table>"
   for row in table4:
         inside_rows(row, infile_path)
+
         if valIDRO==None:
+	    print "<tr><td> n.d. </td></tr>"
+	    print "<script>console.log('%s');</script>" % (dataIDRO)
             continue
 
         tdataIDRO = datetime.strptime(dataIDRO,fmt)
@@ -602,6 +637,8 @@ def neve(infile_path):
   for row in table3:
         inside_rows(row, infile_path)
         if valIDRO==None:
+	    print "<tr><td> n.d. </td></tr>"
+	    print "<script>console.log('%s');</script>" % (dataIDRO)
             continue
 
         tdataIDRO = datetime.strptime(dataIDRO,fmt)
