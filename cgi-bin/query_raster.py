@@ -31,6 +31,8 @@ try:
 except ImportError:
     import gdal
     from gdalconst import *
+# this allows GDAL to throw Python Exceptions
+gdal.UseExceptions()
 
 try:
     import numpy as Numeric
@@ -162,7 +164,7 @@ except:
 
 ## Usando GOOGLE:
 try:
-  BASE_URL='https://maps.google.com/maps/api/geocode/json?'
+  BASE_URL='https://maps.google.com/maps/api/geocode/json?key=&'
   url=BASE_URL+'latlng='+str(y2)+","+str(x2)
   response=simplejson.load(urllib2.urlopen(url))
   loc = response['results'][0]['formatted_address']
@@ -207,14 +209,18 @@ def getvalue_from_raster(filename, pubname):
     tramite la chiamata di sistema gdallocationinfo si recupera
     il valore della cella x-y dal raster
     """
+    #messaggio_errore viene riportato nella console.log di js
     messaggio_errore = "Cannot open %s" % (filename)
     try:
         indataset = gdal.Open(filename, GA_ReadOnly)
     except:
+	print "<tr> <td> %s </td> <td colspan='2' style='text-align:center;'> n.d. </td> </tr>" % (pubname)
 	return None, messaggio_errore
     if filename== None:
         print("<tr><td colspan='2' style='text-align:center;'>Cannot open</td></tr>", filename)
         return None, messaggio_errore
+
+    messaggio_errore = "Cannot get metadata DATETIME"
     try:
         dataIDRO = indataset.GetMetadata()['DATETIME']
     except:
@@ -259,7 +265,7 @@ elif srid == '32632':
 
 #Tabella per il tipo di precipitazione:
 table0 = [ [ 0 for i in range(1) ] for j in range(1) ]
-table0[0] = ['googlemap_pioggia_neve_'+subsrid, 'Pioggia neve', 'mm', '9999']
+table0[0] = ['googlemap_pioggia_neve_'+subsrid, 'Tipo di precipitazione', 'mm', '9999']
 
 #Tabella per la precipitazione istantanea da radar:
 table1 = [ [ 0 for i in range(3) ] for j in range(5) ]
@@ -321,7 +327,7 @@ def tipo_precipitazione(infile_path):
       inside_rows(row, infile_path)
 
       if valIDRO==None:
-	print "<h1>Tipo di precipitazione:</h1> n.d. "
+	#print "<h1>Tipo di precipitazione:</h1> n.d. "
 	print "<script>console.log('%s');</script>" % (dataIDRO)
         continue
 
@@ -383,7 +389,7 @@ def precipitazione(infile_path, stop_raster):
         inside_rows(row, infile_path)
 
         if valIDRO==None:
-            print "<tr><td> n.d. </td></tr>"
+            #print "<tr><td> n.d. </td></tr>"
 	    print "<script>console.log('%s');</script>" % (dataIDRO)
             continue
 
@@ -424,7 +430,7 @@ def prec_cumulata(infile_path):
         inside_rows(row, infile_path)
 
         if valIDRO==None:
-	    print "<tr><td> n.d. </td></tr>"
+	    #print "<tr><td> n.d. </td></tr>"
 	    print "<script>console.log('%s');</script>" % (dataIDRO)
             continue
 
@@ -470,7 +476,7 @@ def precipitazione_prevista(infile_path, stop_raster):
         inside_rows(row, infile_path)
 
         if valIDRO==None:
-	    print "<tr><td> n.d. </td></tr>"
+	    #print "<tr><td> n.d. </td></tr>"
 	    print "<script>console.log('%s');</script>" % (dataIDRO)
             continue
 
@@ -508,7 +514,7 @@ def meteosat(infile_path):
         inside_rows(row, infile_path)
 
         if valIDRO==None:
-	    print "<tr><td> n.d. </td></tr>"
+	    #print "<tr><td> n.d. </td></tr>"
 	    print "<script>console.log('%s');</script>" % (dataIDRO)
             continue
 
@@ -594,7 +600,7 @@ def raster_idro(infile_path):
         inside_rows(row, infile_path)
 
         if valIDRO==None:
-	    print "<tr><td> n.d. </td></tr>"
+	    #print "<tr><td> n.d. </td></tr>"
 	    print "<script>console.log('%s');</script>" % (dataIDRO)
             continue
 
@@ -637,7 +643,7 @@ def neve(infile_path):
   for row in table3:
         inside_rows(row, infile_path)
         if valIDRO==None:
-	    print "<tr><td> n.d. </td></tr>"
+	    #print "<tr><td> n.d. </td></tr>"
 	    print "<script>console.log('%s');</script>" % (dataIDRO)
             continue
 
