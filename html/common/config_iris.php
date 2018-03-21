@@ -85,6 +85,7 @@ pg_close($conn_config);
 
 /*THEMES to LOAD with MINIFY:*/
 //WARNING: This funciton take all the .js files inside your $themes_path directory!
+//WARNING: if you need some script to be called before the others, put its content in a function --> take a look at fn_style_vento_graphicname() for example
 
 //print_r(__DIR__); ///var/www/IRIS_BASE/html/common
 $theme_realpath = __DIR__ . '/../' . $themes_path;

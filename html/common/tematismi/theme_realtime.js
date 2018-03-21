@@ -2062,6 +2062,8 @@ terma_estero_tiny.setVisibility(false);
 
 
 /* DATI VENTO - simboli */
+var style_vento_graphicname;
+style_vento_graphicname = fn_style_vento_graphicname(); //a causa del minify devo mettere la definizione di questo stile all'interno di una funzione, la quale viene riconosciuta e come tale caricata per prima da minify.
 var styleMap_datistaz = new OpenLayers.StyleMap({
 	"default": style_vento_graphicname
 	,"select": new OpenLayers.Style({fontSize: 19, pointRadius: 23, fillColor: "blue", fillOpacity: 0.8})

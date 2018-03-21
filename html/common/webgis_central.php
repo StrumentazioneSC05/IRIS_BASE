@@ -224,7 +224,7 @@ echo $preliminar_script;
 
 $project_scripts = '<script type="text/javascript" src="../min/?f=';
 
-//THEMES to LOAD --> defined under common/config_iris.php
+//THEMES to LOAD --> $lista_js2load defined under common/config_iris.php
 
 //adding other custom libraries:
 array_push($lista_js2load, $scripts_path . "/credit_tab.js");

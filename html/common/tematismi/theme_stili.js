@@ -97,6 +97,9 @@ function give_color(value, layer_name) {
     }
 };
 
+
+//raggruppo queste definizioni in una funzione poiche' richiamando tutti i js con minify il loro ordine diventa casuale. A quanto pare invece le funzioni vengono riconosciute e caricate per prima, e le posso richiamare dove servono
+function fn_style_vento_graphicname() {
 //Provo a creare dei simboli per il vento:
 OpenLayers.Renderer.symbol.wind00 = [0,1, 1,0, 2,0, 3,1, 3,2, 2,3, 1,3, 0,2, 0,1];
 OpenLayers.Renderer.symbol.wind01 = [0,0 ,1,0 ,1,3 ,4,3 ,4,4 ,1,4 ,1,15 ,0,15 ,0,0];
@@ -116,7 +119,7 @@ OpenLayers.Renderer.symbol.wind14 = [0,0 ,1,0 ,5,2 ,1,4 ,1,5 ,1,6 ,5,7 ,1,9 ,1,1
 OpenLayers.Renderer.symbol.wind15 = [0,0 ,1,0 ,5,2 ,1,4 ,1,5 ,1,6 ,5,7 ,1,9 ,1,11 ,4,11 ,4,12 ,1,12 ,1,15 ,0,15 ,0,0];
 
 //Simbolizzo il vento usando i simboli prima definiti:
-var style_vento_graphicname = new OpenLayers.Style({
+style_vento_graphicname = new OpenLayers.Style({
         //fillColor: "#ffcc66", strokeColor: "#ff9933", strokeWidth: 2
         //graphicName: "wind01", pointRadius: 40, strokeColor: "black", strokeWidth: 2, fillColor: "red"
         //title: "${denominazione}", fontSize: 15, labelAlign: "cm", //se lo metto sbarella la posizione del simbolo bah
@@ -318,6 +321,10 @@ var style_vento_graphicname = new OpenLayers.Style({
                 }
         })
 ]});
+
+return style_vento_graphicname;
+}
+
 //Simbolizzo il vento prendendo icone SVG:
 var style_vento_svg = new OpenLayers.Style({
 	/*,label: "${max1ora}\t\t${ultimovalore}\n\n${max3ore}\t\t${ultimoneve}"
