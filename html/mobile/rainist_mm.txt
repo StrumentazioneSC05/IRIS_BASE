@@ -1,0 +1,106 @@
+CLASS
+	NAME '0.2-0.5 mm'
+	EXPRESSION ([pixel] >= 0.2 AND [pixel] < 0.5)
+	STYLE
+		COLOR 0 0 255
+	END
+END
+CLASS
+	NAME '0.5-1 mm'
+	EXPRESSION ([pixel] >= 0.5 AND [pixel] < 1)
+	STYLE
+		COLOR 0 90 255
+	END
+END
+CLASS
+	NAME '1-2 mm'
+	EXPRESSION ([pixel] >= 1 AND [pixel] < 2)
+	STYLE
+		COLOR 0 140 255
+	END
+END
+CLASS
+	NAME '2-3 mm'
+	EXPRESSION ([pixel] >= 2 AND [pixel] <  3)
+	STYLE
+		COLOR 0 190 255
+	END
+END
+CLASS
+	NAME '3-5 mm'
+	EXPRESSION ([pixel] >= 3  AND [pixel] < 5)
+	STYLE
+		COLOR 0 255 225
+	END
+END
+CLASS
+	NAME '5-7 mm'
+	EXPRESSION ([pixel] >= 5 AND [pixel] < 7)
+	STYLE
+		COLOR 0 130 255
+	END
+END
+CLASS
+	NAME '7-10 mm'
+	EXPRESSION ([pixel] >= 7 AND [pixel] < 10)
+	STYLE
+		COLOR 0 155 0
+	END
+END
+CLASS
+	NAME '10-15 mm'
+	EXPRESSION ([pixel] >= 10 AND [pixel] < 15)
+	STYLE
+		COLOR 0 180 0
+	END
+END
+CLASS
+	NAME '15-20 mm'
+	EXPRESSION ([pixel] >= 15 AND [pixel] < 20)
+	STYLE
+		COLOR 0 210 0
+	END
+END
+CLASS
+	NAME '20-30 mm'
+	EXPRESSION ([pixel] >= 20 AND [pixel] < 30)
+	STYLE
+		COLOR 0 255 0
+	END
+END
+CLASS
+	NAME '30-40 mm'
+	EXPRESSION ([pixel] >= 30 AND [pixel] < 40)
+	STYLE
+		COLOR 255 255 0
+	END
+END
+CLASS
+	NAME '40-50 mm'
+	EXPRESSION ([pixel] >= 40 AND [pixel] < 50)
+	STYLE
+		COLOR 255 190 0
+	END
+END
+CLASS
+	NAME '50-70 mm'
+	EXPRESSION ([pixel] >= 50 AND [pixel] < 70)
+	STYLE
+		COLOR 255 140 0
+	END
+END
+CLASS
+	NAME '70-100 mm'
+	EXPRESSION ([pixel] >= 70 AND [pixel] < 100)
+	STYLE
+		COLOR 255 90 0
+	END
+END
+CLASS
+	NAME '>100 mm'
+	#EXPRESSION ([pixel] >= 100)
+	STYLE
+		COLOR 180 45 180
+	END
+END
+

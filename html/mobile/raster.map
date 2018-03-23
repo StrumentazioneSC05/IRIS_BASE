@@ -1,0 +1,102 @@
+#Al momento, ottobre 2011, questo è il file map più OTTIMIZZATO ch'io abbia concepito
+
+
+MAP
+  NAME "METEO-raster"
+  # Map image size
+  SIZE 1000 800
+  UNITS meters
+  STATUS OFF
+
+  #EXTENT 350000 4000000 1600000 7000000
+  EXTENT 250000 4000000 700000 6000000
+  SYMBOLSET '../meteo/symbols/symbols.txt'
+  PROJECTION
+		"init=epsg:900913"
+  END
+  
+
+  # Web interface definition. Only the template parameter is required to display a map. See MapServer documentation
+  WEB
+    # Set IMAGEPATH to the path where MapServer should write its output.
+#    IMAGEPATH 'tmp/'
+
+    # Set IMAGEURL to the url that points to IMAGEPATH
+    # as defined in your web server configuration
+#    IMAGEURL 'tmp/'
+
+    # WMS server settings
+    METADATA
+	
+		## ows sono le caratteristiche comuni per i servizi WMS e WFS
+		"ows_enable_request"		"*"
+		"ows_title"			"RASTER-MAP"		
+		"ows_onlineresource"		"http://www.arpa.piemonte.gov.it/cgi-bin/mapserv.fcgi?map=/var/www/html/webgis/mobile/raster.map&"		
+		"ows_srs"			"epsg:900913 epsg:4326 epsg:32632 epsg:3785"
+		"ows_abstract"			"This text describes my WFS service." ## Recommended
+		
+		"wms_feature_info_mime_type"	"text/html"
+	
+		#"wms_resx"
+		#"wms_resy"		
+
+    END
+
+    #Scale range at which web interface will operate
+    # Template and header/footer settings
+    # Only the template parameter is required to display a map. See MapServer documentation
+    TEMPLATE 'fooOnlyForWMSGetFeatureInfo'
+  END
+  
+  
+  
+LAYER
+	NAME 'rain_ist'
+	TYPE RASTER
+	PROCESSING "SCALE=0.20,9999.00"
+	#PROCESSING "SCALE_BUCKETS=4" #non ho ben capito a cosa serva...
+	CLASSITEM '[pixel]'
+
+	FILTERITEM '[pixel]'
+	#FILTER (([pixel] >= 0) AND ([pixel] < 9999))
+	FILTER (([pixel] < 0.2) AND ([pixel] > 9999))
+
+	#EXTENT 274235 4763898 674235 5163898 #in 23032
+	#EXTENT 693593.75 5281693.73 1255128.79 5846645.73 #in 3785 ovvero 900913
+	#EXTENT 211799.575646 4753898.000000 736670.424354 5173898.000000 #Extent originale, ma preso da dove?Forse da QGis? Normalmente funziona...
+	
+	STATUS OFF
+	OPACITY 40
+	PROJECTION
+		"init=epsg:32632"
+	END
+
+	DATA '/var/www/html/webgis/meteo/raster/googlemap_01h.tiff'
+	#DATA '/var/www/html/webgis/meteo/raster/googlemap_01h.png'
+
+	METADATA	
+		"ows_title"		"rain_ist"
+		"ows_abstract"		"Temporali occorsi nelle ultime 3 ore"
+		"ows_srs"		"epsg:23032" ## REQUIRED, seems better if not 900913...
+		"ows_feature_info_mime_type" "text/html"
+		
+		"ows_include_items"     "all" ## Optional (serves all attributes for layer)
+		"queryable"		"true"
+		
+		#"searchfield" "[pixel]"
+		#"fields" "DO:DO"
+	END
+
+	#HEADER 'template/raster_header.html'
+	#TEMPLATE 'template/raster_query.html'
+	#FOOTER 'template/raster_footer.html'
+
+	INCLUDE 'rainist_mm.txt'
+	
+	DUMP true
+	TOLERANCE 1
+
+END #end layer rain_ist
+
+
+END #end of file map

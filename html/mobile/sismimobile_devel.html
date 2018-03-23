@@ -1,0 +1,334 @@
+<HTML>
+<HEAD>
+
+<TITLE>Integrated Radar Information System (IRIS)</TITLE>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<!-- Stylesheets of Sencha Touch and OpenLayers -->
+<link rel="stylesheet" href="/OpenLayers-2.13.1/theme/default/style.mobile.css" type="text/css">
+<link rel="stylesheet" href="/sencha-touch-1.1.1/resources/css/sencha-touch.css" type="text/css">
+<!-- <link rel="stylesheet" href="http://openlayers.org/api/2.11/theme/default/style.css" type="text/css"> -->
+
+<link rel="stylesheet" href="/GXM-0.1/resources/css/gxm.css" type="text/css">
+
+<!-- <script type="text/javascript" src="/OpenLayers-2.12/OpenLayers.mobile.ARPA.js"></script> -->
+<script type="text/javascript" src="/OpenLayers-2.13.1/OpenLayers_mobile_ARPA.js"></script>
+<script type="text/javascript" src="/common/OpenStreetMap.js"></script>
+<script type="text/javascript" src="/common/proj4js-combined.js"></script>
+
+<!-- JavaScript of Sencha Touch and OpenLayers -->
+<script type="text/javascript" src="/sencha-touch-1.1.1/sencha-touch.js"></script>
+
+<!--Per le applicazioni della bottombar: da view-source:http://openlayers.org/dev/examples/mobile-sencha.html-->
+<script type="text/javascript" src="mobile-sencha.js"></script>
+
+<!-- This file loads all relevant files - Per sencha-touch v1  -->
+<script type="text/javascript" src="/GXM-0.1/lib/GXM.loader.js"></script>
+<!-- This file loads all relevant files - Per sencha-touch v2 
+<script type="text/javascript" src="/GeoExt/GXM-master/src/GXM.loader.js"></script> -->
+
+<script type="text/javascript" src="/common/scripts/js_functions.js"></script>
+<script type="text/javascript" src="layers_names.js"></script>
+<!-- Carico solo gli script che servono per ottimizzare in tempi di carica: -->
+<!--
+<script type="text/javascript" src="theme_wms_mobile.js"></script>
+<script type="text/javascript" src="theme_realtime_mobile.js"></script>
+<script type="text/javascript" src="theme_rasters_mobile.js"></script>
+-->
+<script type="text/javascript" src="theme_sismica_mobile.js"></script>
+<script type="text/javascript">
+var layers_to_load = [
+/* METEO */
+//mosaico, grandine, rain48h, rain6h, rain3h, rain1h, neve, bandax, 
+//istantaneo, istantaneo_bis, dpc, neve, bandax, fulmini, temperatura_tiny
+//msg, istantaneo, istantaneo_bis, dpc, neve, fulmini, temperatura_tiny, neve_tiny
+//raster_ist
+//, layer
+
+/* SISMICA */
+//, sismi
+sismi_lastLow, sismi_lastHigh, sismiLow, sismiHigh
+];
+var layers_to_select = [
+sismi_lastLow, sismi_lastHigh, sismiLow, sismiHigh
+];
+</script>
+
+<script type="text/javascript" src="load_map_devel_sismi.js"></script>
+
+<style type="text/css">
+.searchList {
+    min-height: 150px;
+}
+.close-btn {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+}
+img.minus {
+    -webkit-mask-image: url(/common/icons/minus1.png);
+}
+img.layers {
+    -webkit-mask-image: url(/common/icons/list.png);
+}
+.gx-layer-item {
+    margin-left: 10px;
+}
+#map {
+    width: 100%;
+    height: 100%;
+}
+/*Per rendere la scritta di OSM in basso a destra e piu' piccola:*/
+.olControlAttribution {
+    font-size: 10px;
+    bottom: 5px;
+    right: 5px;
+}
+#title, #tags, #shortdesc {
+    display: none;
+}
+
+.card {
+    text-align: center;
+    color: #204167;
+    text-shadow: #3F80CA 0 1px 0;
+    font-size: 72px;
+    padding: 80px 40px;
+}
+.x-phone .card {
+    padding: 15px;
+    font-size: 36px;
+}
+.card p {
+    font-size: 24px;
+    line-height: 30px;
+}
+
+.x-phone .card p {
+    font-size: 16px;
+    line-height: 18px;
+}
+.card1, .card2, .card3 {
+        background-color: #376daa;
+        text-align: center;
+        color: #204167;
+        text-shadow: #3F80CA 0 1px 0;
+        font-size: 72px;
+        padding-top: 0px;
+}
+</style>
+
+<script type="text/javascript">
+
+//alert('OpenLayers: ' + OpenLayers.VERSION_NUMBER);
+//alert('Sencha Touch: ' + Ext.version);
+//alert('GXM: ' + GXM.version);
+
+
+//E' impostata in modo errato per questo non funziona....Sarebbe la componente che carica la mappa
+var tab1 = new Ext.Panel ({
+	xtype: "component",
+        title: 'map',
+            scroll: false,
+            monitorResize: true,
+            //id: "map_tab",
+	//cls: 'card1', layout: 'card', layout: {type: 'vbox', align: 'stretch'}, iconMask: true, useCurrentLocation: true,
+
+            listeners: {
+                render: function() {
+                    var self = this;
+                        //Provo qui a caricare la mappa:
+                        load_map();
+                },
+                resize: function() {
+                    if (window.map) {
+                        map.updateSize();
+                    }
+                },
+                scope: {
+                    featurePopup: null
+                }
+            }
+});
+var tab2 = new Ext.Panel ({
+    xtype: 'panel',
+    title: 'risultati',
+    id: 'results_tab',
+    html: '2'
+});
+
+
+//var carousel1 = new Ext.Carousel({
+var carousel1 = new Ext.TabPanel({
+fullscreen: true,
+//type: 'dark',
+//tabBarPosition: 'bottom',
+//sortable: true,
+
+//            defaults: {
+//              cls: 'card'
+//            },
+
+            items: [
+		tab1
+            ,
+            {
+                title: 'Tab 2',
+                html: '2',
+		cls: 'card2'
+		,layout: {type: 'vbox', align: 'stretch'}
+            },
+            {
+                title: 'Tab 3',
+                html: '3',
+		cls: 'card3'
+            }
+	]
+});
+
+
+
+///////// da view-source:http://openlayers.org/dev/examples/mobile-sencha.html //////
+var app = new Ext.Application({
+    name: "ol",
+
+    launch: function() {
+
+        //this.viewport = new Ext.Panel({
+	this.viewport = new Ext.TabPanel({
+
+		layout: {type: 'card'},
+		id: 'tab_panel',
+		//hidden: 'true',
+
+            fullscreen: true,
+            dockedItems: [{
+                dock: "bottom",
+                xtype: "toolbar",
+                ui: "light",
+                layout: {
+                    pack: "center"
+                },
+                items: [{
+                    iconCls: "search",
+                    iconMask: true,
+                    handler: function() {
+                        // this is the app
+                        if (!app.searchFormPopupPanel) {
+                            app.searchFormPopupPanel = new App.SearchFormPopupPanel({
+                                map: map
+                            });
+                        }
+                        app.searchFormPopupPanel.show('pop');
+                    }
+                }, {
+                    iconCls: "locate",
+                    iconMask: true,
+                    handler: function() {
+                        var geolocate = map.getControlsBy("id", "locate-control")[0];
+                        if (geolocate.active) {
+                            geolocate.getCurrentLocation();
+                        } else {
+                            geolocate.activate();
+                        }
+                    }
+                }, {
+                    xtype: "spacer"
+                }, {
+                    iconMask: true,
+                    iconCls: "add",
+                    handler: function() {
+                        map.zoomIn();
+                    }
+                }, {
+                    iconMask: true,
+                    iconCls: "minus",
+                    handler: function() {
+                        map.zoomOut();
+                    }
+                },
+ 
+                {
+                    xtype: "spacer"
+                }, {
+			id: 'btn_map',
+			iconCls: 'maps', iconMask: true, disabled: 'true',
+			handler: function() {
+				Ext.getCmp('tab_panel').setActiveItem('map');
+				this.disable();
+			}
+		},
+
+		{
+                    xtype: "spacer"
+                }, {
+                    iconMask: true,
+                    iconCls: "layers",
+                    handler: function() {
+                        if (!app.popup) {
+                            app.popup = new Ext.Panel({
+                                floating: true,
+                                modal: true,
+                                centered: true,
+                                hideOnMaskTap: true,
+                                width: 240,
+                                items: [{
+                                    xtype: 'app_layerlist',
+                                    map: map
+                                }],
+                                scroll: 'vertical'
+                            });
+                        }
+                        app.popup.show('pop');
+                    }
+                }]
+            }],
+            items: [
+		//carousel1
+		//tab1,
+		{
+		title: 'mappa',
+                    xtype: "component",
+                    scroll: false,
+                    monitorResize: true,
+                    id: "map",
+                    listeners: {
+                        render: function() {
+                            var self = this;
+				//Provo qui a caricare la mappa:
+				load_map();
+                        },
+                        resize: function() {
+                            if (window.map) {
+                                map.updateSize();
+                            }
+                        },
+                        scope: {
+                            featurePopup: null
+                        }
+                    }
+		}
+		, tab2
+	    ] //fine degli items principali
+	
+        }); //fine definizione del TabPanel "tab_panel" nel viewport
+
+	//Nascondo gli item della barra in alto:
+	this.viewport.getTabBar().hide();
+	this.viewport.componentLayout.childrenChanged = true;
+	this.viewport.doComponentLayout();
+
+    } //fine della funzione che si carica dentro "launch"
+});
+
+
+</script>
+        
+</HEAD>
+<BODY>
+
+</BODY>
+</HTML>

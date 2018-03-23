@@ -1,0 +1,247 @@
+<HTML>
+<HEAD>
+
+<TITLE> WebGIS ARPA MOBILE - GXM Sencha-Touch </TITLE>
+
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE6" />
+<meta name="Author" content="Armando Riccardo Gaeta">
+<meta name="Email" content="ar_gaeta@yahoo.it">
+<meta name="Subject" content="WebGIS">
+<meta name="Description" content="Pagina dei WebGIS ARPA">
+
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<!-- Stylesheets of Sencha Touch and OpenLayers -->
+<link rel="stylesheet" href="http://openlayers.org/dev/theme/default/style.mobile.css" type="text/css">
+<link rel="stylesheet" href="http://cdn.sencha.io/touch/1.1.0/resources/css/sencha-touch.css">
+<!-- <link rel="stylesheet" href="http://openlayers.org/api/2.11/theme/default/style.css" type="text/css"> -->
+
+<!-- Proviamo con LeafLet se si velocizza qualcosa
+<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
+<script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
+-->
+
+<!-- <link rel="stylesheet" href="GXM/css/gxm.css" type="text/css"> -->
+
+<script type="text/javascript" src="/OpenLayers-2.12/OpenLayers.mobile.ARPA.js"></script>
+<script type="text/javascript" src="http://www.openstreetmap.org/openlayers/OpenStreetMap.js"></script>
+<script type="text/javascript" src="/common/proj4js-combined.js"></script>
+
+<!-- JavaScript of Sencha Touch and OpenLayers -->
+<script type="text/javascript" src="/sencha-touch-1.1.1/sencha-touch.js"></script>
+
+<!--Per le applicazioni della bottombar: da view-source:http://openlayers.org/dev/examples/mobile-sencha.html-->
+<script type="text/javascript" src="mobile-sencha.js"></script>
+
+<!-- This file loads all relevant files  -->
+<!-- <script type="text/javascript" src="/GXM/lib/GXM.loader.js"></script> -->
+
+<script type="text/javascript" src="/common/scripts/js_functions.js"></script>
+<script type="text/javascript" src="theme_wms_mobile.js"></script>
+<!-- <script type="text/javascript" src="/webgis/meteo/theme_realtime.js"></script> -->
+<script type="text/javascript" src="theme_rasters_mobile.js"></script>
+<script type="text/javascript" src="theme_sismica_mobile.js"></script>
+<script type="text/javascript">
+var layers_to_load = [
+/* METEO */
+//mosaico, grandine, rain48h, rain6h, rain3h, rain1h, neve, bandax, 
+//istantaneo 
+//istantaneo_bis, dpc, fulmini
+//raster_ist
+//, layer
+
+/* SISMICA */
+//, sismi
+sismi_lastLow, sismi_lastHigh, sismiLow, sismiHigh
+];
+var layers_to_select = [
+//sismi
+];
+</script>
+<script type="text/javascript" src="load_map.js"></script>
+
+<style type="text/css">
+
+.searchList {
+    min-height: 150px;
+}
+
+.close-btn {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+}
+
+
+img.minus {
+    -webkit-mask-image: url(/common/icons/minus1.png);
+}
+
+img.layers {
+    -webkit-mask-image: url(/common/icons/list.png);
+}
+
+
+.gx-layer-item {
+    margin-left: 10px;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+}
+
+/*Per rendere la scritta di OSM in basso a destra e piu' piccola:*/
+.olControlAttribution {
+    font-size: 10px;
+    bottom: 5px;
+    right: 5px;
+}
+
+#title, #tags, #shortdesc {
+    display: none;
+}
+</style>
+
+<script type="text/javascript">
+
+//alert('OpenLayers: ' + OpenLayers.VERSION_NUMBER);
+//alert('Sencha Touch: ' + Ext.version);
+//alert('GXM: ' + GXM.version);
+
+///////// da view-source:http://openlayers.org/dev/examples/mobile-sencha.html //////
+
+var app = new Ext.Application({
+    name: "ol",
+    launch: function() {
+        this.viewport = new Ext.Panel({
+            fullscreen: true,
+            dockedItems: [{
+                dock: "bottom",
+                xtype: "toolbar",
+                ui: "light",
+                layout: {
+                    pack: "center"
+                },
+                items: [{
+                    iconCls: "search",
+                    iconMask: true,
+                    handler: function() {
+                        // this is the app
+                        if (!app.searchFormPopupPanel) {
+                            app.searchFormPopupPanel = new App.SearchFormPopupPanel({
+                                map: map
+                            });
+                        }
+                        app.searchFormPopupPanel.show('pop');
+                    }
+                }, {
+                    iconCls: "locate",
+                    iconMask: true,
+                    handler: function() {
+                        var geolocate = map.getControlsBy("id", "locate-control")[0];
+                        if (geolocate.active) {
+                            geolocate.getCurrentLocation();
+                        } else {
+                            geolocate.activate();
+                        }
+                    }
+                }, {
+                    xtype: "spacer"
+                }, {
+                    iconMask: true,
+                    iconCls: "add",
+                    handler: function() {
+                        map.zoomIn();
+                    }
+                }, {
+                    iconMask: true,
+                    iconCls: "minus",
+                    handler: function() {
+                        map.zoomOut();
+                    }
+                }, {
+                    xtype: "spacer"
+                }, {
+                    iconMask: true,
+                    iconCls: "layers",
+                    handler: function() {
+                        if (!app.popup) {
+                            app.popup = new Ext.Panel({
+                                floating: true,
+                                modal: true,
+                                centered: true,
+                                hideOnMaskTap: true,
+                                width: 240,
+                                items: [{
+                                    xtype: 'app_layerlist',
+                                    map: map
+                                }],
+                                scroll: 'vertical'
+                            });
+                        }
+                        app.popup.show('pop');
+                    }
+                }]
+            }],
+            items: [
+                {
+                    xtype: "component",
+                    scroll: false,
+                    monitorResize: true,
+                    id: "map",
+                    listeners: {
+                        render: function() {
+                        	var self = this;
+				//Provo qui a caricare la mappa:
+				load_map();
+							
+                       /*     
+				init(function(feature) {
+                                var htmlContent = "";
+                                for (var property in feature.data) {
+                                    if (feature.data[property] != 'undefined') {
+                                        htmlContent = htmlContent + feature.data[property] + "<br>";
+                                    }
+                                }
+                                if (self.featurePopup) {
+                                    self.featurePopup.destroy();
+                                }
+                                self.featurePopup = new Ext.Panel({
+                                    floating: true,
+                                    modal: true,
+                                    centered: true,
+                                    hideOnMaskTap: true,
+                                    width: 240,
+                                    html: htmlContent,
+                                    scroll: 'vertical'
+                                });
+                                self.featurePopup.show();
+                            })
+			*/
+                        },
+                        resize: function() {
+                            if (window.map) {
+                                map.updateSize();
+                            }
+                        },
+                        scope: {
+                            featurePopup: null
+                        }
+                    }
+                }
+            ]
+        });
+    }
+});
+		
+
+</script>
+        
+</HEAD>
+<BODY>
+
+</BODY>
+</HTML>
