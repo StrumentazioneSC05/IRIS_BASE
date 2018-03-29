@@ -37,12 +37,13 @@ var urlMS_sismi; //definito in seguito in base al valore di "base_layers"
 var urlMS_datidibase; //definito in seguito in base al valore di "base_layers"
 var urlMS_realtime; //definito in seguito in base al valore di "base_layers"
 var urlMS_spatialite; //definito in seguito in base al valore di "base_layers"
+var urlMS_map; //definito in seguito in base al valore di "base_layers"
 //var path_raster = map_path + "raster.map";//serve per caricare i raster come wms-tiff
 //var path_meteo_wms = map_path + "meteo_wms.map";//serve per creare la legenda dei raster
 
 
 //////////////// VARIABILI GENERALI ////////////////
-var map, mapPanel, popup, legend, treeConfig, selectCtrl, multiSelectCtrl, select00;
+var map, mapPanel, popup, legend, treeConfig, selectCtrl, multiSelectCtrl, select00, selectCtrlWMS, highlightLayerWMS;
 var store_grid, columns_grid, view_grid, collapsed_grid, gridPanel;
 var multiselect=false;
 //definisco store e columns di default:
@@ -157,12 +158,14 @@ if (base_layers == "" || base_layers == "0") {
         urlMS_sismi = urlMS_loc + "?MAP=" + map_path + "map900913.map";
 	urlMS_datidibase = urlMS_loc + "?MAP=" + map_path + "map900913.map";
 	urlMS_realtime = urlMS_loc + "?MAP=" + map_path + "map900913.map";
+	urlMS_map = map_path + "map900913.map";
 	//urlMS_spatialite = urlMS_loc + "?MAP=" + map_path + "spatialite.map";//not used at the moment
 }
 else {
         urlMS_sismi = urlMS_loc + "?MAP=" + map_path + "map32632.map";
 	urlMS_datidibase = urlMS_loc + "?MAP=" + map_path + "map32632.map";
         urlMS_realtime = urlMS_loc + "?MAP=" + map_path + "map32632.map";
+	urlMS_map = map_path + "map32632.map";
         //urlMS_spatialite = urlMS_loc + "?MAP=" + map_path + "spatialite.map";//not used at the moment
         var x_center = 500000;
         var y_center = 5000000;

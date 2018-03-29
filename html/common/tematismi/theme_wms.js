@@ -98,3 +98,26 @@ var retesynop = new OpenLayers.Layer.WMS(default_layer_name, url_retesynop,
 retesynop.setVisibility(false);
 retesynop.projection = OL_3857;
 
+
+/* Come WFS i 2 layer in base alla scala non vengono riconosciuti da OL 2 ma vengono mostrati entrambi se UNION, ma non se GROUP, a quanto pare*/
+/*
+var limiti_comuni_MS = new OpenLayers.Layer.Vector(default_layer_name, {
+	//styleMap: styleMap_reticolo_idro_lm,
+	strategies: [new OpenLayers.Strategy.BBOX()],
+	protocol: new OpenLayers.Protocol.WFS({
+		url: urlMS_datidibase, featureType: "limiti_comuni_italiani_union",
+		featureNS: "http://mapserver.gis.umn.edu/mapserver",
+		geometryName: "the_geom", srsName: "epsg:32632"
+		//extractAttributes: true, //extractStyles: true, //geometry: "msGeometry", //version: "1.1.0",
+	})
+});
+*/
+//Come WMS la UNION non viene riconosciuta, ma il GROUP si
+//Come funziona pero' per la selezione??
+
+var path_mapfile = map_path + "map900913.map";
+console.log(path_mapfile, urlMS_loc);
+var limiti_comuni_MS = new OpenLayers.Layer.WMS(default_layer_name, urlMS_loc,
+        {map: path_mapfile, layers:"limiti_comuni_italiani", transparent: true, isBaseLayer:false, displayInLayerSwitcher: false}, {singleTile: false, opacity: 0.6});
+
+limiti_comuni_MS.setVisibility(false);

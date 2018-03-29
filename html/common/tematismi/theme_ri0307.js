@@ -236,7 +236,7 @@ var stabrir105 = new OpenLayers.Layer.Vector(default_layer_name, {
         })
 });
 stabrir105.setVisibility(false);
-store_stabrir105 = new GeoExt.data.FeatureStore({
+var store_stabrir105 = new GeoExt.data.FeatureStore({
         fields: [
                 {name: "id_stabilimento", type: "integer"},
 		"nome_stabilimento", {name: "comboDisplay", type: "string", mapping:"nome_stabilimento"},
@@ -247,7 +247,7 @@ store_stabrir105 = new GeoExt.data.FeatureStore({
                 {name: "attivita_label_s", type: "string"}
         ],
         layer: stabrir105
-        ,autoLoad: true
+        //,autoLoad: true
 });
 store_stabrir105.on('load', function(store){
         store.sort('nome_stabilimento', 'ASC');
@@ -354,7 +354,7 @@ store_stabrir = new GeoExt.data.FeatureStore({
 		{name: "attivita_label_s", type: "string"}
 	],
 	layer: stabrir
-	,autoLoad: true
+	//,autoLoad: true
 });
 store_stabrir.on('load', function(store){
 	store.sort('nome_stabilimento', 'ASC');

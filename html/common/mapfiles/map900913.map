@@ -46,7 +46,7 @@ MAP
 		## ows sono le caratteristiche comuni per i servizi WMS e WFS
 		"ows_enable_request"		"*" ## REQUIRED for v6
 		"ows_title"			"MAP_GOOGLE-900913" ## REQUIRED
-		"ows_onlineresource"		"http://www.arpa.piemonte.gov.it/radar/cgi-bin/mapserv?map=/var/www/html/common/mapfiles/map900913.map&" ## Recommended
+		"ows_onlineresource"		"http://localhost/devel/cgi-bin/mapserv?map=/var/www/IRIS_BASE/html/common/mapfiles/map900913.map&" ## Recommended
 		"ows_srs"			"epsg:900913 epsg:32632 epsg:4326 epsg:3785" ## Recommended
 		"ows_abstract"			"This text describes my WFS service." ## Recommended
 		

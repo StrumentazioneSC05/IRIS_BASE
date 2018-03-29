@@ -488,7 +488,7 @@ store_meteoidro = new GeoExt.data.FeatureStore({
             //{name: "quota_stazione", type: "float"}
         ],
         layer: rete_meteoidro
-	,autoLoad: true
+	//,autoLoad: true
 });
 store_meteoidro_lago = new GeoExt.data.FeatureStore({
         fields: [
@@ -496,7 +496,7 @@ store_meteoidro_lago = new GeoExt.data.FeatureStore({
 	    "denominazione", {name: "comboDisplay", type: "string", mapping:"denominazione"}
 	],
         layer: rete_meteoidro_lago
-        ,autoLoad: true
+        //,autoLoad: true
 });
 //store_meteoidro.load();
 store_meteoidro.on('load', function(store){
@@ -509,7 +509,7 @@ store_meteoidro_tiny = new GeoExt.data.FeatureStore({
             "denominazione", {name: "comboDisplay", type: "string", mapping:"denominazione"}
         ],
         layer: rete_meteoidro_tiny
-        ,autoLoad: true
+        //,autoLoad: true
 });
 store_meteoidro_tiny.on('load', function(store){
     store.sort('denominazione', 'ASC');

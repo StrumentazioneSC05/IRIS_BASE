@@ -1,6 +1,140 @@
 #Al momento, ottobre 2011, questo e' il file map piu OTTIMIZZATO ch'io abbia concepito
 
 
+#esempio di mapfiles in cui definisco dei GROUP (funzionali solo come WMS) o delle UNION (funzionali solo come WFS) per richiamare dei layer in base alla scala MAXSCALEDENOM e MINSCALEDENOM
+
+LAYER
+  NAME "limiti_comuni_italiani_union"
+  TYPE POLYGON
+  STATUS OFF
+  CONNECTIONTYPE UNION
+  CONNECTION "limiti_comuni_italiani_MS1,limiti_comuni_italiani_MS2" # reference to the source layers
+  #PROCESSING "ITEMS=itemname1,itemname2,itemname3"
+  PROCESSING "UNION_SCALE_CHECK=TRUE"
+
+  STYLEITEM "AUTO"
+  # Define an empty class that will be filled at runtime from the color and
+  # styles read from each source layer.
+  CLASS
+  END
+
+  PROJECTION
+    "init=epsg:32632"
+  END
+  EXTENT 300000 4600000 700000 5200000
+
+  METADATA
+        "ows_title"             "limiti_comuni_italiani_union"
+        "ows_featureid"         "gid"
+        "ows_srs"               "epsg:32632" ## REQUIRED, seems better if not 900913...
+        "ows_abstract"          "Limiti amministrativi comuni nord Italia - ISTAT"
+        "ows_include_items"     "all" ## Optional (serves all attributes for layer)
+        "queryable"             "true"
+  END
+END
+
+LAYER
+    GROUP "limiti_comuni_italiani"
+    NAME "limiti_comuni_italiani_MS1"
+    STATUS OFF
+    TYPE POLYGON
+    CONNECTIONTYPE POSTGIS
+    CONNECTION "host=localhost port=5432 dbname=iris_base user=webgis password=webgis$2013%"
+    PROCESSING "CLOSE_CONNECTION=DEFER" #sembra essere piu veloce da caricare come WFS...
+    #PROCESSING "ITEMS=dn"
+    DATA "the_geom from dati_di_base.limiti_comuni_italiani_2016 using unique gid using srid=32632"
+
+    PROJECTION
+        "init=epsg:32632"
+    END
+    EXTENT 300000 4600000 700000 5200000
+    MAXSCALEDENOM 500000
+    MINSCALEDENOM 1000
+
+    METADATA
+        "ows_title"             "limiti_comuni_italiani_MS1"
+        "ows_featureid"         "gid"
+        "ows_srs"               "epsg:32632" ## REQUIRED, seems better if not 900913...
+        "ows_abstract"          "Limiti amministrativi comuni nord Italia - ISTAT - grande scala"
+        "ows_group_title"       "limiti_comuni_italiani"
+        "ows_include_items"     "all" ## Optional (serves all attributes for layer)
+        "queryable"             "true"
+    END
+
+    DUMP true
+    TOLERANCE 5
+    TEMPLATE 'dummy' #l'importante e' scrivere qlcosa, soprattutto se si usa 'text/plain' come risposta
+
+    #FILTERITEM 'MAGNITUDO'
+    #FILTER (("tipo" IS NOT NULL) AND ("foglio_igm" IN ('TORINO','IMPERIA','GENOVA','CUNEO','MILANO','LUGANO','NA')))
+    #il valore -32 e' NO_DATA, ma fino a ZERO la sensibilita del radar e trascurabile
+    #CLASSITEM 'localita'
+    CLASSITEM 'pop_2011' #lo uso come prova per sommare i valori da mapscript-query wms --> in sviluppo!
+    CLASS
+        NAME 'Limiti amministrativi - dettagliato'
+        #EXPRESSION (([dn] < 95) AND ([dn] >= 0))
+        STYLE
+                #SYMBOL "circle"
+                SIZE 7.0
+                OUTLINECOLOR 255 0 0
+                COLOR 0 255 0
+        END
+    END
+END #end layer limiti_comuni_italiani_MS1
+
+
+LAYER
+    GROUP "limiti_comuni_italiani"
+    NAME "limiti_comuni_italiani_MS2"
+    STATUS OFF
+    TYPE POLYGON
+    CONNECTIONTYPE POSTGIS
+    CONNECTION "host=localhost port=5432 dbname=iris_base user=webgis password=webgis$2013%"
+    PROCESSING "CLOSE_CONNECTION=DEFER" #sembra essere piu veloce da caricare come WFS...
+    #PROCESSING "ITEMS=dn"
+    DATA "the_geom from dati_di_base.limiti_comuni_2016_simpl100k using unique gid using srid=32632"
+
+    PROJECTION
+        "init=epsg:32632"
+    END
+    EXTENT 300000 4600000 700000 5200000
+    MAXSCALEDENOM 15000000
+    MINSCALEDENOM 500000
+
+    METADATA
+        "ows_title"             "limiti_comuni_italiani_MS2"
+        "ows_featureid"         "gid"
+        "ows_srs"               "epsg:32632" ## REQUIRED, seems better if not 900913...
+        "ows_abstract"          "Limiti amministrativi comuni nord Italia - ISTAT - piccola scala"
+	"ows_group_title"       "limiti_comuni_italiani"
+        "ows_include_items"     "all" ## Optional (serves all attributes for layer)
+        "queryable"             "true"
+    END
+
+    DUMP true
+    TOLERANCE 5
+    TEMPLATE 'dummy' #l'importante e' scrivere qlcosa, soprattutto se si usa 'text/plain' come risposta
+
+    #FILTERITEM 'MAGNITUDO'
+    #FILTER (("tipo" IS NOT NULL) AND ("foglio_igm" IN ('TORINO','IMPERIA','GENOVA','CUNEO','MILANO','LUGANO','NA')))
+        #il valore -32 e' NO_DATA, ma fino a ZERO la sensibilita del radar e trascurabile
+        CLASSITEM 'localita'
+        CLASS
+        NAME 'Limiti amministrativi - semplificato'
+        #EXPRESSION (([dn] < 95) AND ([dn] >= 0))
+        STYLE
+                #SYMBOL "circle"
+                SIZE 7.0
+                OUTLINECOLOR 255 0 0
+                COLOR 0 0 255
+        END
+    END
+END #end layer limiti_comuni_italiani_MS2
+
+##########fine prova WMS UNION o GROUP
+
+
+
 LAYER
         NAME "aree_allertamento"
         STATUS OFF

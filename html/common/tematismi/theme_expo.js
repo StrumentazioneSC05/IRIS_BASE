@@ -267,7 +267,7 @@ store_staz_lm = new GeoExt.data.FeatureStore({
 	  {name: "idsensori", type: "string"}
 	],
 	layer: rete_meteoidro_lm
-	,autoLoad: true
+	//,autoLoad: true
 });
 var columns_staz_lm = new Ext.grid.ColumnModel({
     defaults: {
@@ -483,7 +483,7 @@ var store_terma_lm = new GeoExt.data.FeatureStore({
                 {name: "timeultimovalore", type: "string"}
         ],
         layer: temperatura_lm
-	,autoLoad: true
+	//,autoLoad: true
 });
 store_terma_lm.on('load', function(store){
         store.sort('timeultimovalore', 'ASC');
@@ -588,7 +588,7 @@ store_meteoidrolm = new GeoExt.data.FeatureStore({
             {name: "quota", type: "float"}
         ],
         layer: rete_meteoidrolm_tiny
-        ,autoLoad: true
+        //,autoLoad: true
 });
 //store_meteoidro.load();
 store_meteoidrolm.on('load', function(store){
@@ -740,7 +740,7 @@ store_last_termalm = new GeoExt.data.FeatureStore({
 	    {name: "timeultimovalore", type: "string"}
         ],
         layer: temperatura_tiny_expo
-        ,autoLoad: true
+        //,autoLoad: true
 });
 store_last_termalm.on('load', function(store){
     store.sort('denominazione', 'ASC');
@@ -799,7 +799,7 @@ var store_idro_lm = new GeoExt.data.FeatureStore({
                 {name: "timeultimovalore", type: "string"}
         ],
         layer: temperatura_lm
-        ,autoLoad: true
+        //,autoLoad: true
 });
 store_idro_lm.on('load', function(store){
         store.sort('timeultimovalore', 'DESC');
