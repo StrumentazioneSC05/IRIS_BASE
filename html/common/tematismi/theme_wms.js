@@ -114,10 +114,7 @@ var limiti_comuni_MS = new OpenLayers.Layer.Vector(default_layer_name, {
 */
 //Come WMS la UNION non viene riconosciuta, ma il GROUP si
 //Come funziona pero' per la selezione??
-
-var path_mapfile = map_path + "map900913.map";
-console.log(path_mapfile, urlMS_loc);
 var limiti_comuni_MS = new OpenLayers.Layer.WMS(default_layer_name, urlMS_loc,
-        {map: path_mapfile, layers:"limiti_comuni_italiani", transparent: true, isBaseLayer:false, displayInLayerSwitcher: false}, {singleTile: false, opacity: 0.6});
-
+        {map: urlMS_map, layers:"limiti_comuni_italiani", transparent: true, displayInLayerSwitcher: false}, {singleTile: false, opacity: 0.6, isBaseLayer:false});
 limiti_comuni_MS.setVisibility(false);
+

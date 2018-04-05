@@ -151,11 +151,14 @@ echo $jquery_css;
 $extall_css = '<link rel="stylesheet" href="'.$root_dir_html.'/ext-3.4.0/resources/css/ext-all.css">';
 echo $extall_css;
 
+$geoext_css = '<link rel="stylesheet" href="'.$root_dir_html.'/GeoExt/resources/css/geoext-all.css">';
+echo $geoext_css;
+
 //Recupero alcuni fogli di stile con Minify:
 //$open_css = '<link rel="stylesheet" type="text/css" href="../minify-2.1.7/min/?f=';
 $open_css = '<link rel="stylesheet" type="text/css" href="../min/?f=';
-//$open_css .= $root_dir_html_ext.'/ext-3.4.0/resources/css/ext-all.css,'; //LO TOLOGO DAL MINIFY onde evitare problemi di proxy o versioni di sviluppo
-$open_css .= '/GeoExt/resources/css/geoext-all.css,';
+//$open_css .= $root_dir_html_ext.'/ext-3.4.0/resources/css/ext-all.css,'; //LO TOLGO DAL MINIFY onde evitare problemi di proxy o versioni di sviluppo
+//$open_css .= '/GeoExt/resources/css/geoext-all.css,'; //LO TOLGO DAL MINIFY onde evitare problemi di proxy o versioni di sviluppo
 $open_css .= '/OpenLayers-2.13.1/theme/default/style.css,';
 $open_css .= '/OpenLayers-2.13.1/theme/default/scalebar-thin.css,';
 $open_css .= '/common/webgis_style.css';

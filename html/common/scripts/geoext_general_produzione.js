@@ -130,6 +130,7 @@ map = new OpenLayers.Map('map', options);
 		'single': true, 'double': false, 'pixelTolerance': 5, 'stopSingle': false
 		//'stopDouble': false
 		},
+		//handleRightClicks: true,
 		initialize: function(options) {
 		this.handlerOptions = OpenLayers.Util.extend(
 			{}, this.defaultHandlerOptions
@@ -162,6 +163,11 @@ map = new OpenLayers.Map('map', options);
                         var uri = root_dir_html+"/cgi-bin/query_raster.py?x="+Math.round(pp1_rast.x)+"&y="+Math.round(pp1_rast.y)+"&srid="+srid+"&webgis="+webgis+"&root_dir_html="+root_dir_html+"&active_queries="+query_raster;
                         window.open(uri,'radar','location=0,width=950,height=650,toolbar=0,resizable=0,left=200,top=200');
                 }
+		/*,eventMethods: {
+        	    'rightclick': function (e) { //non viene riconosciuto
+                        console.log("RIGTH CLICK");
+                     }
+                }*/
         });
 	//Aggiungo il controller sul click in mappa solo se la variabile query_raster non esiste o non e' ZERO:
 	if (query_raster != '0') {
@@ -229,78 +235,11 @@ console.log("lat="+lat_rast+" e lon="+lon_rast); //in realta sono utm 900913
         //select00.toggle(true);
         
 
-	//SELECT su WMS - IN SVILUPPO
-	//http://dev.openlayers.org/examples/getfeatureinfo-control.html
-	//http://dev.openlayers.org/examples/SLDSelect.html
-        //OpenLayers.Control.GetFeature NON ha alcun effetto
-        /*selectCtrlWMS = new OpenLayers.Control.GetFeature({
-	    protocol: OpenLayers.Protocol.WFS.fromWMSLayer(limiti_comuni_MS),
-            box: true,
-            hover: true,
-            multipleKey: "shiftKey",
-            toggleKey: "ctrlKey"
-        });
-	selectCtrlWMS.events.register("featureselected", this, function (e) {
-console.log(e);
-            //select.addFeatures([e.feature]);
-        });*/
-	//Creo un layer per contenere gli elementi evidenziati del WMS:
-	highlightLayerWMS = new OpenLayers.Layer.Vector("Highlighted WMS Features", {
-            displayInLayerSwitcher: false, 
-            isBaseLayer: false 
-            }
-        );
-	mapPanel.map.addLayer(highlightLayerWMS);
-	selectCtrlWMS = new OpenLayers.Control.WMSGetFeatureInfo({
-                url: urlMS_loc,
-                title: 'Identify features by clicking',
-                layers: [limiti_comuni_MS], //If omitted, all map WMS layers with a url that matches this url or layerUrls will be considered
-                queryVisible: true //If true, filter out hidden layers when searching the map for layers to query
-		,infoFormat: 'text/plain' //se text/html occorre fornire al file map/layer un template adeguato
-		,vendorParams: {map: urlMS_map}
-		/*
-		//DA PROVARE POPUP:
-		,eventListeners: {'getfeatureinfo': function(event) {
-		  map.addPopup(new OpenLayers.Popup.FramedCloud("chiken",
-		    map.getLonLatFromPixel(event.xy),
-		    null,
-		    event.text,
-		    null,
-    		  true));
-		}}*/
-        });
-	hoverCtrlWMS = new OpenLayers.Control.WMSGetFeatureInfo({
-                url: urlMS_loc, 
-                title: 'Identify features by hover',
-                layers: [limiti_comuni_MS],
-                hover: true,
-		infoFormat: 'application/vnd.ogc.gml'
-		,vendorParams: {map: urlMS_map}
-                // defining a custom format options here
-                /*,formatOptions: {
-                    typeName: 'water_bodies', 
-                    featureNS: 'http://www.openplans.org/topp'
-                }*/
-                ,queryVisible: true
-        });
-        selectCtrlWMS.events.register("getfeatureinfo", this, showInfo);
-	hoverCtrlWMS.events.register("getfeatureinfo", this, showInfo);
+	/* SELECT su WMS - IN SVILUPPO */
 	mapPanel.map.addControl(selectCtrlWMS); //per la selezione degli elementi dei layers selezionabili
         selectCtrlWMS.activate();
-	mapPanel.map.addControl(hoverCtrlWMS);
-	hoverCtrlWMS.activate();
-
-	function showInfo(evt) {
-console.log(evt);
-          if (evt.features && evt.features.length) {
-             highlightLayerWMS.destroyFeatures();
-             highlightLayerWMS.addFeatures(evt.features);
-             highlightLayerWMS.redraw();
-          } else {
-            //document.getElementById('responseText').innerHTML = evt.text;
-console.log(evt.text);
-          }
-        }
+	//mapPanel.map.addControl(hoverCtrlWMS);
+	//hoverCtrlWMS.activate();
 
 
 	//ZOOM:

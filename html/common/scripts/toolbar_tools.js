@@ -86,11 +86,111 @@ function toolbar_tools_default() {
         //da: https://trac.osgeo.org/openlayers/wiki/SelectFeatureControlMapDragIssues
 
 
-	/* TOOLTIPS!!! */
+	/* SELECT su WMS - IN SVILUPPO */
+        //http://dev.openlayers.org/examples/getfeatureinfo-control.html
+        //http://dev.openlayers.org/examples/SLDSelect.html
+        //TEMO che l'unico modo che ho per abilitarlo sia creare un NUOVO PULSANTE poiche' entra in conflitto con il click su mappa e con il Select classico, cioe' non si AUTOESCLUDONO
+        //
+        //OpenLayers.Control.GetFeature NON ha alcun effetto
+        /*var wfsProtocol = new OpenLayers.Protocol.WFS.fromWMSLayer(limiti_comuni_MS);
+        wfsProtocol.read({ 
+          //filter: pfilter, 
+          extractAttributes: true, 
+          infoFormat: "application/vnd.ogc.gml", 
+          //resultType: "hits", 
+          callback: function (resp) { 
+            // Trying to access Feature Data here, but unsuccessful 
+            console.log(resp); 
+          } 
+        }); 
+        selectCtrlWMS = new OpenLayers.Control.GetFeature({
+            //protocol: OpenLayers.Protocol.WFS.fromWMSLayer(limiti_comuni_MS),
+            protocol: wfsProtocol,
+            box: true,
+            hover: true,
+            multipleKey: "shiftKey",
+            toggleKey: "ctrlKey"
+        });
+        selectCtrlWMS.events.register("featureselected", this, function (e) {
+console.log(e);
+            //select.addFeatures([e.feature]);
+        });*/
+        //Creo un layer per contenere gli elementi evidenziati del WMS:
+        highlightLayerWMS = new OpenLayers.Layer.Vector("Highlighted WMS Features", {
+            displayInLayerSwitcher: false,
+            isBaseLayer: false
+            }
+        );
+        //mapPanel.map.addLayer(highlightLayerWMS); //per provare ad evidenziare gli elementi aggiungo il relativo layer alla mappa. per il momento la funzione NON funziona per cui commento
+        selectCtrlWMS = new OpenLayers.Control.WMSGetFeatureInfo({
+                url: urlMS_loc,
+                title: 'Identify features by clicking',
+                layers: [limiti_comuni_MS], //If omitted, all map WMS layers with a url that matches this url or layerUrls will be considered
+                queryVisible: true //If true, filter out hidden layers when searching the map for layers to query
+                //,infoFormat: 'text/plain' //se text/html occorre fornire al file map/layer un template adeguato
+                //output:'features',
+        	//infoFormat:'application/json',
+	        //format: new OpenLayers.Format.JSON,
+                ,infoFormat: 'application/vnd.ogc.gml' //per recuperare le info in maniera piu' schematica
+                ,vendorParams: {map: urlMS_map}
+		//,clickCallback: "rightclick" //non viene riconsciuto
+		,eventListeners : {
+        	    getfeatureinfo : function(event) { showInfo(event); }
+		}
+        });
+	hoverCtrlWMS = new OpenLayers.Control.WMSGetFeatureInfo({
+                url: urlMS_loc,
+                title: 'Identify features by hover',
+                layers: [limiti_comuni_MS],
+                hover: true,
+                infoFormat: 'application/vnd.ogc.gml'
+                ,vendorParams: {map: urlMS_map}
+                // defining a custom format options here
+                /*,formatOptions: {
+                    typeName: 'water_bodies',
+                    featureNS: 'http://www.openplans.org/topp'
+                }*/
+                ,queryVisible: true
+        });
+	selectCtrlWMS.events.register("nogetfeatureinfo", this, showInfo);
+        hoverCtrlWMS.events.register("getfeatureinfo", this, showInfo);
+        //mapPanel.map.addControl(selectCtrlWMS); //per la selezione degli elementi dei layers selezionabili
+        //selectCtrlWMS.activate();
+        //mapPanel.map.addControl(hoverCtrlWMS);
+        //hoverCtrlWMS.activate();
 
+        function showInfo(evt) {
+//console.log(evt);
+          //Se effettivamente ho selezionato qualcosa:
+          if (evt.features && evt.features.length) {
+             //ricostruisco in maniera fittizia alcune variabili utili per riciclare la funzione createPopup:
+             evt.feature = evt.features[0]; //prendo solo il PRIMO elemento selezionato
+             //non riesce ancora a posizionare la popup all'altezza dell'elemento...
+             LonLatFromPixel = mapPanel.map.getLonLatFromPixel(evt.xy);
+             evt.feature.geometry = new OpenLayers.Geometry.Point(LonLatFromPixel.lon, LonLatFromPixel.lat); //questo comando piazza correttamente la popup ma genera un punto su mappa!
+             evt.feature.layer = evt.object.layers[0];
+             evt.feature.layer.selectedFeatures = new Array();
+             evt.feature.layer.selectedFeatures[0] = evt.feature;
+             createPopup(evt, "Localita: "+evt.features[0].attributes.localita, evt.feature.layer.name);
+             //Per attivare evidenziazione elemento: attualmente NON funziona - in realta' attiva la creazione su mappadell'elemento evt.feature.geometry!! Il quale allo stato attuale e' un OpenLayers.Geometry.Point ma se si riuscisse a recuperare la reale geometria dell'elemento selezionato, allora l'highlight funzionerebbe
+	  /*highlightLayerWMS.destroyFeatures();
+             highlightLayerWMS.addFeatures(evt.features);
+             highlightLayerWMS.redraw();*/
+          } else {
+            //document.getElementById('responseText').innerHTML = evt.text;
+console.log("nessun elemento da WMS selezionato o il layer WMS non e' visibile o il layer WMS non e' selezionabile");
+            if (popup) {
+                //popup.close(); //chiudere la popup restituisce un errore
+                popup.hide();
+            }
+            if (highlightLayerWMS) highlightLayerWMS.destroyFeatures();
+          }
+        }
+
+
+	/* TOOLTIPS!!! */
 	ttips = new OpenLayers.Control.ToolTips({bgColor:"red",textColor:"black",bold:true,opacity:0.5});	
 	//map.addControl(ttips); //pare che questa linea dia ERRORE!!!!! Perche'?? Nella funzione pero' funziona....
-	
 	
 	//if(webgis=='sismi') {
 		var yy=0;
@@ -262,6 +362,7 @@ toolbarItems.push("-");
     toolbarItems.push(next_zoom);
 
 toolbarItems.push(new Ext.Toolbar.Spacer({width: 5}));
+
 
 ///////////// CONTROL TOOLS ////////////
 

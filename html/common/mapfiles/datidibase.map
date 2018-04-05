@@ -21,7 +21,7 @@ LAYER
   PROJECTION
     "init=epsg:32632"
   END
-  EXTENT 300000 4600000 700000 5200000
+  EXTENT 300000 4200000 900000 5200000
 
   METADATA
         "ows_title"             "limiti_comuni_italiani_union"
@@ -47,8 +47,8 @@ LAYER
     PROJECTION
         "init=epsg:32632"
     END
-    EXTENT 300000 4600000 700000 5200000
-    MAXSCALEDENOM 500000
+    EXTENT 300000 4200000 900000 5200000
+    MAXSCALEDENOM 1500000
     MINSCALEDENOM 1000
 
     METADATA
@@ -92,14 +92,14 @@ LAYER
     CONNECTION "host=localhost port=5432 dbname=iris_base user=webgis password=webgis$2013%"
     PROCESSING "CLOSE_CONNECTION=DEFER" #sembra essere piu veloce da caricare come WFS...
     #PROCESSING "ITEMS=dn"
-    DATA "the_geom from dati_di_base.limiti_comuni_2016_simpl100k using unique gid using srid=32632"
+    DATA "the_geom from dati_di_base.limiti_comuni_2016_simpl500 using unique gid using srid=32632"
 
     PROJECTION
         "init=epsg:32632"
     END
-    EXTENT 300000 4600000 700000 5200000
+    EXTENT 300000 4200000 900000 5200000
     MAXSCALEDENOM 15000000
-    MINSCALEDENOM 500000
+    MINSCALEDENOM 1500000
 
     METADATA
         "ows_title"             "limiti_comuni_italiani_MS2"
