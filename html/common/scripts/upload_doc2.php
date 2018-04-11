@@ -23,11 +23,17 @@ if ($_POST['type']=='download') {
 	}
 	else if ($output=='shape') {
 	//echo "OK shp";
-	$cmd = "pgsql2shp -f /var/www/html/common/DATA/rir/scambio/".$table."_g -h localhost -u rischioindustriale radar 'SELECT * FROM ri0307." . $table . "'";
+	//$cmd = "pgsql2shp -f /var/www/html/common/DATA/rir/scambio/".$table."_g -h localhost -u rischioindustriale radar 'SELECT * FROM ri0307." . $table . "'";
+	//pgsql2shp inizia a dare dei problemi. Uso il piu' standar ogr2ogr:
+        $cmd = 'ogr2ogr -f "ESRI Shapefile" /var/www/html/common/DATA/rir/scambio/'.$table.'_g PG:"host=localhost user=rischioindustriale dbname=radar password=Seveso_200" -sql "SELECT * FROM ri0307.' . $table . '"';
 	exec($cmd);
-	$cmd_zip = "zip -j /var/www/html/common/DATA/rir/scambio/".$table.".zip /var/www/html/common/DATA/rir/scambio/".$table."_g.*";
+	//$cmd_zip = "zip -j /var/www/html/common/DATA/rir/scambio/".$table.".zip /var/www/html/common/DATA/rir/scambio/".$table."_g.*";
+	//con ogr2ogr viene creata una cartella:
+        $cmd_zip = "zip -j /var/www/html/common/DATA/rir/scambio/".$table.".zip /var/www/html/common/DATA/rir/scambio/".$table."_g/*";
 	exec($cmd_zip);
-	$cmd_rm = "rm /var/www/html/common/DATA/rir/scambio/".$table."_g.*";
+	//$cmd_rm = "rm /var/www/html/common/DATA/rir/scambio/".$table."_g.*";
+	//con ogr2ogr viene creata una cartella e non singoli file come nel caso di pgsql2shp - la elimino:
+        $cmd_rm = "rm -rf /var/www/html/common/DATA/rir/scambio/".$table."_g";
 	exec($cmd_rm);
 	}
 	die();

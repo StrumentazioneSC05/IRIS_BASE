@@ -72,7 +72,7 @@ $tab_content = ""; //contenuto del tab che ospita la classificazione delle categ
 $tab_content_doc = "<div id='tabs-2'>"; //contenuto del tab che ospitera' l'elenco della documentazione
 $tab_contatti = "<div id='tabs-3'>"; //contenuto del tab che ospitera' i contatti dello stabilimento
 $tab_content_graph = "<div id='tabs-4'>"; //contenuto del tab che ospitera' i grafici a colonna
-$tab_title = "<ul><li><a href='#tabs-3'>INFO</a></li><li><a href='#tabs-1b'>D.lgs. 105/2015</a></li><li><a href='#tabs-1'>D.lgs. 334/1999</a></li><li><a href='#tabs-2'>Documentazione</a></li><li><a href='#tabs-4'>Grafici - TEST</a></li></ul>";
+$tab_title = "<ul><li><a href='#tabs-3'>INFO</a></li><li><a href='#tabs-1b'>D.lgs. 105/2015</a></li><li><a href='#tabs-1'>D.lgs. 334/1999</a></li><li><a href='#tabs-2'>Documentazione</a></li><li><a href='#tabs-4'>Grafici</a></li></ul>";
 
 $query = "SELECT * FROM ri0307.v_stabilimenti_rir_piemonte_334 WHERE id_stabilimento = $id_stabilimento;";
 $query_cat = "SELECT id_cat AS id, categoria AS elemento, direttiva, label, soglia_inf, soglia_sup, note, nome_campo, nome_tabella, icona, attivo, udm FROM ri0307.soglie_categorie WHERE direttiva = '67/548' AND attivo=1 ORDER BY id_cat;"; //vecchia direttiva Seveso
