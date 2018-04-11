@@ -42,7 +42,7 @@ LAYER
     CONNECTION "host=localhost port=5432 dbname=iris_base user=webgis password=webgis$2013%"
     PROCESSING "CLOSE_CONNECTION=DEFER" #sembra essere piu veloce da caricare come WFS...
     #PROCESSING "ITEMS=dn"
-    DATA "the_geom from dati_di_base.limiti_comuni_italiani_2016 using unique gid using srid=32632"
+    DATA "the_geom from dati_di_base.limiti_comuni_italiani_2018 using unique gid using srid=32632"
 
     PROJECTION
         "init=epsg:32632"
@@ -69,7 +69,7 @@ LAYER
     #FILTER (("tipo" IS NOT NULL) AND ("foglio_igm" IN ('TORINO','IMPERIA','GENOVA','CUNEO','MILANO','LUGANO','NA')))
     #il valore -32 e' NO_DATA, ma fino a ZERO la sensibilita del radar e trascurabile
     #CLASSITEM 'localita'
-    CLASSITEM 'pop_2011' #lo uso come prova per sommare i valori da mapscript-query wms --> in sviluppo!
+    CLASSITEM 'popolazione' #lo uso come prova per sommare i valori da mapscript-query wms --> in sviluppo!
     CLASS
         NAME 'Limiti amministrativi - dettagliato'
         #EXPRESSION (([dn] < 95) AND ([dn] >= 0))
