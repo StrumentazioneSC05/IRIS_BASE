@@ -118,3 +118,7 @@ var limiti_comuni_MS = new OpenLayers.Layer.WMS(default_layer_name, urlMS_loc,
         {map: urlMS_map, layers:"limiti_comuni_italiani", transparent: true, displayInLayerSwitcher: false}, {singleTile: false, opacity: 0.6, isBaseLayer:false});
 limiti_comuni_MS.setVisibility(false);
 
+var reticolo_idro_lm_MS = new OpenLayers.Layer.WMS(default_layer_name, urlMS_loc,
+        {map: urlMS_map, layers:"reticolo_idro_lm_MS1", transparent: true, displayInLayerSwitcher: false}, {singleTile: false, opacity: 0.6, isBaseLayer:false});
+reticolo_idro_lm_MS.setVisibility(false);
+

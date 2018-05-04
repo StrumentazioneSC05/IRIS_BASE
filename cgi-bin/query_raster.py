@@ -24,6 +24,9 @@ reload(sys)
 sys.setdefaultencoding('UTF-8')
 #print sys.getdefaultencoding()
 
+#dopo un aggiornamento son costretto, per evitare errori, ad importare mapscript prima delle gdal
+import mapscript
+
 try:
     from osgeo import gdal
     from osgeo.gdalconst import *
@@ -55,19 +58,46 @@ p4326 = pyproj.Proj(init='epsg:4326')
 p23032 = pyproj.Proj(init='epsg:23032')
 
 infile = None
-x = float(fs["x"].value)
-y = float(fs["y"].value)
-srid = str(fs["srid"].value)
-webgis = str(fs["webgis"].value)
+try:
+  x = float(fs["x"].value)
+  y = float(fs["y"].value)
+  srid = str(fs["srid"].value)
+except:
+  print "Coordinate and SRID necessary"
+  #x = 1084665
+  #y = 5634526
+  #srid = '900913'
+
+if srid == '900913':
+  geo = "WGS84 Lon-Lat"
+  x2, y2 = pyproj.transform(p900913,p4326,x,y)
+  geo1 = "WGS84 UTM32 X-Y"
+  x3, y3 = pyproj.transform(p900913,p32632,x,y)
+elif srid == '32632':
+  geo = "WGS84 Lon-Lat"
+  x2, y2 = pyproj.transform(p32632,p4326,x,y)
+  geo1 = "WGS84 UTM32 X-Y"
+  x3, y3 = (x,y)
+
+try:
+  webgis = str(fs["webgis"].value)
+except:
+  print "Webgis type necessary"
+
 try:
     root_dir_html = str(fs["root_dir_html"].value)
 except:
     root_dir_html = ''
 #recupero le funzioni da attivare da url e dunque dal tipo di webgis configurato a livello di DB:
+active_queries_url = fs["active_queries"].value
+#active_queries_url = '13A'
 try:
-    active_queries = int(fs["active_queries"].value)
+    active_queries = int(active_queries_url)
+    stop_google = None
 except:
-    active_queries = 1
+    #SVILUPPO: provo a mettere una LETTERA al fondo se voglio ESCLUDERE TUTTA LA PAPPARDELLA sul richiamo del comune etc che prende tempo e in alcuni casi NON SERVE
+    active_queries = int(active_queries_url[:-1])
+    stop_google = active_queries_url[-1]
 #active_queries_list = active_queries.split(',')
 
 print "Content-type:text/html\r\n\r\n"
@@ -83,123 +113,133 @@ print '<script type="text/javascript" src="%s/common/proj4js-combined.js"></scri
 
 print '<script>$(function() {$("#tabs").tabs();});</script>'
 
-print '<script type="text/javascript">'
-#Qlke definizione di javascript:
-print 'Proj4js.defs["epsg:23032"] = "+proj=utm +zone=32 +ellps=intl +units=m +no_defs";'
-print 'Proj4js.defs["epsg:32632"] = "+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs";'
-print 'Proj4js.defs["epsg:900913"]= "+title= Google Mercator EPSG:900913 +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs";'
-print 'var proj4326 = new Proj4js.Proj("epsg:4326"); //LatLon WGS84'
-print 'var proj4326dd = new Proj4js.Proj("epsg:4326"); //LatLon WGS84'
-print 'var proj4230 = new Proj4js.Proj("epsg:4230"); //LatLon ED50'
-print 'var proj4230dd = new Proj4js.Proj("epsg:4230"); //LatLon ED50'
-print 'var proj32632 = new Proj4js.Proj("epsg:32632"); //UTM32N WGS84'
-print 'var proj23032 = new Proj4js.Proj("epsg:23032"); //UTM32N ED50'
-print 'var proj3785 = new Proj4js.Proj("epsg:900913"); //UTM Google 900913'
-print 'function ConvertDDToDMS(D){'
-print 'return [0|D, "d", 0|(D<0?D=-D:D)%1*60, "\'", (0|D*60%1*6000)/100, \'"\'].join("");'
-print '}'
-print 'var x=%f' % (x)
-print 'var y=%f' % (y)
-print 'function convert_srid(new_srid) {'
-print 'var x=%f' % (x)
-print 'var y=%f' % (y)
-print 'var p1 = new Proj4js.Point(x, y);'
-print 'var pp1 = Proj4js.transform(proj3785, eval(new_srid), p1);'
-print 'var x_center = pp1.x; var y_center = pp1.y;'
-print 'if (new_srid=="proj32632" || new_srid=="proj23032") $("#coords").text(x_center.toFixed(0) + " " + y_center.toFixed(0));'
-print 'else if (new_srid=="proj4326dd" || new_srid=="proj4230dd") $("#coords").text(ConvertDDToDMS(x_center) + " " + ConvertDDToDMS(y_center));'
-print 'else $("#coords").text(x_center.toFixed(5) + " " + y_center.toFixed(5));'
-print '}'
-print '</script>'
-
-print '<style>body {font-family: Verdana,Arial,sans-serif;} h1 {font-size:1em;}</style>'
 print '</head>'
 print '<body>'
-
-print "<h1>Data e ora: %s UTC</h1>" % (datetime.strftime(datetime.now(),fmt))
-
-if srid == '900913':
-	geo = "WGS84 Lon-Lat"
-	x2, y2 = pyproj.transform(p900913,p4326,x,y)
-	geo1 = "WGS84 UTM32 X-Y"
-	x3, y3 = pyproj.transform(p900913,p32632,x,y)
-elif srid == '32632':
-	geo = "WGS84 Lon-Lat"
-	x2, y2 = pyproj.transform(p32632,p4326,x,y)
-	geo1 = "WGS84 UTM32 X-Y"
-	x3, y3 = (x,y)
-
-try:
-  BASE_URL='https://maps.google.com/maps/api/elevation/json'
-  gurl=BASE_URL+"?locations="+str(y2)+","+str(x2)
-  response=simplejson.load(urllib2.urlopen(gurl))
-  elev=max(0,round(response['results'][0]['elevation'],0))
-  res =round(response['results'][0]['resolution'],0)
-  err = ""
-except Exception as e:
-  elev=-999
-  res=-999
-  err = str(e)
-
-select_tag = '<select id="srid" onChange="convert_srid(this.value)"> <option value="proj4326">WGS84 Lon/Lat</option> <option value="proj4326dd">WGS84 Lon/Lat DMS</option> <option value="proj32632">WGS84 UTM32N</option> <option value="proj4230">ED50 Lon/Lat </option><option value="proj4230dd">ED50 Lon/Lat DMS</option> <option value="proj23032">ED50 UTM32N</option> </select>'
-
-print "<h1><span id='choose_srid'> &nbsp %s &nbsp &nbsp &nbsp</span><span id='coords'> %8.5f   %9.5f &nbsp</span></h1>" % (select_tag,x2,y2)
-#print "<h1>%s: %8.0f   %9.0f   </h1>" % (geo1,x3,y3) 
+print '<style>body {font-family: Verdana,Arial,sans-serif;} h1 {font-size:1em;}</style>'
 
 
-### Localita' - reverse geooding ###
-
-## Usando MAPZEN: deprecato da febbraio 2018
-'''
-try:
-  BASE_URL='https://search.mapzen.com/v1/reverse?api_key=mapzen-RWs47YQ'
-  url=BASE_URL+"&point.lat="+str(y2)+"&point.lon="+str(x2)+'&size=1'
-#  print "<h1>Localita': <b> n.d. %s m asl %s </b>" % url,proxies
-  response=simplejson.load(urllib2.urlopen(url))
-  loc = response['features'][0]['properties']['label']
-  print "<h1>Localita': <b> %s\n</b> @%d m asl (dem = %d m)</h1>" % (loc, elev,res)
-except:
-  print "<h1>Localita': <b> n.d. %s m asl </b>" % url
-'''
-
-## Usando GOOGLE:
-try:
-  BASE_URL='https://maps.google.com/maps/api/geocode/json?key=&'
-  url=BASE_URL+'latlng='+str(y2)+","+str(x2)
-  response=simplejson.load(urllib2.urlopen(url))
-  loc = response['results'][0]['formatted_address']
-  print "<h1>Localita': <b> %s\n</b> @%d m asl (dem = %d m)</h1>" % (loc, elev,res)
-except Exception as e:
-  print e
-  print "<h1>Localita': <b> n.d. %s m asl </b>" % url
+def mostra_dataora():
+  print "<h1>Data e ora: %s UTC</h1>" % (datetime.strftime(datetime.now(),fmt))
 
 
-#try:
-#  #BASE_URL = 'http://open.mapquestapi.com/nominatim/v1/search?format=json';
-#  BASE_URL='http://maps.googleapis.com/maps/api/geocode/json'
-#  url=BASE_URL+"?latlng="+str(y2)+","+str(x2)
-#  response=simplejson.load(urllib2.urlopen(url))
-#  #loc = response[0]['display_name'].split(',')
-#  loc = response['results'][0]['formatted_address'].split(',')
-#  #print "<h1>Localita': <b> %s - %s\n</b></h1>" % (loc[0].encode('ascii', 'replace'), loc[1].encode('ascii', 'replace'))
-#  #print "<h1>Localita': <b> %s - %s\n</b></h1>" % (normalize('NFD', loc[0].decode('latin-1')), loc[1])
-#  print "<h1>Localita': <b> %s - %s\n</b> @%d m asl (dem = %d m)</h1>" % (loc[0].decode('UTF-8'), loc[1].decode('UTF-8'), elev,res)
-#except:
-#  print "<h1>Localita': <b> n.d. %s m asl </b>" % url
+def converti_coordinate():
+  print '<script type="text/javascript">'
+  #Qlke definizione di javascript:
+  print 'Proj4js.defs["epsg:23032"] = "+proj=utm +zone=32 +ellps=intl +units=m +no_defs";'
+  print 'Proj4js.defs["epsg:32632"] = "+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs";'
+  print 'Proj4js.defs["epsg:900913"]= "+title= Google Mercator EPSG:900913 +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs";'
+  print 'var proj4326 = new Proj4js.Proj("epsg:4326"); //LatLon WGS84'
+  print 'var proj4326dd = new Proj4js.Proj("epsg:4326"); //LatLon WGS84'
+  print 'var proj4230 = new Proj4js.Proj("epsg:4230"); //LatLon ED50'
+  print 'var proj4230dd = new Proj4js.Proj("epsg:4230"); //LatLon ED50'
+  print 'var proj32632 = new Proj4js.Proj("epsg:32632"); //UTM32N WGS84'
+  print 'var proj23032 = new Proj4js.Proj("epsg:23032"); //UTM32N ED50'
+  print 'var proj3785 = new Proj4js.Proj("epsg:900913"); //UTM Google 900913'
+  print 'function ConvertDDToDMS(D){'
+  print 'return [0|D, "d", 0|(D<0?D=-D:D)%1*60, "\'", (0|D*60%1*6000)/100, \'"\'].join("");'
+  print '}'
+  print 'var x=%f' % (x)
+  print 'var y=%f' % (y)
+  print 'function convert_srid(new_srid) {'
+  print 'var x=%f' % (x)
+  print 'var y=%f' % (y)
+  print 'var p1 = new Proj4js.Point(x, y);'
+  print 'var pp1 = Proj4js.transform(proj3785, eval(new_srid), p1);'
+  print 'var x_center = pp1.x; var y_center = pp1.y;'
+  print 'if (new_srid=="proj32632" || new_srid=="proj23032") $("#coords").text(x_center.toFixed(0) + " " + y_center.toFixed(0));'
+  print 'else if (new_srid=="proj4326dd" || new_srid=="proj4230dd") $("#coords").text(ConvertDDToDMS(x_center) + " " + ConvertDDToDMS(y_center));'
+  print 'else $("#coords").text(x_center.toFixed(5) + " " + y_center.toFixed(5));'
+  print '}'
+  print '</script>'
 
-#### PRELEVO IL COMUNE DI INTERSEZIONE ####
-con_db1 = pg.connect(dbname=db_name, host=db_host, user=db_user, passwd=db_pwd)
-query_com = "select localita, provincia, regione, coalesce(istat,'-'), coalesce(to_char(popolazione,'99,999,999'),'-') from dati_di_base.limiti_amministrativi where st_intersects(ST_Transform(ST_GeomFromText('POINT(%s %s)', %s), 32632), the_geom);" % (x, y, srid)
-results_com = None
-try:
-  results_com = con_db1.query(query_com).getresult()
-except Exception as e:
-  print str(e)
-finally:
-  con_db1.close()
+  select_tag = '<select id="srid" onChange="convert_srid(this.value)"> <option value="proj4326">WGS84 Lon/Lat</option> <option value="proj4326dd">WGS84 Lon/Lat DMS</option> <option value="proj32632">WGS84 UTM32N</option> <option value="proj4230">ED50 Lon/Lat </option><option value="proj4230dd">ED50 Lon/Lat DMS</option> <option value="proj23032">ED50 UTM32N</option> </select>'
 
-if results_com:
-  print "<h1>Comune: <b> %s, %s (%s) &nbsp ISTAT: %s Abitanti: %s \n</b></h1>" % (results_com[0][0], results_com[0][1], results_com[0][2], results_com[0][3], results_com[0][4])
+  print "<h1><span id='choose_srid'> &nbsp %s &nbsp &nbsp &nbsp</span><span id='coords'> %8.5f   %9.5f &nbsp</span></h1>" % (select_tag,x2,y2)
+  #print "<h1>%s: %8.0f   %9.0f   </h1>" % (geo1,x3,y3)
+
+
+
+def info_google():
+  try:
+    BASE_URL='https://maps.google.com/maps/api/elevation/json'
+    gurl=BASE_URL+"?locations="+str(y2)+","+str(x2)
+    response=simplejson.load(urllib2.urlopen(gurl))
+    elev=max(0,round(response['results'][0]['elevation'],0))
+    res =round(response['results'][0]['resolution'],0)
+    err = ""
+  except Exception as e:
+    elev=-999
+    res=-999
+    err = str(e)
+
+
+  ### Localita' - reverse geooding ###
+
+  ## Usando MAPZEN: deprecato da febbraio 2018
+  '''
+  try:
+    BASE_URL='https://search.mapzen.com/v1/reverse?api_key=mapzen-RWs47YQ'
+    url=BASE_URL+"&point.lat="+str(y2)+"&point.lon="+str(x2)+'&size=1'
+  #  print "<h1>Localita': <b> n.d. %s m asl %s </b>" % url,proxies
+    response=simplejson.load(urllib2.urlopen(url))
+    loc = response['features'][0]['properties']['label']
+    print "<h1>Localita': <b> %s\n</b> @%d m asl (dem = %d m)</h1>" % (loc, elev,res)
+  except:
+    print "<h1>Localita': <b> n.d. %s m asl </b>" % url
+  '''
+
+  ## Usando GOOGLE:
+  try:
+    BASE_URL='https://maps.google.com/maps/api/geocode/json?key=&'
+    url=BASE_URL+'latlng='+str(y2)+","+str(x2)
+    response=simplejson.load(urllib2.urlopen(url))
+    loc = response['results'][0]['formatted_address']
+    print "<h1>Localita': <b> %s\n</b> @%d m asl (dem = %d m)</h1>" % (loc, elev,res)
+  except Exception as e:
+    print e
+    print "<h1>Localita': <b> n.d. %s m asl </b>" % url
+
+
+  #try:
+  #  #BASE_URL = 'http://open.mapquestapi.com/nominatim/v1/search?format=json';
+  #  BASE_URL='http://maps.googleapis.com/maps/api/geocode/json'
+  #  url=BASE_URL+"?latlng="+str(y2)+","+str(x2)
+  #  response=simplejson.load(urllib2.urlopen(url))
+  #  #loc = response[0]['display_name'].split(',')
+  #  loc = response['results'][0]['formatted_address'].split(',')
+  #  #print "<h1>Localita': <b> %s - %s\n</b></h1>" % (loc[0].encode('ascii', 'replace'), loc[1].encode('ascii', 'replace'))
+  #  #print "<h1>Localita': <b> %s - %s\n</b></h1>" % (normalize('NFD', loc[0].decode('latin-1')), loc[1])
+  #  print "<h1>Localita': <b> %s - %s\n</b> @%d m asl (dem = %d m)</h1>" % (loc[0].decode('UTF-8'), loc[1].decode('UTF-8'), elev,res)
+  #except:
+  #  print "<h1>Localita': <b> n.d. %s m asl </b>" % url
+
+
+def info_db():
+  #### PRELEVO IL COMUNE DI INTERSEZIONE ####
+  con_db1 = pg.connect(dbname=db_name, host=db_host, user=db_user, passwd=db_pwd)
+  query_com = "select localita, provincia, regione, coalesce(istat,'-'), coalesce(to_char(popolazione,'99,999,999'),'-') from dati_di_base.limiti_amministrativi where st_intersects(ST_Transform(ST_GeomFromText('POINT(%s %s)', %s), 32632), the_geom);" % (x, y, srid)
+  results_com = None
+  try:
+    results_com = con_db1.query(query_com).getresult()
+  except Exception as e:
+    print str(e)
+  finally:
+    con_db1.close()
+
+  if results_com:
+    print "<h1>Comune: <b> %s, %s (%s) &nbsp ISTAT: %s Abitanti: %s \n</b></h1>" % (results_com[0][0], results_com[0][1], results_com[0][2], results_com[0][3], results_com[0][4])
+
+
+#A seconda della variabile stop_google scelgo quali informazioni mostrare nell'INTESTAZIONE
+if stop_google == None:
+  mostra_dataora()
+  converti_coordinate()
+  info_google()
+  info_db()
+elif stop_google == 'A':
+  #mostra_dataora()
+  pass
+
 
 
 ### FUNZIONE PER PRELEVARE IL VALORE DALLA CELLA RASTER XY ###
@@ -674,6 +714,33 @@ def atlante():
   print '</div>'
 
 
+### RASTER MAPSERVER ###
+def query_raster_MS(mapfile_path, rasters):
+  #import mapscript #dopo aggiornamento python se carico mapscript dopo le gdal via web ritorna un errore
+  mapfile2 = mapfile_path
+  m2 = mapscript.mapObj(mapfile2)
+  p2 = mapscript.pointObj(x, y)
+  #raster = rasters[0]
+  for raster in rasters:
+    layer2 = m2.getLayerByName(raster)
+    print layer2.name
+    layer2.queryByPoint( m2, p2, mapscript.MS_MULTIPLE, 500.0) ##tolleranza in unita mappa. Se <=0 si usa la tolleranza (in pixel) definita nel file MAP
+    results2 = layer2.getResults()
+    if results2:
+      for i in range(results2.numresults):
+        result2 = results2.getResult(i)
+    layer2.open()
+    s2 = layer2.getShape( result2 )
+    if results2:
+      for i in range(results2.numresults):
+        result2 = results2.getResult(i)
+        s2 = layer2.getShape( result2 )
+        for j in range(layer2.numitems):
+          print '%s: %s<br/>' % (layer2.getItem(j), s2.getValue(j))
+
+    layer2.close()
+
+
 
 #A questo punto creo i vari TAB a seconda del tipo di webgis:
 print "<div id='tabs'>"
@@ -775,6 +842,14 @@ elif active_queries==12: #interrogo raster DPC e previsioni FEWS a 72h senza Tip
     precipitazione("/var/www/html/common/DATA/raster/", stop_raster)
     precipitazione_prevista("/var/www/html/common/DATA/fews/anime_png/", stop_raster)
     print "</div>"
+elif active_queries==13: #interrogo raster tramite MapServer - DA SVILUPPARE
+    print "<ul><li><a href='#tabs-1'>Raster MS</a></li></ul>"
+    list_raster = ["limiti_comuni_italiani_MS1", "reticolo_idro_lm_MS1"]
+    #in questo caso DOVRESTI RIUSCIRE A RECUPERARE I LAYER VISIBILI FORNITI DA MS in modo da rendere questa parte ancora piu flessibile!!!!
+    print "<div id='tabs-1'>"
+    query_raster_MS("/var/www/IRIS_BASE/html/common/mapfiles/map900913.map", list_raster)
+    print "</div>"
+
 
 
 print '</div>'

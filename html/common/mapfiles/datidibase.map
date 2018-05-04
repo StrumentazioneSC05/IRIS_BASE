@@ -134,6 +134,57 @@ END #end layer limiti_comuni_italiani_MS2
 ##########fine prova WMS UNION o GROUP
 
 
+LAYER
+    GROUP "reticolo_idro_lm"
+    NAME "reticolo_idro_lm_MS1"
+    STATUS OFF
+    TYPE LINE
+    CONNECTIONTYPE POSTGIS
+    CONNECTION "host=localhost port=5432 dbname=iris_base user=webgis password=webgis$2013%"
+    PROCESSING "CLOSE_CONNECTION=DEFER" #sembra essere piu veloce da caricare come WFS...
+    #PROCESSING "ITEMS=dn"
+    DATA "the_geom from dati_di_base.cinaturali using unique id using srid=32632"
+
+    PROJECTION
+        "init=epsg:32632"
+    END
+    EXTENT 300000 4600000 700000 5200000
+    #MAXSCALEDENOM 500000
+    #MINSCALEDENOM 1000
+
+    METADATA
+        "ows_title"             "reticolo_idro_lm_MS1"
+        "ows_featureid"         "id"
+        "ows_srs"               "epsg:32632" ## REQUIRED, seems better if not 900913...
+        "ows_abstract"          "Reticolo idrografico Arpa Lombardia grande scala"
+        "ows_group_title"       "reticolo_idro_lm"
+
+        "gml_include_items"     "all" ## Optional (serves all attributes for layer)
+        "queryable"             "true"
+    END
+
+    DUMP true
+    TOLERANCE 5
+    TEMPLATE 'dummy' #l'importante e' scrivere qlcosa, soprattutto se si usa 'text/plain' come risposta
+
+    #FILTERITEM 'MAGNITUDO'
+    #FILTER (("tipo" IS NOT NULL) AND ("foglio_igm" IN ('TORINO','IMPERIA','GENOVA','CUNEO','MILANO','LUGANO','NA')))
+    #il valore -32 e' NO_DATA, ma fino a ZERO la sensibilita del radar e trascurabile
+    #CLASSITEM 'nome_ci_pd'
+    CLASSITEM 'objectid' #lo uso come prova per sommare i valori da mapscript-query wms --> in sviluppo!
+
+	CLASS
+        NAME 'Reticolo idrografico - dettagliato'
+        #EXPRESSION (([dn] < 95) AND ([dn] >= 0))
+        STYLE
+                #SYMBOL "circle"
+                SIZE 7.0
+                OUTLINECOLOR 255 0 0
+                COLOR 0 255 0
+        END
+    END
+END #end layer reticolo_idro_lm_MS1
+
 
 LAYER
         NAME "aree_allertamento"

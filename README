@@ -84,6 +84,9 @@ For example, for MapServer, could be necessary to launch:
  ausearch -c 'mapserv' --raw | audit2allow -M my-mapserv
  semodule -i my-mapserv.pp
 
+For query_raster.py to query the WMS:
+ ausearch -c 'query_raster.py' --raw | audit2allow -M my-queryrasterpy
+ semodule -i my-queryrasterpy.pp
 
 In any case, restart the httpd service:
 service httpd restart
