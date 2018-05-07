@@ -236,6 +236,7 @@ console.log("lat="+lat_rast+" e lon="+lon_rast); //in realta sono utm 900913
         
 
 	/* SELECT su WMS - IN SVILUPPO */
+	//Questo controllo pero' resta PARALLELO al precedente
 	mapPanel.map.addControl(selectCtrlWMS); //per la selezione degli elementi dei layers selezionabili
         selectCtrlWMS.activate();
 	//mapPanel.map.addControl(hoverCtrlWMS);

@@ -152,8 +152,10 @@ console.log(e);
                 }*/
                 ,queryVisible: true
         });
+	//Per abilitare questa selezione su WMS:
 	selectCtrlWMS.events.register("nogetfeatureinfo", this, showInfo);
         hoverCtrlWMS.events.register("getfeatureinfo", this, showInfo);
+	//Altro metodo per abilitare questa selezione:
         //mapPanel.map.addControl(selectCtrlWMS); //per la selezione degli elementi dei layers selezionabili
         //selectCtrlWMS.activate();
         //mapPanel.map.addControl(hoverCtrlWMS);
