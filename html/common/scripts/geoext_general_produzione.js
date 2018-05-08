@@ -170,7 +170,7 @@ map = new OpenLayers.Map('map', options);
                 }*/
         });
 	//Aggiungo il controller sul click in mappa solo se la variabile query_raster non esiste o non e' ZERO:
-	if (query_raster != '0') {
+	if (query_raster[0] != '0') {
 	    mapPanel.map.addControl(clickControl);
             clickControl.activate();
 	}

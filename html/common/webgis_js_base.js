@@ -107,7 +107,7 @@ var custom_layers="";
 custom_list = gup("custom_layers");
 if (custom_list!="") { custom_layers = custom_list.split(","); }
 //Setto una variabile se si vuole o meno attivare la query sui raster:
-var query_raster = gup("query_raster");
+var query_raster = gup("query_raster"); //difatto e' definibile da DB in base al servizio..
 
 //transforming point coordinates
 var lon_center = gup("lon");
