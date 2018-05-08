@@ -96,8 +96,8 @@ try:
     stop_google = None
 except:
     #SVILUPPO: provo a mettere una LETTERA al fondo se voglio ESCLUDERE TUTTA LA PAPPARDELLA sul richiamo del comune etc che prende tempo e in alcuni casi NON SERVE
-    active_queries = int(active_queries_url[:-1])
-    stop_google = active_queries_url[-1]
+    active_queries = int(active_queries_url[:-10])
+    stop_google = active_queries_url[-10:]
 #active_queries_list = active_queries.split(',')
 
 print "Content-type:text/html\r\n\r\n"
@@ -236,10 +236,21 @@ if stop_google == None:
   converti_coordinate()
   info_google()
   info_db()
-elif stop_google == 'A':
-  #mostra_dataora()
-  pass
-
+#per non sconvolgere il codice precedente se tutto stop_google vale X mostro tutta l'intestazione:
+elif ''.join(set(stop_google)) == 'X':
+  mostra_dataora()
+  converti_coordinate()
+  info_google()
+  info_db()
+else:
+  if 'A' in stop_google:
+    mostra_dataora()
+  if 'B' in stop_google:
+    converti_coordinate()
+  if 'C' in stop_google:
+    info_google()
+  if 'D' in stop_google:
+    info_db()
 
 
 ### FUNZIONE PER PRELEVARE IL VALORE DALLA CELLA RASTER XY ###

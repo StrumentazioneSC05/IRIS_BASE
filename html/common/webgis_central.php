@@ -28,6 +28,71 @@ else $devel = 0;
 //Carico le configurazioni di base da un file esterno:
 include_once('config_iris.php');
 
+//Tengo traccia degli accessi autenticati
+$indicesServer = array('PHP_SELF', 
+'argv', 
+'argc', 
+'GATEWAY_INTERFACE', 
+'SERVER_ADDR', 
+'SERVER_NAME', 
+'SERVER_SOFTWARE', 
+'SERVER_PROTOCOL', 
+'REQUEST_METHOD', 
+'REQUEST_TIME', 
+'REQUEST_TIME_FLOAT', 
+'QUERY_STRING', 
+'DOCUMENT_ROOT', 
+'HTTP_ACCEPT', 
+'HTTP_ACCEPT_CHARSET', 
+'HTTP_ACCEPT_ENCODING', 
+'HTTP_ACCEPT_LANGUAGE', 
+'HTTP_CONNECTION', 
+'HTTP_HOST', 
+'HTTP_REFERER', 
+'HTTP_USER_AGENT', 
+'HTTPS', 
+'REMOTE_ADDR', 
+'REMOTE_HOST', 
+'REMOTE_PORT', 
+'REMOTE_USER', 
+'REDIRECT_REMOTE_USER', 
+'SCRIPT_FILENAME', 
+'SERVER_ADMIN', 
+'SERVER_PORT', 
+'SERVER_SIGNATURE', 
+'PATH_TRANSLATED', 
+'SCRIPT_NAME', 
+'REQUEST_URI', 
+'PHP_AUTH_DIGEST', 
+'PHP_AUTH_USER', 
+'PHP_AUTH_PW', 
+'AUTH_TYPE', 
+'PATH_INFO', 
+'ORIG_PATH_INFO') ; 
+//per vedere il contenuto delle varie informazioni estraibili dal server/client:
+/*echo '<table cellpadding="10">' ; 
+foreach ($indicesServer as $arg) { 
+    if (isset($_SERVER[$arg])) { echo '<tr><td>'.$arg.'</td><td>' . $_SERVER[$arg] . '</td></tr>' ; } 
+    else { echo '<tr><td>'.$arg.'</td><td>-</td></tr>'; } 
+}
+echo '</table>' ;*/
+//Su DB salvo solo alcune informazioni di accesso:
+$conn_httpd = pg_connect($conn_string_edit);
+if (!$conn_httpd) { // Check if valid connection
+  echo "Error Connecting to database " . pg_last_error();
+  exit;
+}
+if (!isset($_SERVER['REMOTE_USER'])) {
+  $query_httpd = "INSERT INTO config.httpd_access (username, webgis_type, remote_addr, php_self) VALUES ('anonym', '" . $webgis_type . "', '" . $_SERVER['REMOTE_ADDR'] . "', '" . $_SERVER['PHP_SELF'] . "');";
+} else {
+  $query_httpd = "INSERT INTO config.httpd_access (username, webgis_type, remote_addr, php_self) VALUES ('" . $_SERVER['REMOTE_USER'] . "', '" . $webgis_type . "', '" . $_SERVER['REMOTE_ADDR'] . "', '" . $_SERVER['PHP_SELF'] . "');";
+}
+$result_httpd = pg_query($query_httpd);
+// free memory
+pg_free_result($result_httpd);
+pg_close($conn_httpd);
+
+
 /*
  * PROVO A SETTARE DEI COOKIES!!!!
 */

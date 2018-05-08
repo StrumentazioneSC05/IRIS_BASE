@@ -112,7 +112,7 @@ else {
 	echo $zoom_def;
 
 	//Creo la variabile JS per il clic su mappa:
-	$query_raster = "<script> query_raster = " . $query_map_idx . "; </script>";
+	$query_raster = "<script> query_raster = '" . $query_map_idx . "'; </script>";
 	echo $query_raster;
 
 /* ************ TOOLS ************* */
