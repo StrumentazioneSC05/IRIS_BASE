@@ -58,11 +58,18 @@ AMM_reg.setVisibility(false);
 var url_valanghe_arpa = "http://webgis.arpa.piemonte.it/ags101free/services/geologia_e_dissesto/SIVA/MapServer/WMSServer";
 var valanghe_wms = new OpenLayers.Layer.WMS(default_layer_name, url_valanghe_arpa,
         //{layers:"Aree indagate dal SIVa,Opere di difesa,Informazioni storiche,Valanghe da fotointerpretazione,Zone pericolose,Pericolo localizzato,Valanghe con dati associati"
-	{layers: "OPERE di DIFESA,Valanghe documentate,Valanghe non documentate,PERICOLO LOCALIZZATO,ZONE PERICOLOSE,Valanghe da modello e verifiche,Valanghe solo da modello,Segnalazioni valanghe non cartografabili,Valanghe nel cuneese da Archivio Storico Topografico Valanghe ,Macroaree ed Enti proprietari,Comuni"
-	, transparent:true, format: "image/png"}
-	,{isBaseLayer:false, singleTile:false});
+	{layers: "OPERE di DIFESA,Valanghe documentate,Valanghe non documentate,PERICOLO LOCALIZZATO,ZONE PERICOLOSE,Valanghe da modello e verifiche,Valanghe solo da modello,Segnalazioni valanghe non cartografabili,Valanghe nel cuneese da Archivio Storico Topografico Valanghe,Macroaree ed Enti proprietari,Comuni"
+	, transparent:true, version: '1.3.0'
+	},{
+	isBaseLayer:false, singleTile:false});
 valanghe_wms.setVisibility(false);
 valanghe_wms.projection = OL_3857;
+
+//var wms_arpa = new OpenLayers.Layer.ArcGIS93Rest('Sfondo Arpa Piemonte',
+//  "http://webgis.arpa.piemonte.it/ags101free/rest/services/topografia_dati_di_base/Topografica_Base_Multiscala_WM/MapServer/export"
+//  ,{sphericalMercator: true}
+//);
+
 
 var url_fasce_fluv = "http://geomap.reteunitaria.piemonte.it/ws/vtdifsuolo/rp-01/fascpaiwms/wms_vtdifsuolo_fasce_fluviali?";
 var fasce_fluv_wms = new OpenLayers.Layer.WMS(default_layer_name, url_fasce_fluv,
@@ -72,8 +79,11 @@ fasce_fluv_wms.projection = OL_3857;
 
 var url_mappe_alluvioni = "http://osgis2.csi.it/qgs/qgis_cloud/direttiva_alluvioni?"
 var mappe_alluvioni_wms = new OpenLayers.Layer.WMS(default_layer_name, url_mappe_alluvioni,
-        {layers:"Scenari di alluvioni - Pericolosita' - 2015", format:'image/png', transparent: true, version: '1.3.0'}
-	,{isBaseLayer:false, singleTile: false, displayInLayerSwitcher: false});
+        {layers:"Scenari di alluvioni - Pericolosita' - 2015", transparent: true
+	//, format:'image/png', version: '1.3.0'}
+	, isBaseLayer:false, singleTile: false, displayInLayerSwitcher: false}
+	//,{isBaseLayer:false, singleTile: false, displayInLayerSwitcher: false} //per qualche motivo mettere queste opzioni tra altre graffe NON MOSTRAi LA LEGENDA! per quanto sembrerebbe la sintassi corretta
+	);
 mappe_alluvioni_wms.setVisibility(false);
 mappe_alluvioni_wms.projection = OL_3785;
 
