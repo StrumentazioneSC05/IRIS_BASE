@@ -123,14 +123,19 @@ console.log(e);
         );
         //mapPanel.map.addLayer(highlightLayerWMS); //per provare ad evidenziare gli elementi aggiungo il relativo layer alla mappa. per il momento la funzione NON funziona per cui commento
         selectCtrlWMS = new OpenLayers.Control.WMSGetFeatureInfo({
-                url: urlMS_loc,
+                //url: urlMS_loc, //If omitted, all map WMS layers with a url that matches this url or layerUrls will be considered
+		layerUrls: [urlMS_loc, url_valanghe_arpa],
                 title: 'Identify features by clicking',
-                layers: [limiti_comuni_MS], //If omitted, all map WMS layers with a url that matches this url or layerUrls will be considered
+                layers: [limiti_comuni_MS, valanghe_wms], //If omitted, all map WMS layers with a url that matches this url or layerUrls will be considered. In realta non pare vero perche se commento non riconosce piu' il MapServer interno
                 queryVisible: true //If true, filter out hidden layers when searching the map for layers to query
-                //,infoFormat: 'text/plain' //se text/html occorre fornire al file map/layer un template adeguato
-                //output:'features',
-        	//infoFormat:'application/json',
+		,drillDown: false //Drill down over all WMS layers in the map.  When using drillDown mode, hover is not possible, and an infoFormat that returns parseable features is required
+		//,maxFeatures: 10 //pare che se e' omesso il server risponda con 1 sola feature
+                //,output:'features'
 	        //format: new OpenLayers.Format.JSON,
+	        //If you are using drillDown mode and have multiple servers that do not share a common infoFormat, you can override the control’s infoFormat by providing an INFO_FORMAT parameter in your OpenLayers.Layer.WMS instance
+	        //,infoFormat: 'text/plain' //se text/html occorre fornire al file map/layer un template adeguato
+	        //,infoFormat:'application/geojson'
+	        //,infoFormat: 'text/html'
                 ,infoFormat: 'application/vnd.ogc.gml' //per recuperare le info in maniera piu' schematica
                 ,vendorParams: {map: urlMS_map}
 		//,clickCallback: "rightclick" //non viene riconsciuto
@@ -142,29 +147,57 @@ console.log(e);
                 url: urlMS_loc,
                 title: 'Identify features by hover',
                 layers: [limiti_comuni_MS],
+		queryVisible: true, //If true, filter out hidden layers when searching the map for layers to query
                 hover: true,
-                infoFormat: 'application/vnd.ogc.gml'
-                ,vendorParams: {map: urlMS_map}
+                infoFormat: 'application/vnd.ogc.gml',
+                vendorParams: {map: urlMS_map}
+		//,eventListeners : {
+                //    getfeatureinfo : function(event) { showInfo(event); }
+                //}
                 // defining a custom format options here
                 /*,formatOptions: {
                     typeName: 'water_bodies',
                     featureNS: 'http://www.openplans.org/topp'
                 }*/
-                ,queryVisible: true
         });
-	//Per abilitare questa selezione su WMS:
-	selectCtrlWMS.events.register("nogetfeatureinfo", this, showInfo);
-        hoverCtrlWMS.events.register("getfeatureinfo", this, showInfo);
+	//Per abilitare questa selezione su WMS - oppure indiche un eventListeners nel Control:
+	//selectCtrlWMS.events.register("nogetfeatureinfo", this, showInfo);
+        //hoverCtrlWMS.events.register("getfeatureinfo", this, showInfo);
 	//Altro metodo per abilitare questa selezione:
         //mapPanel.map.addControl(selectCtrlWMS); //per la selezione degli elementi dei layers selezionabili
         //selectCtrlWMS.activate();
         //mapPanel.map.addControl(hoverCtrlWMS);
         //hoverCtrlWMS.activate();
 
+//NIENTE da fare al momento e' IMPOSSIBILE interrogare WMS esterni perlomeno di Arpa insieme a quelli interni. Per qualche motivo al click prende un solo URL e poi anche se il layer e' spento non si aggiorna
         function showInfo(evt) {
-//console.log(evt);
+console.log(evt);
+	  if (evt.object.url != urlMS_loc) {
+		console.log('ok ' + evt.object.url);
+		visible_layers = mapPanel.map.getLayersBy("visibility", true);
+//console.log(visible_layers);
+		for (var i=0; i<visible_layers.length; i++) {
+		//unico modo per ritrovare il WMS esterno e' cercarlo tra i layer visibili e costruire da me la finestra di query, poiche' altrimenti il servizio Arpa con ArcGis restituisce un errore, sebbene da console la url che compone sia corretta
+		  if (visible_layers[i].url == evt.object.url && visible_layers[i].isBaseLayer == false && visible_layers[i].params) {
+		    URL = visible_layers[i].url;
+		    LAYERS = visible_layers[i].params.LAYERS;
+		    STYLES = visible_layers[i].params.STYLES;
+		    SERVICE = visible_layers[i].params.SERVICE;
+		    VERSION = visible_layers[i].params.VERSION;
+		    FORMAT = visible_layers[i].params.FORMAT;
+		    INFO_FORMAT = evt.object.infoFormat;
+		    INFO_FORMAT = 'text/html'; //nel caso di WMS esterno lo recupero sempre come HTML
+		    TYPE = evt.type;
+		    BBOX = mapPanel.map.getExtent().toString();
+		    CRS = visible_layers[i].params.CRS;
+		    MAP = evt.object.vendorParams; //in teoria non mi serve a meno che non richiamo MapServer esterni...
+		    query_url = URL + '?LAYERS=' + LAYERS + '&QUERY_LAYERS=' + LAYERS + '&STYLES=' + STYLES + '&SERVICE=' + SERVICE + '&VERSION=' + VERSION + '&REQUEST=' + TYPE + '&FEATURE_COUNT=10&FORMAT=' + FORMAT + '&INFO_FORMAT=' + INFO_FORMAT + '&I='+ Math.round(evt.xy.x) + '&J=' + Math.round(evt.xy.y) + '&BBOX=' + BBOX + '&CRS=' + CRS + '&HEIGHT=340&WIDTH=1200';
+		    window.open(query_url, '_blank');
+		  }
+		}
+	  }
           //Se effettivamente ho selezionato qualcosa:
-          if (evt.features && evt.features.length) {
+          else if (evt.features && evt.features.length) {
              //ricostruisco in maniera fittizia alcune variabili utili per riciclare la funzione createPopup:
              evt.feature = evt.features[0]; //prendo solo il PRIMO elemento selezionato
              //non riesce ancora a posizionare la popup all'altezza dell'elemento...

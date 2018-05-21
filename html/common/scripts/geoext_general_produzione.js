@@ -239,8 +239,8 @@ console.log("lat="+lat_rast+" e lon="+lon_rast); //in realta sono utm 900913
 	//Questo controllo pero' resta PARALLELO al precedente
 	mapPanel.map.addControl(selectCtrlWMS); //per la selezione degli elementi dei layers selezionabili
         selectCtrlWMS.activate();
-	//mapPanel.map.addControl(hoverCtrlWMS);
-	//hoverCtrlWMS.activate();
+	mapPanel.map.addControl(hoverCtrlWMS); //forse l'hover e' meglio anche se cmq si sovrappone ad altri eventuali hover
+	hoverCtrlWMS.activate();
 
 
 	//ZOOM:
