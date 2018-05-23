@@ -161,8 +161,8 @@ def converti_coordinate():
 
 def info_google():
   try:
-    BASE_URL='https://maps.google.com/maps/api/elevation/json'
-    gurl=BASE_URL+"?locations="+str(y2)+","+str(x2)
+    BASE_URL='https://maps.google.com/maps/api/elevation/json?key='
+    gurl=BASE_URL+"&locations="+str(y2)+","+str(x2)
     response=simplejson.load(urllib2.urlopen(gurl))
     elev=max(0,round(response['results'][0]['elevation'],0))
     res =round(response['results'][0]['resolution'],0)
@@ -190,8 +190,8 @@ def info_google():
 
   ## Usando GOOGLE:
   try:
-    BASE_URL='https://maps.google.com/maps/api/geocode/json?key=&'
-    url=BASE_URL+'latlng='+str(y2)+","+str(x2)
+    BASE_URL='https://maps.google.com/maps/api/geocode/json?key='
+    url=BASE_URL+'&latlng='+str(y2)+","+str(x2)
     response=simplejson.load(urllib2.urlopen(url))
     loc = response['results'][0]['formatted_address']
     print "<h1>Localita': <b> %s\n</b> @%d m asl (dem = %d m)</h1>" % (loc, elev,res)
