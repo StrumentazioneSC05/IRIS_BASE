@@ -160,7 +160,10 @@ map = new OpenLayers.Map('map', options);
                         var dest = new Proj4js.Proj("EPSG:32632"); //UTM WGS84
                         //Recuperiamo direttamente i dati dal tiff in 900913
                         var pp1_rast = p1_rast;
-                        var uri = root_dir_html+"/cgi-bin/query_raster.py?x="+Math.round(pp1_rast.x)+"&y="+Math.round(pp1_rast.y)+"&srid="+srid+"&webgis="+webgis+"&root_dir_html="+root_dir_html+"&active_queries="+query_raster;
+			if (query_raster == 99) 
+                            var uri = root_dir_html+"/common/scripts/report_evento.php?x="+Math.round(pp1_rast.x)+"&y="+Math.round(pp1_rast.y)+"&srid="+srid+"&webgis="+webgis+"&root_dir_html="+root_dir_html+"&active_queries="+query_raster;
+			else
+			    var uri = root_dir_html+"/cgi-bin/query_raster.py?x="+Math.round(pp1_rast.x)+"&y="+Math.round(pp1_rast.y)+"&srid="+srid+"&webgis="+webgis+"&root_dir_html="+root_dir_html+"&active_queries="+query_raster;
                         window.open(uri,'radar','location=0,width=950,height=650,toolbar=0,resizable=0,left=200,top=200');
                 }
 		/*,eventMethods: {
@@ -239,8 +242,8 @@ console.log("lat="+lat_rast+" e lon="+lon_rast); //in realta sono utm 900913
 	//Questo controllo pero' resta PARALLELO al precedente
 	mapPanel.map.addControl(selectCtrlWMS); //per la selezione degli elementi dei layers selezionabili
         selectCtrlWMS.activate();
-	mapPanel.map.addControl(hoverCtrlWMS); //forse l'hover e' meglio anche se cmq si sovrappone ad altri eventuali hover
-	hoverCtrlWMS.activate();
+	//mapPanel.map.addControl(hoverCtrlWMS); //forse l'hover e' meglio anche se cmq si sovrappone ad altri eventuali hover
+	//hoverCtrlWMS.activate();
 
 
 	//ZOOM:

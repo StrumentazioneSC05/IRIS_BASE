@@ -13,6 +13,7 @@
 var ctrl, toolbarItems = [], action, actions = {}, area, misura_lunghezza, misura_area, misura_heading;
 var multiselect_object = {};
 var multiselect_layers = {};
+var query_raster_original_option = query_raster;
 
 //queste funzioni e queste variaibli ho bisogno che stiano fuori dalla macrofunzione toolbar_tools perche' devo usarle da altri script:
 var ttips;
@@ -481,7 +482,7 @@ toolbarItems.push(new Ext.Toolbar.Spacer({width: 5}));
                 ,checked: false
                 ,xtype:'tbbutton', cls:'x-btn-icon'
                 ,icon:root_dir_html+'/common/icons/toolbar_icons/multiselect.png', scale:'medium'
-                //,hidden:true
+                ,hidden: multiselect_hidden
         });
         actions["select"] = multiselect_control;
 //toolbarItems.push(select_control);
@@ -1524,15 +1525,24 @@ if (devel==1) {
 var evento_hidden = false; //dovrebbe stare su DB
 var inserisci_evento = new Ext.Button({
         text: "",
-        handler: tickets_panel,
+	handler: function(e) {
+	  ispressed = e.pressed;
+console.log(ispressed);
+	  if (ispressed==true) {
+		query_raster = 99;
+	  }
+	  else {
+		query_raster = query_raster_original_option;
+	  }
+	console.log(query_raster);
+	},
+	pressed: false,
+	enableToggle: true,
+	checked: false,
         tooltip: "aggiungi un evento"
-        ,xtype:'tbbutton'
-        ,cls: 'x-btn-icon'
-        ,icon: root_dir_html+'/common/icons/toolbar_icons/query_map_star.png'
-        ,scale:  'medium'
+        ,xtype:'tbbutton', cls:'x-btn-icon', icon: root_dir_html+'/common/icons/toolbar_icons/query_map_star.png', scale:'medium'
         ,hidden: evento_hidden
 });
-//toolbarItems.push(tickets);
 
 
 //Sviluppo menu con actions - OK!
