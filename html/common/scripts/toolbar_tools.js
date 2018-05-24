@@ -1512,124 +1512,32 @@ toolbarItems.push(tickets);
 toolbarItems.push("-");
 
 
-////////////// MEASURE TOOLS //////////////////////
-//In teoria sarebbero dei tools di default ma per mantenere l'ordine sulla toolbar li devo scrivere qui in fondo:
-//// TEST SELEZIONE MULTIPLA ////
-//if (multiselect_hidden==false)  toolbarItems.push(multiselect_control);
-//toolbarItems.push(misura_lunghezza);
-//toolbarItems.push(misura_area);
-//toolbarItems.push(misura_heading);
-
-if (devel==1) {
-
-//Sviluppo pulsante per attivare una diversa azione al clic su mappa:
+///////// PANNELLO REPORT EVENTO SU MAPPA: ///////
+//Per abilitare un'azione diversa da click su mappa
 var report_evento = new Ext.Button({
         text: "",
-	handler: function(e) {
-	  ispressed = e.pressed;
-	  if (ispressed==true) {
-		query_raster = 99;
-	  }
-	  else {
-		query_raster = query_raster_original_option;
-	  }
-	},
-	pressed: false,
-	enableToggle: true,
-	checked: false,
+        handler: function(e) {
+          ispressed = e.pressed;
+          if (ispressed==true) {
+                query_raster = 99;
+          }
+          else {
+                query_raster = query_raster_original_option;
+          }
+        },
+        pressed: false,
+        enableToggle: true,
+        checked: false,
         tooltip: "aggiungi un evento"
         ,xtype:'tbbutton', cls:'x-btn-icon', icon: root_dir_html+'/common/icons/toolbar_icons/query_map_star.png', scale:'medium'
         ,hidden: report_evento_hidden
 });
 
 
-//Sviluppo menu con actions - OK!
-menu_extjs = new Ext.menu.Menu({
-  shadow: false,
-  enableKeyNav: false,
-  iconCls: 'no-icon',
-  plain: true,
-  showSeparator: false, //per non mostrare la icona separatrice a sinistra, ma non funziona
-  xtype: 'menu',
-  listeners: {
-          mouseover: function(){
-                hideTask_misure.cancel();
-          },
-          mouseout: function(){
-                hideTask_misure.delay(250);
-          }
-          /*,click: function() {
-		console.log(this);
-		var check_items = this.items.items;
-		for (var i=0; i<check_items.length; i++) {
-		  //if (check_items[i].checked==true) check_items[i].setChecked(false);
-		  console.log(check_items[i].checked);
-		}
-	  }
-	  ,itemclick: function() {
-                console.log(this);
-	  }*/
-  }
-  ,items: {
-	xtype: 'buttongroup',
-        //title: 'User options',
-        autoWidth: true,
-        columns: 1,
-        defaults: {
-            xtype: 'button',
-            scale: 'large',
-            width: '100%',
-            iconAlign: 'left'
-        },
-        items: [
-    new Ext.Button(actions["distanza"]),
-    new Ext.Button(actions["area"]),
-    new Ext.Button(actions["heading"])
-  ]
-  }
-});
-//menu_extjs.add({iconCls: 'no-icon', onClick: new Ext.Button(actions["area"])});
-//menu_extjs.add(new Ext.Button(actions["distanza"]));
-//In questo modo NON si ATTIVANO!
-//toolbarItems.push({
-  //text: "menu",
-  /*menu: new Ext.menu.Menu({ //non si attiva niente al click
-    items: [
-	new Ext.menu.CheckItem(actions["distanza"]), //niente da fare il CheckItem una volta cliccato non si declicca piu'
-	actions["area"],
-        actions["heading"]
-    ]
-  })*/
-  //questa funziona ma fa vedere delle cione strane nella colonna a sinistra
-  /*
-  menu: [
-    new Ext.Button(actions["distanza"]),
-    new Ext.Button(actions["area"]),
-    new Ext.Button(actions["heading"])
-  ] // <-- Add the action directly to a menu
-  */
-  //prove per togliere l'icona creando un semplice item ma come attivare l'azione al click su item??
-  /*
-  menu: new Ext.menu.Menu({
-    iconCls: 'no-icon',
-    plain: true,
-    showSeparator: false, //per non mostrare la icona separatrice a sinistra, ma non funziona
-    items: [
-	new Ext.Button(actions["distanza"]),
-	{
-	xtype: 'button', text: 'Area',
-// controller: new Ext.Button(actions["area"]), //non fa niente
-// handler: new Ext.Button(actions["area"]) //da errore m.fireFn.apply is not a function
-// listeners: {click: actions["area"]}  //da errore m.fireFn.apply is not a function
-	}
-    ]
-  })*/
-  //menu: menu_extjs //QUESTO SEMBRA FUNZIONARE!!
-//});
 
+////////////// MEASURE TOOLS //////////////////////
 
-  //provo con un pulsante:
-//In questo modo INVECE restano SEMPRE ATTIVI una volta cliccati!
+//Le funzioni che in qualche modo interagiscono con la mappa le raggruppo in un menu a icone in fondo alla toolbar, aggiungendole dunque di default al servizio:
 var misure_link = new Ext.Button({
     //text: 'Misure',
     tooltip: {text:'', title:'Azioni su mappa'},
@@ -1670,16 +1578,6 @@ var misure_link = new Ext.Button({
             iconAlign: 'left'
         },
         items: [
-	/*
-	  new Ext.menu.CheckItem(actions["distanza"]),
-	  new Ext.menu.CheckItem(actions["area"]),
-          new Ext.menu.CheckItem(actions["heading"])
-	  ,{
-                text: 'I like Ext',
-                checked: false,       // when checked has a boolean value, it is assumed to be a CheckItem
-                click: actions["distanza"]
-            }
-	*/
 	  new Ext.Button(actions["distanza"]),
 	  new Ext.Button(actions["area"]),
 	  new Ext.Button(actions["heading"]),
@@ -1693,12 +1591,13 @@ var misure_link = new Ext.Button({
 var hideTask_misure = new Ext.util.DelayedTask(misure_link.hideMenu, misure_link);
 toolbarItems.push(misure_link);
 
+if (devel==1) {
+//eventuali funzioni in sviluppo da testare inserendo in url &devel=1
+
 }
 else {
-  toolbarItems.push(multiselect_control);
-  toolbarItems.push(misura_lunghezza);
-  toolbarItems.push(misura_area);
-  toolbarItems.push(misura_heading);
+//eventuali funzoini non in sviluppo che voglio mostrare quando non sono in modalita devel=1
+
 }
 
 
