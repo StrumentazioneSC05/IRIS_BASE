@@ -164,7 +164,9 @@ map = new OpenLayers.Map('map', options);
                             var uri = root_dir_html+"/common/scripts/report_evento.php?x="+Math.round(pp1_rast.x)+"&y="+Math.round(pp1_rast.y)+"&srid="+srid+"&webgis="+webgis+"&root_dir_html="+root_dir_html+"&active_queries="+query_raster;
 			else
 			    var uri = root_dir_html+"/cgi-bin/query_raster.py?x="+Math.round(pp1_rast.x)+"&y="+Math.round(pp1_rast.y)+"&srid="+srid+"&webgis="+webgis+"&root_dir_html="+root_dir_html+"&active_queries="+query_raster;
-                        window.open(uri,'radar','location=0,width=950,height=650,toolbar=0,resizable=0,left=200,top=200');
+			//Apro una finestra solo se la variabile query_raster non e' ZERO:
+			if (query_raster[0] != '0')
+                            window.open(uri,'radar','location=0,width=950,height=650,toolbar=0,resizable=0,left=200,top=200');
                 }
 		/*,eventMethods: {
         	    'rightclick': function (e) { //non viene riconosciuto
@@ -173,10 +175,11 @@ map = new OpenLayers.Map('map', options);
                 }*/
         });
 	//Aggiungo il controller sul click in mappa solo se la variabile query_raster non esiste o non e' ZERO:
-	if (query_raster[0] != '0') {
+	//In realta' volendo modificare in alcuni casi il controller sul click su mappa devo aggiungere clickControl in ogni caso
+	//if (query_raster[0] != '0') {
 	    mapPanel.map.addControl(clickControl);
             clickControl.activate();
-	}
+	//}
 
 /*SPENGO QUESTA FUNZIONE PER QUANTO FUNZIONASSE BENE, PERO' RALLENTA UN PO' IL SISTEMA
 	//Provo ad aggiungere un controllo sull'HOVER al momento solo su UN LAYER ben definito per un TOOOLTIP che BUCA tutto il layer in modo da intercettare tutti i poligoni eventualmente sovrapposti:

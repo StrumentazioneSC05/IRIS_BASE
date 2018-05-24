@@ -1522,26 +1522,23 @@ toolbarItems.push("-");
 if (devel==1) {
 
 //Sviluppo pulsante per attivare una diversa azione al clic su mappa:
-var evento_hidden = false; //dovrebbe stare su DB
-var inserisci_evento = new Ext.Button({
+var report_evento = new Ext.Button({
         text: "",
 	handler: function(e) {
 	  ispressed = e.pressed;
-console.log(ispressed);
 	  if (ispressed==true) {
 		query_raster = 99;
 	  }
 	  else {
 		query_raster = query_raster_original_option;
 	  }
-	console.log(query_raster);
 	},
 	pressed: false,
 	enableToggle: true,
 	checked: false,
         tooltip: "aggiungi un evento"
         ,xtype:'tbbutton', cls:'x-btn-icon', icon: root_dir_html+'/common/icons/toolbar_icons/query_map_star.png', scale:'medium'
-        ,hidden: evento_hidden
+        ,hidden: report_evento_hidden
 });
 
 
@@ -1687,7 +1684,7 @@ var misure_link = new Ext.Button({
 	  new Ext.Button(actions["heading"]),
 	  new Ext.menu.Separator,
 	  new Ext.Button(actions["select"]) //multiselect
-	  , inserisci_evento
+	  , report_evento
         ]
       }
     }

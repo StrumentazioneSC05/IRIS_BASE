@@ -138,6 +138,7 @@ else {
 	var split_link_hidden = true;
 	var multiselect_hidden = true;
 	var combo_layers_hidden = true;
+	var report_evento_hidden = true;
 EOT;
 	$tools_def .= "</script>";
 	echo $tools_def;
