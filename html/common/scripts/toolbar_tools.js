@@ -905,6 +905,7 @@ function info_panel() {
 	var panel_expo1 = new Ext.Panel({title:"Help", html: content_panel_expo1});
 	var panel_tfp = new Ext.Panel({title:"Help", html: content_panel_tfp});
 	var panel_expo2 = new Ext.Panel({title:"Crediti", html: content_panel_expo2});
+	var panel_nivo = new Ext.Panel({title:"Help", html: content_panel_nivo});
 	//var panel3 = new Ext.Panel({title:"Credits", html: content_panel3});
 	if (webgis=="expo2015") {
 	    items_panels = [panel_expo2, panel_expo1];
@@ -913,7 +914,7 @@ function info_panel() {
             items_panels = [panel_expo2, panel_tfp];
         }
 	else if (webgis=="nivologia") {
-            items_panels = [panel2, panel_expo1];
+            items_panels = [panel2, panel_nivo];
 	}
 	else if (webgis=="areu118") {
             items_panels = [panel1, panel_expo2];
@@ -1694,7 +1695,7 @@ toolbarItems.push(misure_link);
 
 }
 else {
-  if (multiselect_hidden==false)  toolbarItems.push(multiselect_control);
+  toolbarItems.push(multiselect_control);
   toolbarItems.push(misura_lunghezza);
   toolbarItems.push(misura_area);
   toolbarItems.push(misura_heading);

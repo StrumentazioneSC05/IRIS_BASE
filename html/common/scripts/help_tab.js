@@ -31,6 +31,12 @@ var albumid = '5734516524385978673';\
 <a href='"+root_dir_html+"/common/docs/guida_webgis_ARPA.pdf' target='_blank'> Guida all'uso dell'interfaccia WebGIS</a>\
 </p>";
 
+
+var help_tab_nivo = "<center>\
+<iframe width='560' height='315' src='https://www.youtube.com/embed/63DTLEoeQN8?rel=0' frameborder='0' allow='autoplay; encrypted-media' allowfullscreen></iframe>\
+</center>";
+
+
 var help_tab_tfp = "<script>\
 var albumid = '5734516524385978673';\
 </script>\

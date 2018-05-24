@@ -14,6 +14,9 @@ var content_panel2 = credit_tab;
 var content_panel_expo1 = help_tab_expo;
 var content_panel_expo2 = credit_tab_expo;
 
+//  SERVIZIO NIVOLOGIA  //
+var content_panel_nivo = help_tab_nivo;
+
 //  SEZIONE TFP  //
 var content_panel_tfp = help_tab_tfp;
 
