@@ -1,0 +1,90 @@
+/*
+Istruzioni per aggiornare IRIS aggiungendo le funzionalità extra al clic su mappa:
+- scelta di quali informazioni mostrare nell'intestazione della finestra di apertura al clic su mappa. In alcuni casi difatti la chiamata al DB e a google risulta superflua oltrechè dispendiosa in termini di risorse.
+*/
+
+
+CREATE TABLE config.webgis_query_map_extra
+(
+  query_map_idx character(1) NOT NULL,
+  query_description character varying(120),
+  CONSTRAINT webgis_query_map_extra_pkey PRIMARY KEY (query_map_idx)
+);
+ALTER TABLE config.webgis_query_map_extra OWNER TO postgres;
+GRANT ALL ON TABLE config.webgis_query_map_extra TO postgres;
+GRANT SELECT ON TABLE config.webgis_query_map_extra TO webgis_r;
+COMMENT ON TABLE config.webgis_query_map_extra IS 'funzioni da attivare al click su mappa - scenari di attivazione dello script query_raster.py solo per intestazione';
+
+
+COPY config.webgis_query_map_extra FROM STDIN DELIMITER E'\t';
+A	mostro dataora
+B	mostro strumento conversione coordinate
+C	mostra info da google
+D	mostra info comune da DB
+\.
+
+
+ALTER TABLE config.webgis_indici ADD COLUMN query_map_extra_idx character varying(10)[];
+
+
+CREATE OR REPLACE RULE query_map_extra_ins AS
+    ON INSERT TO config.webgis_indici
+   WHERE NOT new.query_map_extra_idx <@ (( SELECT array_agg(webgis_query_map_extra.query_map_idx)::character varying[] AS array_agg
+           FROM config.webgis_query_map_extra)) DO INSTEAD NOTHING;
+		   
+		   
+CREATE OR REPLACE RULE query_map_extra_upd AS
+    ON UPDATE TO config.webgis_indici
+   WHERE NOT new.query_map_extra_idx <@ (( SELECT array_agg(webgis_query_map_extra.query_map_idx)::character varying[] AS array_agg
+           FROM config.webgis_query_map_extra)) DO INSTEAD NOTHING;
+		   
+
+DROP VIEW config.v_webgis_general_config;
+CREATE OR REPLACE VIEW config.v_webgis_general_config AS 
+ SELECT webgis_indici.webgis_name,
+    webgis_indici.webgis_idx,
+    webgis_indici.zoom_center,
+    webgis_indici.lon_center,
+    webgis_indici.lat_center,
+    webgis_indici.query_map_idx || rpad(COALESCE(array_to_string(webgis_indici.query_map_extra_idx, ''::text), ''::character varying::text), 10, 'X'::text) AS query_map_idx,
+    webgis_indici.baselayers,
+    webgis_indici.collapsed_grid,
+    webgis_indici.attivo,
+    webgis_ol_layers.store_definition AS store_grid,
+    webgis_ol_layers.column_definition AS columns_grid,
+    webgis_ol_layers.grid_title AS title_grid,
+    webgis_tools.tools_idx,
+    webgis_toolbar_tools.tool_name,
+    webgis_toolbar_tools.tool_icon,
+    webgis_toolbar_tools.tool_name::text || '_hidden'::text AS tools_variable
+   FROM config.webgis_indici
+     LEFT JOIN config.webgis_tools ON webgis_indici.webgis_idx = webgis_tools.webgis_idx
+     LEFT JOIN config.webgis_toolbar_tools ON webgis_tools.tools_idx = webgis_toolbar_tools.tool_idx
+     LEFT JOIN config.webgis_ol_layers ON webgis_indici.defaultgrid_layeridx = webgis_ol_layers.layer_idx;
+ALTER TABLE config.v_webgis_general_config OWNER TO postgres;
+GRANT ALL ON TABLE config.v_webgis_general_config TO postgres;
+GRANT SELECT ON TABLE config.v_webgis_general_config TO webgis_r;
+COMMENT ON VIEW config.v_webgis_general_config IS 'elenco dei tools da attivare in base al webgis';
+
+
+/*dopodichè agire lato codice*/
+
+--controlla che sia tutto ok e poi sovrascrivi il codice in produzione con quello da Github ovvero da IRIS_BASE:
+
+diff html/common/scripts/geoext_general_produzione.js ../html/common/scripts/geoext_general_produzione.js
+--> ok, elimino dalla produzione la parte sulla query WMS ancora in sviluppo
+
+diff html/common/local_script_db.php ../html/common/local_script_db.php
+-->ok
+
+diff cgi-bin/query_raster.py ../cgi-bin/query_raster.py
+--ok eccetto aggiungere la google key: modificare la seguente stringa da
+BASE_URL='https://maps.google.com/maps/api/geocode/json'
+--a:
+BASE_URL='https://maps.google.com/maps/api/geocode/json?key=AIzaSyD6bKVff0rjgepxt6gyC9Vjr54S5BWcs9E&'
+
+
+
+
+
+

@@ -1,0 +1,189 @@
+/*
+Istruzioni per attivare l'autenticazione a IRIS tramite httpd e DB.
+Alcune guide:
+
+=> se si volesse usare mysql ho trovato una guida più esplicativa:
+https://www.howtoforge.com/how-to-password-protect-directories-with-mod_auth_mysql-on-apache2-debian-squeeze
+https://www.linode.com/docs/databases/mysql/how-to-install-mysql-on-centos-7/
+
+== per POSTGRESQL ==
+https://httpd.apache.org/docs/2.4/mod/mod_authn_dbd.html
+https://httpd.apache.org/docs/2.4/misc/password_encryptions.html
+https://httpd.apache.org/docs/trunk/mod/mod_authz_dbd.html
+
+*/
+
+
+--Innanzitutto creare gruppo e utente apache:
+CREATE ROLE apache_rw NOSUPERUSER INHERIT NOCREATEDB NOCREATEROLE NOREPLICATION;
+CREATE ROLE apache LOGIN ENCRYPTED PASSWORD 'aPach3_2018' NOSUPERUSER INHERIT NOCREATEDB NOCREATEROLE NOREPLICATION;
+GRANT apache_rw TO apache;
+
+--Poi le tavole che ospitano gli utenti e registrano gli accessi (compilate da php):
+CREATE TABLE config.httpd_users
+(
+  username character varying(25) NOT NULL,
+  password character varying(40),
+  active smallint DEFAULT 1,
+  CONSTRAINT httpd_authn_pkey PRIMARY KEY (username)
+);
+ALTER TABLE config.httpd_users OWNER TO apache_rw;
+GRANT ALL ON TABLE config.httpd_users TO radar_rw;
+COMMENT ON TABLE config.httpd_users IS 'elenco utenti per connessione al servizio IRIS con httpd';
+
+CREATE TABLE config.httpd_groups
+(
+  groupname character varying(25) NOT NULL,
+  descrizione character varying(120),
+  CONSTRAINT httpd_groups_pkey PRIMARY KEY (groupname)
+);
+ALTER TABLE config.httpd_groups OWNER TO apache_rw;
+GRANT ALL ON TABLE config.httpd_groups TO radar_rw;
+COMMENT ON TABLE config.httpd_groups IS 'elenco gruppi per connessione al servizio IRIS con httpd';
+
+CREATE TABLE config.httpd_usergroup
+(
+  groupname character varying(25) NOT NULL,
+  username character varying(25) NOT NULL,
+  CONSTRAINT httpd_usergroups_pkey PRIMARY KEY (groupname, username),
+  CONSTRAINT httpd_usergroup_groupname_fkey FOREIGN KEY (groupname)
+      REFERENCES config.httpd_groups (groupname) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT httpd_usergroup_username_fkey FOREIGN KEY (username)
+      REFERENCES config.httpd_users (username) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+ALTER TABLE config.httpd_usergroup OWNER TO apache_rw;
+GRANT ALL ON TABLE config.httpd_usergroup TO radar_rw;
+COMMENT ON TABLE config.httpd_usergroup IS 'associazione utenti al gruppo per connessione al servizio IRIS con httpd';
+
+CREATE TABLE config.httpd_access
+(
+  username character varying(25) NOT NULL,
+  data_login timestamp without time zone DEFAULT now(),
+  webgis_type character varying(32),
+  remote_addr character varying(32),
+  php_self character varying(120),
+  CONSTRAINT httpd_access_username_fkey FOREIGN KEY (username)
+      REFERENCES config.httpd_users (username) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT httpd_access_webgis_type_fkey FOREIGN KEY (webgis_type)
+      REFERENCES config.webgis_indici (webgis_name) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+ALTER TABLE config.httpd_access OWNER TO apache_rw;
+GRANT SELECT ON TABLE config.httpd_access TO radar_rw;
+GRANT ALL ON TABLE config.httpd_access TO webgis_r;
+COMMENT ON TABLE config.httpd_access IS 'elenco accesso utenti al servizio IRIS con httpd';
+
+
+
+
+/* LATO FILESYSTEM */
+--controllare esista il modulo dbd di httpd
+
+yum install apr-util-pgsql.x86_64
+
+
+vi /etc/httpd/conf.d/dbd_pgsql.conf   --ESEMPIO!
+
+ # mod_dbd configuration
+ DBDriver pgsql
+ DBDParams "host=localhost port=5432 dbname=iris_base user=apache password=aPach3_2018"
+ 
+ DBDPersist on
+ DBDMin  4
+ DBDKeep 8
+ DBDMax  20
+ DBDExptime 30
+
+ <Directory /var/www/IRIS_BASE/html/iris_base/>
+   AuthType basic
+   AuthName "Area privata"
+   #AuthBasicProvider dbd
+ 
+   # To cache credentials, put socache ahead of dbd here
+   AuthBasicProvider socache dbd
+   # Also required for caching: tell the cache to cache dbd lookups!
+   AuthnCacheProvideFor dbd
+   #AuthnCacheContext my-server #optional
+ 
+   Require user iris_base
+   AuthDBDUserPWQuery "SELECT password FROM config.httpd_users WHERE username = %s AND active = 1"
+   # when a user fails to be authenticated or authorized, invite them to login; this page should provide a link to /team-private/login.html
+   ErrorDocument 401 ../error.html
+ 
+   #per tenere traccia degli acccessi posso usare dbd-login, pero fa accedere al percorso qualsiasi utente valido!
+   #meglio gestire gli accessi via php con opportuni comandi per caricarli sul DB
+   #<Files "iris_base.js">
+   #  # dbd-login action executes a statement to log user in
+   #  Require dbd-login
+   #  #AuthzDBDQuery "UPDATE config.httpd_users SET login = 'true' WHERE username = %s"
+   #  AuthzDBDQuery "INSERT INTO config.httpd_access(username) VALUES (%s)"
+   #  # return user to referring page (if any) after successful login
+   #  #AuthzDBDLoginToReferer On
+   #</Files>
+ </Directory>
+ 
+ <Directory /var/www/html/iris_base/>
+   AuthType basic
+   AuthName "Area privata"
+   AuthBasicProvider dbd
+   # mod_authz_core configuration for mod_authz_dbd to authenticate a group
+   #Require dbd-group testNOgroup testgroupB
+   #AuthzDBDQuery "SELECT groupname FROM config.v_httpd_usergroup WHERE username = %s AND active = 1 AND groupname IN ('testNOgroup', 'testgroupB')"
+   # mod_authn_dbd SQL query to authenticate a user
+   #AuthDBDUserPWQuery "SELECT password FROM config.v_httpd_usergroup WHERE username = %s AND active = 1 AND groupname IN ('testNOgroup', 'testgroupB')"
+   
+   #FORSE l'accesso per GRUPPI e' difficile da gestire in questo modo, forse e' meglio scegliere il gruppo solo con la SELECT e lasciando libero l'accesso a valid-user
+   #Ad esempio:
+   Require valid-user
+   AuthDBDUserPWQuery "SELECT password FROM config.v_httpd_usergroup WHERE username = %s AND active = 1 AND groupname IN ('testNOgroup', 'testgroupB') LIMIT 1"
+  </Directory>
+
+  <Directory /var/www/IRIS_BASE/cgi-bin/>
+    AuthType basic
+    AuthName "Area privata"
+    AuthBasicProvider dbd
+    Require valid-user
+    AuthDBDUserPWQuery "SELECT password FROM config.httpd_users WHERE username = %s AND active = 1"
+  </Directory>
+  
+  <Directory /var/www/html/common/>
+    AuthType basic
+    AuthName "Area privata"
+    AuthBasicProvider dbd
+    Require valid-user
+    AuthDBDUserPWQuery "SELECT password FROM config.httpd_users WHERE username = %s AND active = 1"
+  </Directory>
+
+
+
+
+/* STOCCAGGIO PASSWORD UTENTI SU DB */
+
+--> MD5 -- pare sia la più sicura ma non si può creare direttamente da Postgres a quanto pare, ma da shell con openssl e poi inserita su DB
+openssl passwd -apr1 test
+ $apr1$iKiMd1vH$IJ6Qcm92RBRXe2yf/Wk.Y0
+INSERT INTO config.httpd_users (username, password, groups) VALUES('test5', '$apr1$iKiMd1vH$IJ6Qcm92RBRXe2yf/Wk.Y0', 'testgroup');
+
+
+--> SHA1 -- si puo creare direttamente sul DB postgres
+create extension pgcrypto; --su DB
+INSERT INTO config.httpd_users (username, password, groups) VALUES('test6', '{SHA}'||encode(digest('test','sha1'),'base64'), 'testgroup');
+
+-- oppure da shell:
+htpasswd -bns test  test
+ test:{SHA}qUqP5cyxm6YcTAhz05Hph5gvu9M=
+INSERT INTO config.httpd_users (username, password, groups) VALUES('test7', '{SHA}qUqP5cyxm6YcTAhz05Hph5gvu9M=', 'testgroup');
+
+
+--> CRYPT -- dovrebbe essere la meno sicura tra le precedenti 2 proposte. La creazione direttamente da DB non e' stata testata
+htpasswd -ndb test test
+test:/fxNLBgRvHa6U
+INSERT INTO config.httpd_users (username, password, groups) VALUES('test9', '/fxNLBgRvHa6U', 'testgroup');
+
+
+
+/* Riavviare alla fine di tutto il servizio apache: */
+service httpd restart
