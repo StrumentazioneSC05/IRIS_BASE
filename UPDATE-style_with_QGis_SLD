@@ -1,0 +1,11 @@
+It's possible to export .sld style from QGis project. To let recognize this file in OpenLayer some substitution must be made inside the .sld file:
+
+a- 1.1.0 => 1.0.0
+b- se: => '' (delete this word from the tag)
+c- SvgParameters => CssParameters (seems to be optional)
+
+
+To see an example look for the "styleMap_meteoidro_sld" definition inside "html/common/tematismi/theme_datidibase.js".
+
+
+Still some bugs remains as the hover function seems to be disabled and the label object to add manually.
