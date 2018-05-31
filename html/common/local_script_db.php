@@ -428,6 +428,10 @@ EOT;*/
                     var layer_single = eval(custom_layers[i]);
                     layer_single.setVisibility(true);
                   }
+		  //Attivo il grid secondo l'ultimo layer elencato nell'url, richiamando la funzione activeNode che legge il campo text=name del layer
+                  layer_single.text = layer_single.name;
+                  activeNode(layer_single);
+
 		  //Svuoto eventuali layers impostati nel cookie:
 		  custom_list_cookie = '';
 		}
