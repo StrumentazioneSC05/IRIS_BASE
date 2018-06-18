@@ -9,6 +9,13 @@ To check if your local version is up-to-date with the remote server, and see wha
 git remote -v update
 git diff origin/master
 
+
+############## INSTALL IRIS for the first time
+Read the instruction in the README_eng_vx.txt file.
+
+
+############## RUN DEVELOPMENT and PRODUCTION IRIS on same machine
+Download the github version in the path /var/www/IRIS_BASE/.
 To make operational your local development version, copy the third part libraries inside the new path, /var/www/IRIS_BASE/html, and the executable mapserv and tinyows from your production environment (/var/www/cgi-bin) to your development environment (/var/www/IRIS_BASE/cgi-bin):
 cd /var/www/html
 cp -r ext-3.4.0 flanis GeoExt GXM-0.1 Highcharts-3.0.9 Highstock-1.3.9 jQuery minify-2.1.7 ol2_exportmap ol_v3.14.2-dist OpenLayers-2.13.1 sencha-touch-1.1.1 suncalc-master ../IRIS_BASE/html/
