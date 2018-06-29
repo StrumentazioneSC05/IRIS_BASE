@@ -56,6 +56,10 @@ p900913 = pyproj.Proj(init='epsg:3785')
 p32632 = pyproj.Proj(init='epsg:32632')
 p4326 = pyproj.Proj(init='epsg:4326')
 p23032 = pyproj.Proj(init='epsg:23032')
+global radar_arr
+radar_arr = None
+global rete_arr
+rete_arr = None
 
 infile = None
 try:
@@ -111,7 +115,19 @@ print '<script src="%s/jQuery/jquery-1.10.2.js"></script>' % (root_dir_html)
 print '<script src="%s/jQuery/jquery-ui.js"></script>' % (root_dir_html)
 print '<script type="text/javascript" src="%s/common/proj4js-combined.js"></script>' % (root_dir_html)
 
-print '<script>$(function() {$("#tabs").tabs();});</script>'
+#print '<script>$(function() {$("#tabs").tabs();});</script>'
+#carico il tab del grafico piogge solo quando viene abilitato:
+print """<script>$(function() {$("#tabs").tabs( \
+{ activate: function(event, ui){ \
+    var tabNumber = ui.newTab.index(); \
+    var tabName = $(ui.newTab).text(); \
+console.log('Tab number ' + tabNumber + ' - ' + tabName + ' - clicked'); \
+    if (tabName=='Atlante piogge') { \
+      new_src = "%s/common/scripts/plot_atl_piogge.php?x=%s&y=%s&srid=%s&webgis=%s&radar_prec=%s&rete_prec=%s&root_dir_html=%s"; \
+      $('#myIFrame').attr('src', new_src); \
+    }
+}}
+);});</script>""" % (root_dir_html, x, y, srid, webgis, radar_arr, rete_arr, root_dir_html)
 
 print '</head>'
 print '<body>'
@@ -718,8 +734,9 @@ def atlante():
 
   #print "<iframe id='myIFrame' width='100%' height='98%' src='/cgi-bin/query_raster_devel.py?x=%s&y=%s&srid=%s&webgis=%s&radar_prec=%s' frameborder='0' allowtransparency='true' seamless='seamless'></iframe>" % (x, y, srid, webgis, radar_arr)
   print "<iframe id='myIFrame' width='100%' height='64%' src="
-  #print "<iframe id='myIFrame' width='100%' height=450px src="
-  print "'%s/common/scripts/plot_atl_piogge.php?x=%s&y=%s&srid=%s&webgis=%s&radar_prec=%s&rete_prec=%s&root_dir_html=%s'" % (root_dir_html, x, y, srid, webgis, radar_arr, rete_arr, root_dir_html)
+  #Carico il tab solo quando attivato poiche' su alcuni browser non viene riconosciuta a priori l'altezza dell'iframe:
+  #print "'%s/common/scripts/plot_atl_piogge.php?x=%s&y=%s&srid=%s&webgis=%s&radar_prec=%s&rete_prec=%s&root_dir_html=%s'" % (root_dir_html, x, y, srid, webgis, radar_arr, rete_arr, root_dir_html)
+  print "''"
   print " frameborder='0' allowtransparency='true' seamless='seamless'></iframe>"
 
   print '</div>'
