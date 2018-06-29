@@ -187,6 +187,7 @@ def info_google():
     elev=-999
     res=-999
     err = str(e)
+    print gurl
 
 
   ### Localita' - reverse geooding ###
