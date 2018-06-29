@@ -116,18 +116,7 @@ print '<script src="%s/jQuery/jquery-ui.js"></script>' % (root_dir_html)
 print '<script type="text/javascript" src="%s/common/proj4js-combined.js"></script>' % (root_dir_html)
 
 #print '<script>$(function() {$("#tabs").tabs();});</script>'
-#carico il tab del grafico piogge solo quando viene abilitato:
-print """<script>$(function() {$("#tabs").tabs( \
-{ activate: function(event, ui){ \
-    var tabNumber = ui.newTab.index(); \
-    var tabName = $(ui.newTab).text(); \
-console.log('Tab number ' + tabNumber + ' - ' + tabName + ' - clicked'); \
-    if (tabName=='Atlante piogge') { \
-      new_src = "%s/common/scripts/plot_atl_piogge.php?x=%s&y=%s&srid=%s&webgis=%s&radar_prec=%s&rete_prec=%s&root_dir_html=%s"; \
-      $('#myIFrame').attr('src', new_src); \
-    }
-}}
-);});</script>""" % (root_dir_html, x, y, srid, webgis, radar_arr, rete_arr, root_dir_html)
+#carico il tab del grafico piogge solo quando viene abilitato - vedi funzione atlante()
 
 print '</head>'
 print '<body>'
@@ -741,6 +730,19 @@ def atlante():
   print " frameborder='0' allowtransparency='true' seamless='seamless'></iframe>"
 
   print '</div>'
+
+  #carico il tab del grafico piogge solo quando viene abilitato:
+  print """<script>$(function() {$("#tabs").tabs( \
+  { activate: function(event, ui){ \
+    var tabNumber = ui.newTab.index(); \
+    var tabName = $(ui.newTab).text(); \
+  console.log('Tab number ' + tabNumber + ' - ' + tabName + ' - clicked'); \
+    if (tabName=='Atlante piogge') { \
+      new_src = "%s/common/scripts/plot_atl_piogge.php?x=%s&y=%s&srid=%s&webgis=%s&radar_prec=%s&rete_prec=%s&root_dir_html=%s"; \
+      $('#myIFrame').attr('src', new_src); \
+    } \
+  }} \
+  );});</script>""" % (root_dir_html, x, y, srid, webgis, radar_arr, rete_arr, root_dir_html)
 
 
 ### RASTER MAPSERVER ###
