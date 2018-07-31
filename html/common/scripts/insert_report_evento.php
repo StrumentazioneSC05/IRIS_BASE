@@ -54,7 +54,7 @@ pg_close($conn);
 </head>
 <body>
 		<input type="button" onClick="history.go(-1)" VALUE="Indietro" />
-		<input type="button" onClick="location.href='anomalie_edit.php'" value="CHIUDI" />
+		<input type="button" value="CHIUDI" onclick="window.close()" />
 
 </body>
 </html>

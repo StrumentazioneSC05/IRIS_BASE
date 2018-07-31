@@ -77,7 +77,7 @@ function alertCheck() {
 		if (response!=0) {
                     getValueJson(response[0])
 		    var alert_text = "<p><center><img src='"+root_dir_html+"/common/icons/storm_"+maxsi_str0+".svg' alt='warning_storm' height='64' width='64'></center>Temporale  " + maxsi_str + " nel comune di " + place + "<br/> a "+distance+"km in direzione " + position + " rispetto a " + area_nome;
-		    if (velocita<0) alert_text += "<br/>Spostamento: n.d.";
+		    if (velocita<0 || !velocita) alert_text += "<br/>Spostamento: n.d.";
 		    else alert_text += "<br/>Spostamento: verso "+direction+" a "+velocita+" km/h " + avv;
 		    alert_text += "<br/><span style='font-size: 0.65em; font-style: italic;'>ora rilevamento: <a href='javascript:setCenterOnEllipse("+utmx+","+utmy+");'>"+ lastime + "</a></span>";
 		    alert_text += '<audio id="alert_beep" autoplay="autoplay" style="display:none;" src="beep.wav" controls preload="auto" autobuffer></audio>';
@@ -122,7 +122,7 @@ function listCheck() {
                 getValueJson(response[i])
 		    alert_text += '<p style="font-size:0.8em;"><span class="ui-state-default"><span class="ui-icon ui-icon-info" style="float:left; margin:0 7px 0 0;"></span></span>';
                     alert_text += "Temporale  " + maxsi_str + " nel comune di " + place + "<br/> a "+distance+"km in direzione " + position + " rispetto a " + area_nome;
-                    if (velocita<0) alert_text += "<br/>Spostamento: n.d.";
+		    if (velocita<0 || !velocita) alert_text += "<br/>Spostamento: n.d.";
                     else alert_text += "<br/>Spostamento: verso "+direction+" a "+velocita+" km/h " + avv;
                     alert_text += "<br/><span style='font-size: 0.65em; font-style: italic;'>ora rilevamento: <a href='javascript:setCenterOnEllipse("+utmx+","+utmy+");'>"+ lastime + "</a></span><p>";
 	    } //fine del ciclo FOR per prendere tutti i temporali dati dal JSON

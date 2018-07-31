@@ -160,13 +160,16 @@ map = new OpenLayers.Map('map', options);
                         var dest = new Proj4js.Proj("EPSG:32632"); //UTM WGS84
                         //Recuperiamo direttamente i dati dal tiff in 900913
                         var pp1_rast = p1_rast;
-			if (query_raster == 99) 
-                            var uri = root_dir_html+"/common/scripts/report_evento.php?x="+Math.round(pp1_rast.x)+"&y="+Math.round(pp1_rast.y)+"&srid="+srid+"&webgis="+webgis+"&root_dir_html="+root_dir_html+"&active_queries="+query_raster;
+			var wpar='location=0,width=950,height=650,toolbar=0,resizable=yes,left=200,top=200';
+                        if (query_raster == 99) {
+			    var uri = root_dir_html+"/common/scripts/report_evento.php?x="+Math.round(pp1_rast.x)+"&y="+Math.round(pp1_rast.y)+"&srid="+srid+"&webgis="+webgis+"&root_dir_html="+root_dir_html+"&active_queries="+query_raster;
+                            wpar='location=0,width=1100,height=700,toolbar=0,resizable=yes,left=200,top=200';
+                        }
 			else
 			    var uri = root_dir_html+"/cgi-bin/query_raster.py?x="+Math.round(pp1_rast.x)+"&y="+Math.round(pp1_rast.y)+"&srid="+srid+"&webgis="+webgis+"&root_dir_html="+root_dir_html+"&active_queries="+query_raster;
 			//Apro una finestra solo se la variabile query_raster non e' ZERO:
 			if (query_raster[0] != '0')
-                            window.open(uri,'radar','location=0,width=950,height=650,toolbar=0,resizable=0,left=200,top=200');
+			    window.open(uri,'radar',wpar);
                 }
 		/*,eventMethods: {
         	    'rightclick': function (e) { //non viene riconosciuto
