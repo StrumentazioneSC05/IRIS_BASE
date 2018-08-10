@@ -1351,6 +1351,10 @@ function onItemClick(item){
   var win = window.open(item.url, '_blank');
   win.focus();
 }
+function onItemClick_popup(item){
+  var win = window.open(item.url, '_blank', 'width=430, height=550, resizable, status, scrollbars=1, location, top=15, left=15');
+  win.focus();
+}
 //var split_link = new Ext.Toolbar.SplitButton({
 var split_link = new Ext.Button({
     text: 'Links',
@@ -1391,7 +1395,9 @@ var split_link = new Ext.Button({
             text: '<i>Odino</i>', url: 'http://odino.arpa.piemonte.it/?q=node/236', handler: onItemClick
         }, {
             text: '<i>SC05</i>', url: 'https://sc05.arpa.piemonte.it/sc05/pioggia.jsp', handler: onItemClick
-        }
+        }, {
+            text: '<i>Aggiungi WMS</i>', url: root_dir_html+'/cgi-bin/add_WMS_al_volo.py?root_dir_html='+root_dir_html+'&step=1', handler: onItemClick_popup
+        }	
 	]
     }
 });

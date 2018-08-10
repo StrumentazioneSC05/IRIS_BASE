@@ -228,4 +228,33 @@ var HOST_URL = 'https://nominatim.openstreetmap.org';
 var EXAMPLE_BASIC = HOST_URL + '/search?format=json&json_callback=get_latlon_nominatim';
 
 
+////////////////// ADD WMS FROM URL FUNCTION /////////////////
+var wms_utente;
+function add_wms_from_url(wms_layername, wms_url, wms_title) {
+	//Ripulisco la mappa dall'ultima immagine se c'e':
+	//if (wms_utente) {map.removeLayer(wms_utente);} //lo lasciamo, come in http://geoportail.biodiversite-nouvelle-aquitaine.fr/visualiseur/
+	
+        if((wms_url[wms_url.length-1] != '?') && (wms_url.search(/\?/) == -1) )  wms_url += '?';
+
+	wms_utente = new OpenLayers.Layer.WMS(wms_layername+'<!--base-->', wms_url+'FORMAT=image/png&',
+	//{layers: wms_title, transparent:true, version: '1.1.1'}, {isBaseLayer:false, singleTile:false});
+	{layers:wms_title, transparent:true, format:"image/png"}, {displayInLayerSwitcher:true, projection:"EPSG:3857"});
+	//, attribution:"<img src='icons/wms.png'/>" //aggiunge icona o scritta in basso a sinistra sulla mappa, utile ad esempio per i copyright
+	//Per far caricare la legenda ai WMS "normali" devo usare la versione 1.1.1
+	//wms_utente.projection = OL_3857;
+	
+	map.addLayer(wms_utente);
+        //map.setLayerIndex(wms_utente, 0);
+	
+	//Proviamo a far caricare questa cazzo di legenda per i WMS Arpa - YES! - ma non mi serve basta specificare le opzioni corrette in GeoExt-legendPanel...!
+	/*legendID = "ext-comp-1006-" + wms_utente.id; //Il prefisso dell'id del campo della legenda pare sia sempre "ext-comp-1006-"
+	legendsURL = wms_url+'&service=WMS&version=1.1.1&REQUEST=GetLegendGraphic&format='+wms_utente.params.FORMAT+'&layer='+encodeURIComponent(wms_utente.params.LAYERS);
+	legendsURL_attuale = $("#"+legendID+" img").attr('src');
+	if (legendsURL_attuale.indexOf('image/gif') != -1){
+	    console.log("trovata probabile anomalia nella stringa dell'immagine legenda");
+	    $("#"+legendID+" img").attr('src', legendsURL);
+	}*/
+}
+
+
 

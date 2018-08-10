@@ -47,13 +47,15 @@ legend = new GeoExt.LegendPanel({
         region: "south", title: "Legend", autoScroll: true//, layerStore: mapPanel.layers
 	,xtype: "gx_legendpanel"
 	,defaults: {
-        //style: 'padding:5px',
-        baseParams: {
+	  imageFormat: "image/png"
+	  ,untitledPrefix: null //prefisso da usare per quei layer senza title cosi evito il fastidioso "Untitled"!
+	  //style: 'padding:5px',
+	  //,legendTitle: 'prova' //nome da mettere al posto del layer
+	  //queste righe sucessive non so a cosa servissero ma non caricano correttamente la legenda di alcuni MWS:
+	  /*baseParams: {
             FORMAT: 'image/png',
             LEGEND_OPTIONS: 'forceLabels:on'
-        }
-	//,legendTitle: 'prova' //nome da mettere al posto del layer
-	,untitledPrefix: null //prefisso da usare per quei layer senza title cosi evito il fastidioso "Untitled"!
+          }*/
 	}
 
         //renderTo: "legend", //height: Math.round(height_map*0.4), //width: Math.round(width_map*0.20),
