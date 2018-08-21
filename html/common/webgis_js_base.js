@@ -236,7 +236,7 @@ function add_wms_from_url(wms_layername, wms_url, wms_title) {
 	
         if((wms_url[wms_url.length-1] != '?') && (wms_url.search(/\?/) == -1) )  wms_url += '?';
 
-	wms_utente = new OpenLayers.Layer.WMS(wms_layername+'<!--base-->', wms_url+'FORMAT=image/png&',
+	wms_utente = new OpenLayers.Layer.WMS(wms_layername+'<!--wmsutente-->', wms_url+'FORMAT=image/png&',
 	//{layers: wms_title, transparent:true, version: '1.1.1'}, {isBaseLayer:false, singleTile:false});
 	{layers:wms_title, transparent:true, format:"image/png"}, {displayInLayerSwitcher:true, projection:"EPSG:3857"});
 	//, attribution:"<img src='icons/wms.png'/>" //aggiunge icona o scritta in basso a sinistra sulla mappa, utile ad esempio per i copyright
@@ -245,6 +245,19 @@ function add_wms_from_url(wms_layername, wms_url, wms_title) {
 	
 	map.addLayer(wms_utente);
         //map.setLayerIndex(wms_utente, 0);
+
+	//A questo punto aggiungiamo il layer ad una cartella nella TOC dei layer, verificando prima che questa cartella non esista gia:
+	node_wmsutente = {nodeType: "gx_layercontainer", text: "WMS utente", expanded: true, isLeaf: false, leaf: false, loader: { baseAttrs: {radioGroup: "foo", uiProvider: "layernodeui"}, filter: function(record) {return record.get("layer").name.indexOf("wmsutente") !== -1}}};
+	tree_radice = layerTree.root;
+	group_gia_esistente=0;
+	bimbi = tree_radice.childNodes.length;
+	for (i=0; i<bimbi; i++) {
+	  if (tree_radice.childNodes[i].text=="WMS utente") group_gia_esistente=1;
+	}
+	if (group_gia_esistente==0) tree_radice.appendChild(node_wmsutente);
+	//SVILUPPO: provare ad inserire questo nuovo gruppo di layer in testa invece che al fondo della TOC
+	//al momento l'unica soluzione potrebbe essere quella di agiungere il gruppo nella tabella config.webgis_groups o comunque caricarlo di default nel treeConfig
+
 	
 	//Proviamo a far caricare questa cazzo di legenda per i WMS Arpa - YES! - ma non mi serve basta specificare le opzioni corrette in GeoExt-legendPanel...!
 	/*legendID = "ext-comp-1006-" + wms_utente.id; //Il prefisso dell'id del campo della legenda pare sia sempre "ext-comp-1006-"

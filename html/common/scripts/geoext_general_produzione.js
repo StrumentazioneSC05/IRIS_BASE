@@ -9,7 +9,7 @@
 * Licence:     EUPL 1.1 Arpa Piemonte 2016
 ***************************************************************/
 
-var options;
+var options, layerTree;
 //Queste variabili provo ad inizializzarle a monte perche' forse le recupero in maniera piu' flessibile da DB:
 //var ctrl, toolbarItems = [], action, actions = {};
 
@@ -389,7 +389,7 @@ document.getElementsByTagName("head")[0].appendChild(e);
 
 	
 	/*Configuro la TOC contenente i layer caricati sul mapPanel: */
-	var layerTree = new Ext.tree.TreePanel({
+	layerTree = new Ext.tree.TreePanel({
 		title: 'Map Layers', region: "nord", autoScroll: true, split: true, id: 'treeP',
 		plugins: [
 			new GeoExt.plugins.TreeNodeRadioButton({

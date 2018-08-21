@@ -169,6 +169,7 @@ def query_url(url_wms):
   #oppure in un altro modo recupero solo quelli queryable
   for wms_content in wms_contents:
     if (wms[wms_content].queryable==0):
+	#potrebbe trattarsi di un layer di base?
 	continue
     wms_name = wms[wms_content].title
     #toInsert_value += """<li class="leaf"><label><input type="checkbox" name="layers" data-name="%s" data-title="%s" data-url="%s" data-srs="3857">%s</label></li>""" % (wms_content, wms_name, url_wms, wms_name)

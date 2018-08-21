@@ -1540,6 +1540,54 @@ var report_evento = new Ext.Button({
 });
 
 
+///////// HELP SU LAYER ///////
+//in questo modo vorrei creare degli help specifici sui singoli layer che spieghino che cosa rappresentino, cosa contengono, i criteri di visualizzazione, etc. Abilito click su layer in legenda per aprire finestra di aiuto su visualizzazione e origine del dato
+var help_layer = new Ext.Button({
+        text: "",
+        handler: function(e) {
+          ispressed = e.pressed;
+          if (ispressed==true) {
+		//$('.x-tree-node-anchor').css( 'cursor', 'help' ); //classe che contiene il nome del layer
+		$("#treeP").click(function(event) {
+		  $('.x-tree-node-anchor').css( 'cursor', 'help' ); //a quanto pare fuori da questo evento, che avrebbe piu senso, non mostra il cursore help su tuti i layer ma solo sui nomi delle cartelle...mah!
+		  //console.log($(event.target).text());
+		  layer_legend_name = $(event.target).text();
+		  //l'opzione piu' base potrebbe essere quella di leggere in un JSON le combinazioni webgis-layer e poi richiamare un file html costruito ad hoc per ogni layer
+		  //leggo il json con le combinazioni corrette preso dal DB:
+		  /*$.getJSON(root_dir_html + '/common/docs/help_layers.json', function (data) {
+		      $.each(data, function (i, v) {
+		  	if (v.legend_name == layer_legend_name && v.webgis_idx == indice_webgis) {
+		            console.log(v.openlayer_name);
+			    url_help_layer_fiche = root_dir_html + '/common/docs/help_layers_fiches/' + v.openlayer_name + '.html';
+			    $.get(url_help_layer_fiche)
+				.done(function() { 
+				  window.open( url_help_layer_fiche+'?root_dir_html='+root_dir_html+'&legend_name='+layer_legend_name, v.openlayer_name );
+				}).fail(function() { 
+				  alert("Ci dispiace la scheda per questo layer non e' ancora stata elaborata!");
+				});
+		            return;
+		        }
+		      })
+		  });*/
+		  //per una struttura piu' complessa ma solida si potrebbe invece rimandare il tutto ad un codice python:
+                  url_python = root_dir_html + '/cgi-bin/help_layers_fiches.py?webgis_idx='+indice_webgis+'&root_dir_html='+root_dir_html+'&legend_name='+layer_legend_name;
+		  if (layer_legend_name) window.open( url_python, layer_legend_name, 'width=430, height=550, resizable, status, scrollbars=1, location, top=15, left=15' );
+		});
+          }
+          else {
+		//$('#treeP').off('click',help_layer_click(event));
+		$('#treeP').off('click');
+		$('.x-tree-node-anchor').css( 'cursor', 'default' );
+          }
+        },
+        pressed: false,
+        enableToggle: true,
+        checked: false,
+        tooltip: "aiuto su layer in legenda"
+        ,xtype:'tbbutton', cls:'x-btn-icon', icon: root_dir_html+'/common/icons/toolbar_icons/help_layer.png', scale:'medium'
+        ,hidden: help_layer_hidden
+});
+
 
 ////////////// MEASURE TOOLS //////////////////////
 
@@ -1590,6 +1638,8 @@ var misure_link = new Ext.Button({
 	  new Ext.menu.Separator,
 	  new Ext.Button(actions["select"]) //multiselect
 	  , report_evento
+	  , new Ext.menu.Separator
+	  , help_layer
         ]
       }
     }
