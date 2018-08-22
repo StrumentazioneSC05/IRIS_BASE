@@ -1397,9 +1397,11 @@ var split_link = new Ext.Button({
             text: '<i>Odino</i>', url: 'http://odino.arpa.piemonte.it/?q=node/236', handler: onItemClick
         }, {
             text: '<i>SC05</i>', url: 'https://sc05.arpa.piemonte.it/sc05/pioggia.jsp', handler: onItemClick
-        }, {
+	}
+        /*, {
+	    //lo aggiungo come icona al menu misure_link 
             text: '<i>Aggiungi WMS</i>', url: root_dir_html+'/cgi-bin/add_WMS_al_volo.py?root_dir_html='+root_dir_html+'&step=1', handler: onItemClick_popup
-        }	
+        } */
 	]
     }
 });
@@ -1590,6 +1592,24 @@ var help_layer = new Ext.Button({
         ,hidden: help_layer_hidden
 });
 
+///////// AGGIUNGI WMS ///////
+//permetto all'utente di aggiungere WMS specifici al volo sulla mappa
+add_wms_url = root_dir_html+'/cgi-bin/add_WMS_al_volo.py?root_dir_html='+root_dir_html+'&step=1';
+var add_wms = new Ext.Button({
+	text: "",
+	handler: function(e) {
+	  var win = window.open(add_wms_url, 'add_wms_wnd', 'width=430, height=550, resizable, status, scrollbars=1, location, top=15, left=15');
+          win.focus();
+	},
+	pressed: false,
+	enableToggle: false,
+	checked: false,
+	tooltip: "aggiungi un WMS da url"
+	,xtype:'tbbutton', cls:'x-btn-icon', icon: root_dir_html+'/common/icons/toolbar_icons/add_wms.png', scale:'medium'
+	,hidden: add_wms_hidden
+});
+
+
 
 ////////////// MEASURE TOOLS //////////////////////
 
@@ -1642,6 +1662,7 @@ var misure_link = new Ext.Button({
 	  , report_evento
 	  , new Ext.menu.Separator
 	  , help_layer
+	  , add_wms
         ]
       }
     }

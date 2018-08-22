@@ -139,7 +139,7 @@ def choose_stab():
   variabili = ""
 
   titolo = "Aggiunta di un servizio WMS in mappa"
-  frase_intro = "URL del servizio WMS:<br/><small>(il servizio si suppone renda disponibile la proiezione Google)</small>"
+  frase_intro = "URL del servizio WMS:<br/><small>(i layer non disponibili nella proiezione Google saranno disabilitati dalla scelta)</small>"
 
   dropdown = """<form id="lookforwms_form" action="%s/cgi-bin/add_WMS_al_volo.py" method="post" >
 <input id="urlwms" type="url" pattern="https?://.+" required="" name="urlwms" placeholder="http://..." size="50">
@@ -180,7 +180,7 @@ def query_url(url_wms):
 	continue
     wms_name = wms[wms_content].title
     wms_srs = wms[wms_content].crsOptions
-    if ('EPSG:3857' in wms_srs):
+    if ('EPSG:3857' in wms_srs) or ('EPSG:3785' in wms_srs) or ('EPSG:900913' in wms_srs):
 	toInsert_value += """<label><input type="checkbox" name="layers" data-name="%s" data-title="%s" data-url="%s" data-srs="3857">%s</label><br/>""" % (wms_content, wms_name, url_wms, wms_name )
     else:
 	toInsert_value += """<label class='label_disabled'><input type="checkbox" name="layers" data-name="%s" data-title="%s" data-url="%s" data-srs="3857" disabled>%s - Proiezione Google non disponibile</label><br/>""" % (wms_content, wms_name, url_wms, wms_name )

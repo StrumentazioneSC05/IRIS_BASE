@@ -140,6 +140,7 @@ else {
 	var combo_layers_hidden = true;
 	var report_evento_hidden = true;
 	var help_layer_hidden = true;
+	var add_wms_hidden = true;
 EOT;
 	$tools_def .= "</script>";
 	echo $tools_def;
