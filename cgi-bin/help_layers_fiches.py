@@ -160,6 +160,17 @@ h5 {font-size:0.9em;}
 %(description_tag)s
 </p>
 
+<h4> Proprietario: </h4>
+<br>
+%(org_tag)s
+<br>
+
+<br>
+<h4> Contatti: </h4>
+<br>
+%(mail_tag)s
+<br><br>
+
 <div id='seconde_info'>
 <br>
 <h5> Tematizzazione: </h5> %(theme_desc)s
@@ -172,18 +183,6 @@ h5 {font-size:0.9em;}
 <h5> Nome variabile OL e PK: </h5> %(ol_name)s
 <br>
 </div>
-
-
-<br>
-<h4> Proprietario: </h4>
-<br>
-%(org_tag)s
-<br>
-
-<br>
-<h4> Contatti: </h4>
-<br>
-%(mail_tag)s
 
 </body>
 

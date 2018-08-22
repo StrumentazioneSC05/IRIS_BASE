@@ -636,8 +636,8 @@ var search_OSM = new Ext.form.TextField({
         name:"indirizzo_OSM",
         tag: "input",
         value:"",
-        emptyText:"Cerca un indirizzo:CITTA',NAzione...",
-        width: 180,
+        emptyText:"Cerca: CITTA', NAzione",
+        width: 140,
         selectOnFocus: true,
         focus: true,
 	hidden: search_OSM_hidden,
@@ -737,6 +737,7 @@ var combo_layers = new Ext.form.ComboBox({
     xtype: 'combo',
     mode: 'local',
     //queryMode: 'local',
+    width: 175,
     tooltip: tooltip_layers_combo,
     store: layers_store,
     displayField: "displayText",
@@ -825,6 +826,7 @@ feature_combo = new Ext.form.ComboBox({
     queryMode : 'remote',
     tooltip: tooltip_feat_combo,
     //store: eval(store_combo),
+    width: 170,
     store: store_default, // this is a default empty store to start with
     displayField: displayField_feat_combo, //provo a commentare per vedere cosa prende di default..niente
     valueField: "feature",
@@ -1425,7 +1427,7 @@ var zoomSelector = new Ext.form.ComboBox({
     editable: false,
     triggerAction: 'all', // needed so that the combo box doesn't filter by its current content
     mode: 'local' // keep the combo box from forcing a lot of unneeded data refreshes
-    ,width:100
+    ,width:85
     ,hidden: zoomSelector_hidden
 });
 zoomSelector.on('select',

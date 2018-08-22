@@ -238,7 +238,7 @@ function add_wms_from_url(wms_layername, wms_url, wms_title) {
 
 	wms_utente = new OpenLayers.Layer.WMS(wms_layername+'<!--wmsutente-->', wms_url+'FORMAT=image/png&',
 	//{layers: wms_title, transparent:true, version: '1.1.1'}, {isBaseLayer:false, singleTile:false});
-	{layers:wms_title, transparent:true, format:"image/png"}, {displayInLayerSwitcher:true, projection:"EPSG:3857"});
+	{layers:wms_title, transparent:true, format:"image/png"}, {displayInLayerSwitcher:true, projection:"EPSG:3857", opacity: 0.65});
 	//, attribution:"<img src='icons/wms.png'/>" //aggiunge icona o scritta in basso a sinistra sulla mappa, utile ad esempio per i copyright
 	//Per far caricare la legenda ai WMS "normali" devo usare la versione 1.1.1
 	//wms_utente.projection = OL_3857;

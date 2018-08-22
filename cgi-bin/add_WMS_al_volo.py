@@ -84,7 +84,8 @@ function openStep3() {
 
 </script>
 <style>
-body {font-family: Verdana,Arial,sans-serif;background-image:url(%(root_dir_html)s/common/background_img/sketch.jpg);} h1 {font-size:1em;}
+body {font-family: Verdana,Arial,sans-serif;background-image:url(%(root_dir_html)s/common/background_img/sketch.jpg);}
+h1 {font-size:1em;}
 #main_table { font-size: small; }
 .legendName {font-weight: bold;}
 #chiama_url {
@@ -93,6 +94,12 @@ body {font-family: Verdana,Arial,sans-serif;background-image:url(%(root_dir_html
   height: 22px;
   border-radius: 2px;
   padding: 1px;
+}
+.toInsert {
+  font-size: small;
+}
+.label_disabled {
+    color:#ccc;
 }
 </style>
 </head>
@@ -172,9 +179,14 @@ def query_url(url_wms):
 	#potrebbe trattarsi di un layer di base?
 	continue
     wms_name = wms[wms_content].title
+    wms_srs = wms[wms_content].crsOptions
+    if ('EPSG:3857' in wms_srs):
+	toInsert_value += """<label><input type="checkbox" name="layers" data-name="%s" data-title="%s" data-url="%s" data-srs="3857">%s</label><br/>""" % (wms_content, wms_name, url_wms, wms_name )
+    else:
+	toInsert_value += """<label class='label_disabled'><input type="checkbox" name="layers" data-name="%s" data-title="%s" data-url="%s" data-srs="3857" disabled>%s - Proiezione Google non disponibile</label><br/>""" % (wms_content, wms_name, url_wms, wms_name )
     #toInsert_value += """<li class="leaf"><label><input type="checkbox" name="layers" data-name="%s" data-title="%s" data-url="%s" data-srs="3857">%s</label></li>""" % (wms_content, wms_name, url_wms, wms_name)
     #Senza il pallino dell'elenco ma subito il checkbox:
-    toInsert_value += """<label><input type="checkbox" name="layers" data-name="%s" data-title="%s" data-url="%s" data-srs="3857">%s</label><br/>""" % (wms_content, wms_name, url_wms, wms_name)
+    #toInsert_value += """<label><input type="checkbox" name="layers" data-name="%s" data-title="%s" data-url="%s" data-srs="3857">%s</label><br/>""" % (wms_content, wms_name, url_wms, wms_name )
 
   #variabili create in Python e da riportare in javascript
   variabili = ""
