@@ -230,6 +230,26 @@ var EXAMPLE_BASIC = HOST_URL + '/search?format=json&json_callback=get_latlon_nom
 
 ////////////////// ADD WMS FROM URL FUNCTION /////////////////
 var wms_utente;
+/*function add_wms_slider(wms_layernames) { //anche su Firefox questa non funziona
+	var arrayLength = wms_layernames.length;
+	var sliders = []; //questa variabile mi serve per creare uno slider diverso
+	for (var i=0; i<arrayLength; i++) {
+console.log(map.getLayersByName(wms_layernames[i]+'<!--wmsutente-->')[0]);
+	  layer_element = map.getLayersByName(wms_layernames[i]+'<!--wmsutente-->')[0];
+	  element = $( "span:contains('"+ wms_layernames[i] +"')" );
+	  sliders[i] = new Ext.Slider({
+            renderTo: element[0].id,
+	    id: 'slide'+element[0].id,
+            width: 125,
+            value: 65,
+            listeners: {
+              change: function(analysesSlider, val) {
+                layer_element.setOpacity(val/100);
+            }},
+            style: 'position:absolute; left:35px;'
+          });
+	}
+}*/
 function add_wms_from_url(wms_layername, wms_url, wms_title) {
 	//Ripulisco la mappa dall'ultima immagine se c'e':
 	//if (wms_utente) {map.removeLayer(wms_utente);} //lo lasciamo, come in http://geoportail.biodiversite-nouvelle-aquitaine.fr/visualiseur/
@@ -255,8 +275,26 @@ function add_wms_from_url(wms_layername, wms_url, wms_title) {
 	  if (tree_radice.childNodes[i].text=="WMS utente") group_gia_esistente=1;
 	}
 	if (group_gia_esistente==0) tree_radice.appendChild(node_wmsutente);
+
 	//SVILUPPO: provare ad inserire questo nuovo gruppo di layer in testa invece che al fondo della TOC
 	//al momento l'unica soluzione potrebbe essere quella di agiungere il gruppo nella tabella config.webgis_groups o comunque caricarlo di default nel treeConfig
+	
+	//SVILUPPO:
+	//proviamo ad aggiungere una barra di trasparenza per il layer aggiunto
+	//recupero l'id del rigo contenente il layer appena aggiunto con jQuery, a partire dal nome del layer:
+	element = $( "span:contains('"+ wms_layername +"')" );
+console.log(element);
+	var slider = new Ext.Slider({
+	  renderTo: element[0].id,
+	  width: 125,
+	  value: 65,
+	  listeners: {
+            change: function(analysesSlider, val) {
+console.log(analysesSlider);
+            map.getLayersByName(wms_layername+'<!--wmsutente-->')[0].setOpacity(val/100);
+          }},
+	  style: 'position:absolute; left:35px;'
+	});
 
 	
 	//Proviamo a far caricare questa cazzo di legenda per i WMS Arpa - YES! - ma non mi serve basta specificare le opzioni corrette in GeoExt-legendPanel...!
