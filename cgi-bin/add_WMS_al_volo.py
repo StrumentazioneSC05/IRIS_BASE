@@ -14,6 +14,8 @@ OTTIMIZZAZIONI:
 
 """
 
+from config import *
+
 import cgi
 import cgitb; cgitb.enable()
 from owslib.wms import WebMapService
