@@ -13,6 +13,8 @@ from config import *
 import re,os,sys
 import cgi
 import cgitb; cgitb.enable()
+reload(sys)
+sys.setdefaultencoding('UTF-8')
 
 import sqlalchemy
 from sqlalchemy import Column, ForeignKey
@@ -91,6 +93,76 @@ h4, h5 {
 <h4> %(messaggio)s
 <span id='layername'> </span>
 </h4>
+
+</body>
+
+</html>
+'''
+
+page_template_nodoc = '''
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Scheda layer</title>
+
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE6" />
+<meta name="Author" content="Armando Riccardo Gaeta">
+<meta name="Email" content="ar_gaeta@yahoo.it">
+<meta name="Subject" content="Scheda layer">
+<meta name="Description" content="Descrizione origine e tematizzazione layer">
+<meta name="viewport" content="user-scalable=no, width=device-width" />
+
+<script>
+var getUrlParameter = function getUrlParameter(sParam) {
+    var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : sParameterName[1];
+        }
+    }
+};
+var root_dir_html = getUrlParameter('root_dir_html');
+var layername = getUrlParameter('legend_name');
+function caricamento_completato() {
+  document.getElementById('layername').innerHTML = layername;
+};
+</script>
+
+<style>
+body {font-family: Verdana,Arial,sans-serif;background-image:url(%(root_dir_html)s/common/background_img/sketch.jpg);}
+h4, h5 {
+    display: inline;
+}
+#seconde_info {font-size:0.85em;}
+h5 {font-size:0.9em;}
+</style>
+</head>
+
+<body onload="caricamento_completato()">
+
+<h4> %(messaggio)s
+<span id='layername'> </span>
+</h4>
+
+<div id='seconde_info'>
+<br>
+<h5> Tematizzazione: </h5> %(theme_desc)s
+<br>
+<h5> Azione su click: </h5> %(azione_popup)s
+<br>
+<br>
+<h5> Origine del dato: </h5> %(db_table_view_name)s
+<br>
+<h5> Nome variabile OL e PK: </h5> %(ol_name)s
+<br>
+</div>
 
 </body>
 
@@ -204,7 +276,7 @@ JOIN \
 config.webgis_ol_layers b ON a.ol_layer_idx=b.layer_idx \
 LEFT JOIN \
 config.webgis_popups c ON a.ol_layer_idx=c.ol_layer_idx AND a.webgis_idx=c.webgis_idx \
-	WHERE a.webgis_idx=%i AND legend_name='%s';" % (webgis_idx, legend_name)
+	WHERE a.webgis_idx=%i AND rtrim(legend_name)='%s';" % (webgis_idx, legend_name)
     result = conn.execute(text(sql))
     rows_amount = 0
     for row in result:
@@ -230,13 +302,11 @@ config.webgis_popups c ON a.ol_layer_idx=c.ol_layer_idx AND a.webgis_idx=c.webgi
         xml_metadata = one_row['metadata']
         root_get = etree.fromstring(xml_metadata)
       else:
-	#print "Content-Type: text/html"
-        #print "" #use this double quote print statement to add a blank line in the script
-	print page_template_empty % {'root_dir_html':root_dir_html, 'messaggio': 'Nessuna documentazione disponibile per la risorsa:'}
-	exit()
+	print page_template_nodoc % {'root_dir_html':root_dir_html, 'messaggio': 'Nessuna documentazione disponibile per la risorsa:', 'db_table_view_name':db_table_view_name, 'theme_desc':theme_description, 'ol_name':name_and_id, 'azione_popup':azione_popup}
+	sys.exit(0)
     if not rows_amount:
       print page_template_empty % {'root_dir_html':root_dir_html, 'messaggio': 'Risorsa non presente su DB o nessuna documentazione disponibile per:'}
-      exit()
+      sys.exit(0)
 
     conn.close()
 except Exception as e:
@@ -274,6 +344,8 @@ try:
 
 except Exception as e:
   err = str(e)
+  print "Content-Type: text/html"
+  print ""
   print err
 
 

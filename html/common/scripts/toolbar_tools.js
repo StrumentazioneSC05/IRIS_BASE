@@ -718,6 +718,8 @@ toolbarItems.push(combo);
 if (devel==1) {
   combo_layers_hidden = false;
 }
+//layers_data.push(['nostore0', 'Neve dalle 8<!--rete-->', 'none']);
+//layers_data.push(['nostore1', 'Esempio meteo e neve', 'none']);
 var layers_store = new Ext.data.ArrayStore({
         id: 0,
 	//autoLoad: true, //quando true pare scaricarsi oltre 1Mb di dati..perche' mai?
@@ -743,9 +745,8 @@ var combo_layers = new Ext.form.ComboBox({
     displayField: "displayText",
     valueField: "myId",
     // The minimum number of characters the user must type before autocomplete and typeAhead activate
-    //minChars: 1,
+    minChars: 2,
     emptyText: emptytext_combo,
-    //mode: "local",
     forceSelection: true,
     selectOnFocus:true,
     typeAhead: true,
@@ -759,11 +760,26 @@ var combo_layers = new Ext.form.ComboBox({
     ,listeners:{
 	// delete the previous query in the beforequery event or set combo.lastQuery = null (this will reload the store the next time it expands)
         beforequery: function(qe) {
+	  //Per l'autocompletamento:
+	  if (qe.query) {
+	    // we need the length later in the doQuery function, for respecting minChars
+	    var length = qe.query.length;
+	    qe.query = new RegExp(Ext.escapeRe(qe.query), 'i');
+	    //qe.query = new RegExp(qe.query, 'i');
+	    qe.query.length = length; // pretend I am a string, eh eh
+	  }
+	  else qe.forceAll = true; //mostro tutto se svuoto il campo
+
             delete qe.combo.lastQuery;
 	    //questo metodo pare funzionare ma solo alla prima selezione..oppure e' lastQuery:'' che ha funzionato?
         },
 	beforeselect:function(combo,record,index){
-	    if (combo.lastSelectEvent && combo.lastSelectEvent!='none') eval(combo.lastSelectEvent).setVisibility(false); //spengo il layer selezionato precedentemente, se esiste
+	    if (combo.lastSelectEvent && combo.lastSelectEvent.indexOf('nostore') >=0) {
+console.log('layer senza store, non fare niente');
+		nome_layer_ol = (combo.lastSelectEvent).substring(7);
+		eval(nome_layer_ol).setVisibility(false);
+	    }
+	    else if (combo.lastSelectEvent && combo.lastSelectEvent!='none') eval(combo.lastSelectEvent).setVisibility(false); //spengo il layer selezionato precedentemente, se esiste
         },
         select:function(combo,record,index){
             var key = record.get(combo.valueField); //in questo caso e' il campo "myId", cioe' il nome OL del layer
@@ -779,6 +795,13 @@ var combo_layers = new Ext.form.ComboBox({
 		feature_combo.emptyText = "Scegli prima un layer valido...";
 		feature_combo.disable();
 		Ext.getCmp('feature_combo').clearValue();
+	    }
+	    else if (key.indexOf('nostore') >=0) {
+	console.log('nessun store');
+		eval(key.substring(7)).setVisibility(true); //accendo il layer selezionato
+		feature_combo.emptyText = "Scegli prima un layer valido...";
+                feature_combo.disable();
+                Ext.getCmp('feature_combo').clearValue();
 	    }
 	    else {
 	      feature_combo.enable(); //abilito la selezione dell'elemento
@@ -1575,7 +1598,7 @@ var help_layer = new Ext.Button({
 		  });*/
 		  //per una struttura piu' complessa ma solida si potrebbe invece rimandare il tutto ad un codice python:
                   url_python = root_dir_html + '/cgi-bin/help_layers_fiches.py?webgis_idx='+indice_webgis+'&root_dir_html='+root_dir_html+'&legend_name='+layer_legend_name;
-		  if (layer_legend_name) window.open( url_python, layer_legend_name, 'width=430, height=550, resizable, status, scrollbars=1, location, top=15, left=15' );
+		  if (layer_legend_name) window.open( url_python, 'metadato_layer', 'width=430, height=550, resizable, status, scrollbars=1, location, top=15, left=15' );
 		});
           }
           else {

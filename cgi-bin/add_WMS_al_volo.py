@@ -157,7 +157,7 @@ def choose_stab():
   frase_intro = "URL del servizio WMS:<br/><small>Inserire l'URL del servizio WMS. Si avverte che su Firefox la trasparenza dei layer WMS aggiunti potrebbe causare qualche anomalia.</small>"
 
   dropdown = """<form id="lookforwms_form" action="%s/cgi-bin/add_WMS_al_volo.py" method="post" >
-<input list="wms_consigliati" id="urlwms" type="url" pattern="https?://.+" required="" name="urlwms" placeholder="http://..." size="50">
+<input list="wms_consigliati" onfocus="this.value=''" id="urlwms" type="url" pattern="https?://.+" required="" name="urlwms" placeholder="http://..." size="50">
 
   <datalist id="wms_consigliati">
     <option value="http://geomap.reteunitaria.piemonte.it/ws/taims/rp-01/taimslimammwms/wms_limitiAmm?"> Regione Piemonte - Unita amm.ve </option>
@@ -183,8 +183,9 @@ def query_url(url_wms):
   toInsert_value = ""
   try:
     wms = WebMapService(url_wms, version='1.1.1', timeout=5)
-  except:
+  except Exception as e:
     toinsert_value = '<br/><small>URL inserita:<br/> %s</small>' % (url_wms)
+    toinsert_value += '<br/><small>Errore:<br/> %s</small>' % (str(e))
     btns = """<button type="button" id="comeback_button" onClick='window.history.go(-1); return false;' title="Ritorna alla maschera di inserimento dell'url">Torna indietro</button>"""
     print page_template % {'root_dir_html':root_dir_html, 'title':'Errore!', 'variables_from_py':'', 'frase_intro':"Non e' stato possibile contattare il server WMS indicato!", 'choose_stab':"<small>assicurarsi che l'indirizzo inserito sia corretto e di aver aggiunto il segno '?' alla fine dell'url</small>", 'form_insert':'', 'toInsert':toinsert_value, 'buttons':btns}
     return 0

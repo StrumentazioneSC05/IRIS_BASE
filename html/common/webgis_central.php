@@ -550,8 +550,8 @@ if (!$conn) { // Check if valid connection
 }
 else {
     //Faccio una prima query per recuperare l'indice del webgis:
-    if ($news_message) $query_news = "SELECT messaggio, icona_iniziale, gid FROM config.news_message a LEFT JOIN config.webgis_indici b ON b.webgis_idx=ANY(a.webgis_idx) WHERE (a.webgis_idx IS NULL OR '$webgis_type'=b.webgis_name) AND data_scadenza IS NULL AND gid NOT IN ($news_message) ORDER BY gid;";
-    else $query_news = "SELECT messaggio, icona_iniziale, gid FROM config.news_message a LEFT JOIN config.webgis_indici b ON b.webgis_idx=ANY(a.webgis_idx) WHERE (a.webgis_idx IS NULL OR '$webgis_type'=b.webgis_name) AND data_scadenza IS NULL ORDER BY gid;";
+    if ($news_message) $query_news = "SELECT messaggio, icona_iniziale, gid FROM config.news_message a LEFT JOIN config.webgis_indici b ON b.webgis_idx=ANY(a.webgis_idx) WHERE (a.webgis_idx IS NULL OR '$webgis_type'=b.webgis_name) AND (data_scadenza IS NULL OR data_scadenza >= current_date) AND gid NOT IN ($news_message) ORDER BY gid;";
+    else $query_news = "SELECT messaggio, icona_iniziale, gid FROM config.news_message a LEFT JOIN config.webgis_indici b ON b.webgis_idx=ANY(a.webgis_idx) WHERE (a.webgis_idx IS NULL OR '$webgis_type'=b.webgis_name) AND (data_scadenza IS NULL OR data_scadenza >= current_date) ORDER BY gid;";
     $result_news = pg_query($conn,$query_news);
     if (!$result_news) {
         //echo "console.log('Error on the query news <br>".$query_news."')";

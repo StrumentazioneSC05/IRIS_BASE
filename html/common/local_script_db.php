@@ -254,6 +254,9 @@ EOT;
 		    columns_grid = columns_default;
 		  }
 EOT;
+		  //inserisco in ogni caso questo layer nello Store per la combobox dei layer su Ext:
+		  $data_arr = array('nostore'.$fetch_local['openlayer_name'], $fetch_local['legend_name'], 'none');
+		  array_push($layers_data_store, $data_arr);
 		}
 		else if ($fetch_local['store_definition'] and $fetch_local['column_definition'] and $fetch_local['grid_title']) {
 		  //se queste variabili sono definite sul DB allora e' possibile che questo layer abbia attiva la tabella attributi:
