@@ -23,8 +23,10 @@ html, body {height: 100%;}
         display: none;
         color: #000000;
         font: normal 12px sans-serif;
-        margin-left: 50px;
-        margin-top: 50px;
+        /*margin-left: 50px;
+        margin-top: 50px;*/
+	margin-left: 30px;
+        margin-top: 100px;
         padding-left: 40px;
         padding-top: 16px;
         position: relative;

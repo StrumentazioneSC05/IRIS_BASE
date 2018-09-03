@@ -23,7 +23,7 @@ App.SearchFormPopupPanel = Ext.extend(Ext.Panel, {
     fullscreen: Ext.is.Phone ? true : undefined,
     //url: 'http://ws.geonames.org/searchJSON?',
     //New URL with username:
-    url: 'http://api.geonames.org/searchJSON?username=strumentazionesc05&',
+    url: 'https://secure.geonames.org/searchJSON?username=strumentazionesc05&',
     errorText: 'Sorry, we had problems communicating with geonames.org. Please try again.',
     errorTitle: 'Communication error',
     maxResults: 6,

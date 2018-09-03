@@ -24,6 +24,14 @@ import sys
 reload(sys)
 sys.setdefaultencoding('UTF-8')
 
+#WMS CONSIGLIATI:
+wms_consigliati = """<option value="http://geomap.reteunitaria.piemonte.it/ws/taims/rp-01/taimslimammwms/wms_limitiAmm?"> Regione Piemonte - Unita amm.ve </option>
+<option value="http://webgis.arpa.piemonte.it/ags101free/services/geologia_e_dissesto/SIVA/MapServer/WMSServer?"> SIVA Arpa </option>
+<option value="http://geomap.reteunitaria.piemonte.it/ws/vtmonfor/rp-01/incendiwms/wms_vtmonfor_incendi_boschivi?"> Incendi boschivi </option>
+<option value="http://osgis2.csi.it/qgs/qgis_cloud/direttiva_alluvioni?"> Regione Piemonte - Direttiva Alluvioni </option>"""
+
+link_geop = "http://www.geoportale.piemonte.it/geocatalogorp/"
+
 
 print "Content-type:text/html\r\n\r\n"
 
@@ -159,23 +167,22 @@ def choose_stab():
   frase_intro = "URL del servizio WMS:<br/><small>Inserire l'URL del servizio WMS. Si avverte che su Firefox la trasparenza dei layer WMS aggiunti potrebbe causare qualche anomalia.</small>"
 
   dropdown = """<form id="lookforwms_form" action="%s/cgi-bin/add_WMS_al_volo.py" method="post" >
-<input list="wms_consigliati" onfocus="this.value=''" id="urlwms" type="url" pattern="https?://.+" required="" name="urlwms" placeholder="http://..." size="50">
+<input list="wms_consigliati" onfocus="this.value=''" id="urlwms" type="url" pattern="https?://.+" required="" name="urlwms" placeholder="http://..." size="54">
 
   <datalist id="wms_consigliati">
-    <option value="http://geomap.reteunitaria.piemonte.it/ws/taims/rp-01/taimslimammwms/wms_limitiAmm?"> Regione Piemonte - Unita amm.ve </option>
-    <option value="http://webgis.arpa.piemonte.it/ags101free/services/geologia_e_dissesto/SIVA/MapServer/WMSServer?"> SIVA Arpa </option>
-    <option value="http://osgis2.csi.it/qgs/qgis_cloud/direttiva_alluvioni?"> Regione Piemonte - Direttiva Alluvioni </option>
+	%s
   </datalist>
 
 <input id="root_dir_html" name='root_dir_html' value='%s' type='hidden'>
 <input id="step" value=2 name='step' type='hidden'>
-<input id="chiama_url" type="submit" value="" title="interroga l'url" ></form>""" % (root_dir_html, root_dir_html)
+<input id="chiama_url" type="submit" value="" title="interroga l'url" ></form>""" % (root_dir_html, wms_consigliati, root_dir_html)
 
   input_value = ""
   insert_value = ""
   toInsert_value = ""
 
-  btns = ""
+  btns = """<button type="button" id="vedi_capabilities" onClick='window.open("%s");' title="cerca servizi WMS dal geoportale della regione Piemonte"><i>geoportale Regione Piemonte</i></button>""" % (link_geop)
+  btns += """<button type="button" style="position:absolute; right:45;" id="addlayers_button" onClick='window.close();' title="chiudi questa finestra">Chiudi</button>"""
 
   print page_template % {'root_dir_html':root_dir_html, 'title':titolo, 'variables_from_py':variabili, 'frase_intro':frase_intro, 'choose_stab':dropdown, 'form_insert':insert_value, 'toInsert': toInsert_value, 'buttons':btns}
 
@@ -221,17 +228,15 @@ def query_url(url_wms):
   frase_intro = "URL del servizio WMS:<br/><small>(i layer non disponibili nella proiezione Google saranno disabilitati dalla scelta)</small>"
 
   dropdown = """<form id="lookforwms_form" action="%s/cgi-bin/add_WMS_al_volo.py" method="post" >
-<input list="wms_consigliati" onfocus="this.value=''" id="urlwms" type="url" pattern="https?://.+" required="" name="urlwms" placeholder="http://..." value="%s" size="50">
+<input list="wms_consigliati" onfocus="this.value=''" id="urlwms" type="url" pattern="https?://.+" required="" name="urlwms" placeholder="http://..." value="%s" size="54">
 
   <datalist id="wms_consigliati">
-    <option value="http://geomap.reteunitaria.piemonte.it/ws/taims/rp-01/taimslimammwms/wms_limitiAmm?"> Regione Piemonte - Unita amm.ve </option>
-    <option value="http://webgis.arpa.piemonte.it/ags101free/services/geologia_e_dissesto/SIVA/MapServer/WMSServer?"> SIVA Arpa </option>
-    <option value="http://osgis2.csi.it/qgs/qgis_cloud/direttiva_alluvioni?"> Regione Piemonte - Direttiva Alluvioni </option>
+	%s
   </datalist>
 
 <input id="root_dir_html" name='root_dir_html' value='%s' type='hidden'>
 <input id="step" value=2 name='step' type='hidden'>
-<input id="chiama_url" type="submit" value="" title="interroga l'url" ></form>""" % (root_dir_html, url_wms, root_dir_html)
+<input id="chiama_url" type="submit" value="" title="interroga l'url" ></form>""" % (root_dir_html, url_wms, wms_consigliati, root_dir_html)
 
   insert_value = ""
   input_value = ""

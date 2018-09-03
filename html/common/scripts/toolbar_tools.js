@@ -127,7 +127,7 @@ console.log(e);
                 //url: urlMS_loc, //If omitted, all map WMS layers with a url that matches this url or layerUrls will be considered
 		layerUrls: [urlMS_loc, url_valanghe_arpa],
                 title: 'Identify features by clicking',
-                layers: [limiti_comuni_MS, valanghe_wms], //If omitted, all map WMS layers with a url that matches this url or layerUrls will be considered. In realta non pare vero perche se commento non riconosce piu' il MapServer interno
+                //layers: [limiti_comuni_MS, valanghe_wms], //If omitted, all map WMS layers with a url that matches this url or layerUrls will be considered. In realta non pare vero perche se commento non riconosce piu' il MapServer interno
                 queryVisible: true //If true, filter out hidden layers when searching the map for layers to query
 		,drillDown: false //Drill down over all WMS layers in the map.  When using drillDown mode, hover is not possible, and an infoFormat that returns parseable features is required
 		//,maxFeatures: 10 //pare che se e' omesso il server risponda con 1 sola feature
@@ -164,22 +164,27 @@ console.log(e);
 	//Per abilitare questa selezione su WMS - oppure indiche un eventListeners nel Control:
 	//selectCtrlWMS.events.register("nogetfeatureinfo", this, showInfo);
         //hoverCtrlWMS.events.register("getfeatureinfo", this, showInfo);
-	//Altro metodo per abilitare questa selezione:
+	//Altro metodo per abilitare questa selezione --> riportato su geoext_general_produzione.js
         //mapPanel.map.addControl(selectCtrlWMS); //per la selezione degli elementi dei layers selezionabili
         //selectCtrlWMS.activate();
         //mapPanel.map.addControl(hoverCtrlWMS);
         //hoverCtrlWMS.activate();
 
-//NIENTE da fare al momento e' IMPOSSIBILE interrogare WMS esterni perlomeno di Arpa insieme a quelli interni. Per qualche motivo al click prende un solo URL e poi anche se il layer e' spento non si aggiorna
+//NIENTE da fare al momento e' IMPOSSIBILE interrogare WMS esterni perlomeno di Arpa insieme a quelli interni. Per qualche motivo al click prende un solo URL e poi anche se il layer e' spento l'elemento "evt" non si aggiorna
         function showInfo(evt) {
+console.log('EVT=');
 console.log(evt);
-	  if (evt.object.url != urlMS_loc) {
-		console.log('ok ' + evt.object.url);
+	  if (evt.object.url != urlMS_loc) { //in questo caso ho selezionato un WMS non locale: ma evt resta bloccato sul primo url cliccato!!
+console.log('ok ' + evt.object.url);
 		visible_layers = mapPanel.map.getLayersBy("visibility", true);
 //console.log(visible_layers);
 		for (var i=0; i<visible_layers.length; i++) {
 		//unico modo per ritrovare il WMS esterno e' cercarlo tra i layer visibili e costruire da me la finestra di query, poiche' altrimenti il servizio Arpa con ArcGis restituisce un errore, sebbene da console la url che compone sia corretta
-		  if (visible_layers[i].url == evt.object.url && visible_layers[i].isBaseLayer == false && visible_layers[i].params) {
+		  //if (visible_layers[i].url == evt.object.url && visible_layers[i].isBaseLayer == false && visible_layers[i].params) {
+		  //visto che evt resta incantato sul primo url che becca, ciclo su TUTTI i layer visibili
+		  if (typeof visible_layers[i].url!=='undefined' && visible_layers[i].isBaseLayer==false && visible_layers[i].name!='OpenLayers_Control' && typeof visible_layers[i].params["MAP"]==='undefined') {
+console.log('VISIBLE LAYER=');
+console.log(visible_layers[i]);
 		    URL = visible_layers[i].url;
 		    LAYERS = visible_layers[i].params.LAYERS;
 		    STYLES = visible_layers[i].params.STYLES;
@@ -193,8 +198,9 @@ console.log(evt);
 		    CRS = visible_layers[i].params.CRS;
 		    MAP = evt.object.vendorParams; //in teoria non mi serve a meno che non richiamo MapServer esterni...
 		    query_url = URL + '?LAYERS=' + LAYERS + '&QUERY_LAYERS=' + LAYERS + '&STYLES=' + STYLES + '&SERVICE=' + SERVICE + '&VERSION=' + VERSION + '&REQUEST=' + TYPE + '&FEATURE_COUNT=10&FORMAT=' + FORMAT + '&INFO_FORMAT=' + INFO_FORMAT + '&I='+ Math.round(evt.xy.x) + '&J=' + Math.round(evt.xy.y) + '&BBOX=' + BBOX + '&CRS=' + CRS + '&HEIGHT=340&WIDTH=1200';
-		    window.open(query_url, '_blank');
+		    window.open(query_url, 'wms_info', 'width=450, height=550, resizable, status, scrollbars=1, location, top=15, right=15');
 		  }
+		  //qui dovrei mettere l'else per gestire anche il clic su elementi da WMS locali....ovvero con visible_layers[i].params["MAP"] definito
 		}
 	  }
           //Se effettivamente ho selezionato qualcosa:
@@ -1621,7 +1627,7 @@ add_wms_url = root_dir_html+'/cgi-bin/add_WMS_al_volo.py?root_dir_html='+root_di
 var add_wms = new Ext.Button({
 	text: "",
 	handler: function(e) {
-	  var win = window.open(add_wms_url, 'add_wms_wnd', 'width=430, height=550, resizable, status, scrollbars=1, location, top=15, left=15');
+	  var win = window.open(add_wms_url, 'add_wms_wnd', 'width=450, height=550, resizable, status, scrollbars=1, location, top=15, left=15');
           win.focus();
 	},
 	pressed: false,

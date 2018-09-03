@@ -264,7 +264,8 @@ function add_wms_from_url(wms_layername, wms_url, wms_title) {
 	//wms_utente.projection = OL_3857;
 	
 	map.addLayer(wms_utente);
-        //map.setLayerIndex(wms_utente, 0);
+        //map.setLayerIndex(wms_utente, 0); //altrimenti si sovrappone agli altri layer non permettendone il click
+	map.setLayerIndex(wms_utente, map.getNumLayers()+1);
 
 	//A questo punto aggiungiamo il layer ad una cartella nella TOC dei layer, verificando prima che questa cartella non esista gia:
 	node_wmsutente = {nodeType: "gx_layercontainer", text: "WMS utente", expanded: true, isLeaf: false, leaf: false, loader: { baseAttrs: {radioGroup: "foo", uiProvider: "layernodeui"}, filter: function(record) {return record.get("layer").name.indexOf("wmsutente") !== -1}}};
@@ -283,17 +284,18 @@ function add_wms_from_url(wms_layername, wms_url, wms_title) {
 	//proviamo ad aggiungere una barra di trasparenza per il layer aggiunto
 	//recupero l'id del rigo contenente il layer appena aggiunto con jQuery, a partire dal nome del layer:
 	element = $( "span:contains('"+ wms_layername +"')" );
-console.log(element);
+//console.log(element);
 	var slider = new Ext.Slider({
 	  renderTo: element[0].id,
-	  width: 125,
+	  width: 50,
 	  value: 65,
 	  listeners: {
             change: function(analysesSlider, val) {
 console.log(analysesSlider);
             map.getLayersByName(wms_layername+'<!--wmsutente-->')[0].setOpacity(val/100);
           }},
-	  style: 'position:absolute; left:35px;'
+	  //style: 'position:absolute; left:35px;'
+	  style: 'display: inline-block;'
 	});
 
 	
