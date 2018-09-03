@@ -78,20 +78,21 @@ page_template = '''
 //Se apro lo script come popup dalla mappa principale ne prendo il riferimento:
 var parent_w = window.opener;
 
+var layer_num = 0;
 var wms_utente;
 var wms_names = [];
 function openStep3() {
   //Recupero gli elementi inseriti e li aggiungo alla mappa della parent_w:
   var p_tag = $( "input" ); //recupero le varie righe della tabella dei layer definiti
   $('#toInsert').find(p_tag).each(function(index) {
+    layer_num++;
     var input = $(this);
     if (input.is(':checked')) {
 	data_name = input[0].dataset.name;
 	data_title = input[0].dataset.title;
 	data_url = input[0].dataset.url;
 	wms_names.push(data_title);
-
-	parent_w.add_wms_from_url(data_title, data_url, data_name);
+	parent_w.add_wms_from_url(data_title, data_url, data_name, layer_num);
 
     }
   });

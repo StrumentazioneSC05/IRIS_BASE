@@ -250,7 +250,20 @@ console.log(map.getLayersByName(wms_layernames[i]+'<!--wmsutente-->')[0]);
           });
 	}
 }*/
-function add_wms_from_url(wms_layername, wms_url, wms_title) {
+function add_wms_from_url(wms_layername, wms_url, wms_title, layer_index) {
+
+	//per prima cosa recupero lo ZIndex piu alto tra i layer di base:
+        var max_Zindex_baselayer = 0;
+        for (i=0; map.getNumLayers()>i; i++) {
+          if (map.layers[i].isBaseLayer == true) {
+            if (map.layers[i].getZIndex() > max_Zindex_baselayer) {
+              //console.log(i + ' ' + map.layers[i].name + 'lowest number' + map.layers[i].getZIndex());
+              max_Zindex_baselayer = map.layers[i].getZIndex();
+            }
+          }
+        }
+        wms_utente_ZIndex = parseInt(max_Zindex_baselayer) + parseInt(layer_index);
+
 	//Ripulisco la mappa dall'ultima immagine se c'e':
 	//if (wms_utente) {map.removeLayer(wms_utente);} //lo lasciamo, come in http://geoportail.biodiversite-nouvelle-aquitaine.fr/visualiseur/
 	
@@ -264,8 +277,12 @@ function add_wms_from_url(wms_layername, wms_url, wms_title) {
 	//wms_utente.projection = OL_3857;
 	
 	map.addLayer(wms_utente);
-        //map.setLayerIndex(wms_utente, 0); //altrimenti si sovrappone agli altri layer non permettendone il click
-	map.setLayerIndex(wms_utente, map.getNumLayers()+1);
+	//map.setLayerIndex(wms_utente, 0); //altrimenti si sovrappone agli altri layer non permettendone il click. Pero' assegnando uno stesso Index o un Index negativo ad esempio, sballa lo slider per la trasparenza mettendone solo uno per tutti i WMS aggiunti
+        //map.setLayerIndex(wms_utente, map.getNumLayers()+1); //questo metodo crea gli sliders corretti ma si sovrappone agli altri layer non rendendoli cliccabili
+        //map.setLayerIndex(wms_utente, layer_index); //questo metodo per qualche motivo crea un SOLO slider
+        //il modo corretto per assegnare uno ZIndex ai WMS aggiunti pare sia questo. Con tanti WMS lo ZIndex si ripete ma pare non creare problemi:
+        wms_utente_index = map.getLayerIndex(wms_utente);
+        map.layers[wms_utente_index].setZIndex(wms_utente_ZIndex);
 
 	//A questo punto aggiungiamo il layer ad una cartella nella TOC dei layer, verificando prima che questa cartella non esista gia:
 	node_wmsutente = {nodeType: "gx_layercontainer", text: "WMS utente", expanded: true, isLeaf: false, leaf: false, loader: { baseAttrs: {radioGroup: "foo", uiProvider: "layernodeui"}, filter: function(record) {return record.get("layer").name.indexOf("wmsutente") !== -1}}};
@@ -291,7 +308,7 @@ function add_wms_from_url(wms_layername, wms_url, wms_title) {
 	  value: 65,
 	  listeners: {
             change: function(analysesSlider, val) {
-console.log(analysesSlider);
+//console.log(analysesSlider);
             map.getLayersByName(wms_layername+'<!--wmsutente-->')[0].setOpacity(val/100);
           }},
 	  //style: 'position:absolute; left:35px;'
