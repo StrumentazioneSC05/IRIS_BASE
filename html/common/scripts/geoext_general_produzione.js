@@ -82,7 +82,7 @@ map = new OpenLayers.Map('map', options);
 ///////////////// MAP PANEL //////////////////////////////
 	
 	/*Tutte le opzioni della mappa vanno messe qui dentro, nel MapPanel:*/
-	if (webgis=='expo2015_pub') tbar_items = [];
+	if (webgis.indexOf('_pub') > -1) tbar_items = [];
 	else tbar_items = toolbarItems;
 	mapPanel = new GeoExt.MapPanel({
 		border: true,
@@ -447,7 +447,7 @@ document.getElementsByTagName("head")[0].appendChild(e);
 		//layout: "border",
 	});
 
-	if (webgis=='expo2015_pub') items_panel = [mapPanel];
+	if (webgis.indexOf('_pub') > -1) items_panel = [mapPanel];
 	else items_panel = [mapPanel,right_panel,gridPanel];
 
 	var mainPanel = new Ext.Panel({

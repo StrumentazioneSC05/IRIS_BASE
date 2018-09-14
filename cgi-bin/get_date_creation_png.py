@@ -30,6 +30,13 @@ if (filename=='xband.png'):
   only_date = date_png[1].split()
   print only_date[1][:16]
 
+elif ('last_movie_livestorm.gif' in filename):
+  string = "/usr/bin/identify -verbose %s | grep comment" % (url_filename)
+  date_png = commands.getstatusoutput(string)
+  #Esempio: RADAR: 2016-06-30h12:05
+  only_date = date_png[1].split()
+  print only_date[1][:16]
+
 else:
   #Usando Gdalinfo - pare piu veloce e la parola chiave del metadato dovrebbe essere uguale per tutti i dati:
   string = "/usr/bin/gdalinfo -nogcp -nofl -noct %s | grep DATETIME" % (url_filename)
