@@ -28,7 +28,7 @@ else $devel = 0;
 //Carico le configurazioni di base da un file esterno:
 include_once('config_iris.php');
 
-//Tengo traccia degli accessi autenticati
+//Tengo traccia degli accessi autenticati con DBD
 $indicesServer = array('PHP_SELF', 
 'argv', 
 'argc', 

@@ -689,6 +689,7 @@ The content is similar to the one see in the previous section, but the header sh
 
 and the content, for example:
 
+ #access through a group
  <Directory /var/www/html/iris_base/>
    AuthType basic
    AuthName "Area privata"
@@ -697,6 +698,7 @@ and the content, for example:
    AuthDBDUserPWQuery "SELECT password FROM config.v_httpd_usergroup WHERE username = %s AND active = 1 AND groupname IN ('testNOgroup', 'testgroupB') LIMIT 1"
   </Directory>
 
+  #access directly as valid user
   <Directory /var/www/cgi-bin/>
     AuthType basic
     AuthName "Area privata"
@@ -716,7 +718,7 @@ Anyway to create MD5 password use openssl. For example:
 
   openssl passwd -apr1 <password>
 
-SHA1 encryption could be directly used with Db instructions:
+SHA1 encryption could be directly used with Db instructions (previously launch "CREATE EXTENSION pgcrypto;"):
 
   INSERT INTO config.httpd_users (username, password) VALUES( '<username>', '{SHA}'||encode(digest('<password>','sha1'),'base64') );
 
@@ -725,10 +727,14 @@ or by shell:
   htpasswd -bns <username> <password>
 
 
+Create the groups writing in the table "config.httpd_groups" and associate the new user to an existing group:
+
+  INSERT INTO config.httpd_usergroup VALUES ( '<groupname>', '<username>');
+
+
 At the end of all restart the httpd service:
 
   service httpd restart
-
 
 
 For more options and/or documentation:
