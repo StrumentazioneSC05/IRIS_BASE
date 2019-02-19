@@ -333,6 +333,19 @@ Restart the service:
 
 
 ##############################################
+SENDING MAIL FROM SERVER
+
+setsebool -P httpd_can_sendmail on
+
+Modify /etc/postfix/main.cf setting:
+myorigin = mydomain.it
+relayhost = [smtp.host.it]
+
+service postfix restart
+
+
+
+##############################################
 START SERVICE and DB and APACHE
 su root
 service httpd start
@@ -666,9 +679,19 @@ In order to protect the web content it's possible to setup users for accessing s
 
 It could be more powerful store groups and users on a PostgreSQL DB rather than manage it with ".htpasswd" and ".htgroups" files.
 
-First thing, check and install the dbd module:
+First thing, check and install the dbd module and other useful module to manage login:
 
   yum install apr-util-pgsql.x86_64
+  yum install mod_session mod_form apr-util-openssl
+
+Add the module. Edit `/etc/httpd/conf.modules.d/01-session.conf` to look like this:
+  LoadModule session_module modules/mod_session.so
+  LoadModule request_module modules/mod_request.so
+  LoadModule session_cookie_module modules/mod_session_cookie.so
+  LoadModule session_dbd_module modules/mod_session_dbd.so
+  LoadModule auth_form_module modules/mod_auth_form.so
+  LoadModule session_crypto_module modules/mod_session_crypto.so
+
 
 Then edit the conf file:
 
@@ -696,6 +719,7 @@ and the content, for example:
    AuthBasicProvider dbd
    Require valid-user
    AuthDBDUserPWQuery "SELECT password FROM config.v_httpd_usergroup WHERE username = %s AND active = 1 AND groupname IN ('testNOgroup', 'testgroupB') LIMIT 1"
+   ErrorDocument 401 /error.html
   </Directory>
 
   #access directly as valid user
