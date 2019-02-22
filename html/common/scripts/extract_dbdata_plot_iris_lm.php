@@ -29,19 +29,13 @@ $params_arr = array();
 $plot_var = array(
   'T' => array(
 	'udm' => '°C',
-	'type' => 'line',
+	//'type' => 'line',
+	'type' => 'area',
 	'maxy' => 40,
 	'miny' => 999,
 	'decimal' => 1,
 	'step' => false
-  ),
-  'PP' => array(
-        'udm' => 'mm/h',
-        'type' => 'line',
-        'maxy' => 999,
-        'miny' => 999,
-        'decimal' => 1,
-        'step' => 'right'
+	,'yAxisTitle' => 'Temperatura [°C]'
   ),
   'UR' => array(
         'udm' => '%',
@@ -50,6 +44,25 @@ $plot_var = array(
         'miny' => 0,
         'decimal' => 0,
         'step' => false
+	,'yAxisTitle' => 'Umidita relativa [%]'
+  ),
+  'PP' => array(
+        'udm' => 'mm/h',
+        'type' => 'line',
+        'maxy' => 999,
+        'miny' => 999,
+        'decimal' => 1,
+        'step' => 'right'
+	,'yAxisTitle' => 'Pioggia [mm/h]'
+  ),
+  'PA' => array(
+        'udm' => 'hPa',
+        'type' => 'area',
+        'maxy' => 999,
+        'miny' => 700,
+        'decimal' => 0,
+        'step' => false
+	,'yAxisTitle' => 'Pressione [hPa]'
   ),
   'I' => array(
         'udm' => 'cm',
@@ -58,14 +71,16 @@ $plot_var = array(
         'miny' => 999,
         'decimal' => 1,
         'step' => false
+	,'yAxisTitle' => 'Livello idro [cm]'
   ),
   'VV' => array(
         'udm' => 'm/s',
-        'type' => 'line',
+        'type' => 'area',
         'maxy' => 999,
         'miny' => 0,
         'decimal' => 0,
         'step' => false
+	,'yAxisTitle' => 'Velocita Vento [m/s]'
   ),
   'DV' => array(
         'udm' => '°',
@@ -74,6 +89,7 @@ $plot_var = array(
         'miny' => 0,
         'decimal' => 0,
         'step' => false
+	,'yAxisTitle' => 'Direzione Vento'
   )
 );
 
@@ -128,11 +144,12 @@ else {
     $step = $plot_var[$id_parametro]["step"];
     $maxy = $plot_var[$id_parametro]["maxy"];
     $miny = $plot_var[$id_parametro]["miny"];
+    $yAxisTitle = $plot_var[$id_parametro]["yAxisTitle"];
 
     //l'unica query che rompe lo schema e' la pioggia
     if ($id_parametro=='PP') {
 	$query = <<<EOT
-WITH daysago AS (SELECT date_trunc('day', now() at time zone '$timezone_data'-'5 days'::interval) AS dataora) SELECT dd::timestamp without time zone as data, valore_originale, tipologia_validaz, max(dati_staz.data_agg) OVER () AS data_agg, '$id_parametro' AS name, '$udm' AS unit, '$type' AS type, $decimal AS decimal, '$step' AS step, NULLIF($maxy, 999) AS maxy, NULLIF($miny, 999) AS miny FROM generate_series ( (SELECT dataora FROM daysago) , now() at time zone '$timezone_data', '$pass_time minute'::interval) dd 
+WITH daysago AS (SELECT date_trunc('day', now() at time zone '$timezone_data'-'5 days'::interval) AS dataora) SELECT dd::timestamp without time zone as data, valore_originale, tipologia_validaz, max(dati_staz.data_agg) OVER () AS data_agg, '$id_parametro' AS name, '$udm' AS unit, '$yAxisTitle' AS yAxisTitle, '$type' AS type, $decimal AS decimal, '$step' AS step, NULLIF($maxy, 999) AS maxy, NULLIF($miny, 999) AS miny FROM generate_series ( (SELECT dataora FROM daysago) , now() at time zone '$timezone_data', '$pass_time minute'::interval) dd 
 LEFT OUTER JOIN (SELECT 
 to_char(data_e_ora - '1 minute'::interval,'YYYY-MM-DD HH24:00:00')::timestamp + '$pass_time minute'::interval AS data,
 sum(valore_originale) AS valore_originale, max(tipologia_validaz) AS tipologia_validaz, max(data_agg) AS data_agg FROM $realtimetable_from a WHERE a.id_sensore = $id_sensore AND data_e_ora >= (SELECT dataora FROM daysago) 
@@ -142,7 +159,7 @@ EOT;
     }
     else {
       $query = <<<EOT
-WITH daysago AS (SELECT date_trunc('day', now() at time zone '$timezone_data'-'5 days'::interval) AS dataora) SELECT dd::timestamp without time zone as data, valore_originale, tipologia_validaz, max(dati_staz.data_agg) OVER () AS data_agg, '$id_parametro' AS name, '$udm' AS unit, '$type' AS type, $decimal AS decimal, '$step' AS step, NULLIF($maxy, 999) AS maxy, NULLIF($miny, 999) AS miny FROM generate_series ( (SELECT dataora FROM daysago) , now() at time zone '$timezone_data', '$pass_time minute'::interval) dd LEFT OUTER JOIN (SELECT data_e_ora, valore_originale, tipologia_validaz, data_agg FROM $realtimetable_from  a WHERE a.id_sensore = $id_sensore AND data_e_ora >= (SELECT dataora FROM daysago)) AS dati_staz ON (dd=data_e_ora) ORDER BY data ASC;
+WITH daysago AS (SELECT date_trunc('day', now() at time zone '$timezone_data'-'5 days'::interval) AS dataora) SELECT dd::timestamp without time zone as data, valore_originale, tipologia_validaz, max(dati_staz.data_agg) OVER () AS data_agg, '$id_parametro' AS name, '$udm' AS unit, '$yAxisTitle' AS yAxisTitle, '$type' AS type, $decimal AS decimal, '$step' AS step, NULLIF($maxy, 999) AS maxy, NULLIF($miny, 999) AS miny FROM generate_series ( (SELECT dataora FROM daysago) , now() at time zone '$timezone_data', '$pass_time minute'::interval) dd LEFT OUTER JOIN (SELECT data_e_ora, valore_originale, tipologia_validaz, data_agg FROM $realtimetable_from  a WHERE a.id_sensore = $id_sensore AND data_e_ora >= (SELECT dataora FROM daysago)) AS dati_staz ON (dd=data_e_ora) ORDER BY data ASC;
 EOT;
     }
     array_push($queries, $query);
@@ -177,6 +194,7 @@ APPUNTI
 		    $datasets['step'] = $row['step'];
 		    $datasets['maxY'] = $row['maxy'];
 		    $datasets['minY'] = $row['miny'];
+		    $datasets['yAxisTitle'] = $row['yaxistitle'];
 		    $datasets['timezone'] = $timezone_data;
                     $datasets['data'][] = is_null($row[1]) ? null : floatval($row[1]); //ternary operation altrimenti il floatval riporta a zero i valori nul
 		  }
