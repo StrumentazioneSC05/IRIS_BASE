@@ -224,6 +224,17 @@ Check for correct installation of Tinyows by running:
 --> if the DB it's already been recovered of its tables, the command above should return the active layers
 
 
+### Run multiple tinyows to serve different DB ###
+follow instruction as before, after extracting modify "tinyows/src/ows_define.h.in" the line:
+#define OWS_CONFIG_FILE_PATH        "/etc/tinyows.xml"
+
+assigning the desired new name to the xml file. After making and install, remember to rename the executive file tinyows and copy it in the /var/ww/cgi-bin folder in order to not overwrite the existing and operative tinyows executive file!
+Configure the new tinyows_XXX.xml file as desired with new DB parameter.
+
+After that, create the new variable "$url_tinyows_$url_XXXX" inside "common/config_iris.php" reporting it inside a new variable "var url_tinyows_XXXX" defined in "common/webgis_central.php".
+Then point the theme.js files to this new tinyows service when needed.
+
+
 ### DEVELOPMENT ###
 On Centos 7 it's possible to install the newer version 1.1.0.
 The newer 110 version, however, has some polygon representation bugs not yet solved.
