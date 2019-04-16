@@ -1,7 +1,60 @@
 
 <?php
+
+//se proengo dalla pagina in cui ho modificato la password:
+$check_modify = 0;
+if (isset($_POST["password1"])) { //vuol dire che ho richiesto di modificare la password
+  $password = $_POST["password1"];
+  if (isset($_POST["username"])) { //se e' presente prendo l'username dal POST, altrimenti lo prendo dalle variabili del SERVER
+    $username = $_POST["username"];
+  }
+//echo $username;
+
+  //Carico le configurazioni di base da un file esterno:
+  $conn_string = "host=localhost port=5432 dbname=iris_base user=webgis password=webgis$2013%";
+  $conn = pg_connect($conn_string);
+  //Recupero dati per i servizi WebGIS disponibili:
+  if (!$conn) { // Check if valid connection
+    echo "Error Connecting to database <br>";
+    exit;
+  }
+  else {
+    $query_username = "SELECT * FROM config.httpd_users WHERE username = '$username' LIMIT 1;";
+    $result_username = pg_query($conn, $query_username);
+    if (!$result_username) {
+        echo "Error on the query area<br>" . $query_username;
+        exit;
+    }
+    else {
+      //se non corrisponde email con nessun utente avviso l'utente
+      $rows = pg_num_rows($result_username);
+      if ($rows<1) {
+        $check_modify = -1;
+      }
+      else {
+        //qui dovrei far partire una query su DB che aggiorna la pwd cosi come richiesto dall'utente
+        $query_newpwd = <<<EOT
+UPDATE config.httpd_users SET password = '{SHA}'||encode(digest('$password','sha1'),'base64')
+WHERE httpd_users.username = '$username';
+EOT;
+//echo $query_newpwd;
+        $result_newpwd = pg_query($conn, $query_newpwd);
+        if (!$result_newpwd) {
+          echo "Error on the query password<br>" . $query_newpwd;
+          $check_modify = -1;
+        }
+        else {
+          $check_modify = 1;
+        }
+      }
+    }
+  }
+  pg_close($conn);
+
+}
+
 $check_reset = 0;
-if (isset($_POST["httpd_mail"])) {
+if (isset($_POST["httpd_mail"])) { //vuol dire che ho richiesto di resettare la password
   $httpd_mail = $_POST["httpd_mail"];
   //Carico le configurazioni di base da un file esterno:
   $conn_string = "host=localhost port=5432 dbname=iris_base user=webgis password=webgis$2013%";
@@ -79,6 +132,7 @@ EOF;
       }
     }
   }
+  pg_close($conn);
 }
 
 ?>
@@ -95,7 +149,9 @@ EOF;
 
 <meta name="viewport" content="user-scalable=no, width=device-width" />
 
+
 <script type="text/javascript" src="jQuery/jquery-1.10.2.min.js"></script>
+
 
 <script language="Javascript">
 
@@ -142,6 +198,33 @@ body {
 #loginform p {
     margin-bottom: 0;
 }
+
+#modify_form {
+    text-align: center;
+    width: 520px;
+    margin-top: 20px;
+    margin-left: 0;
+    margin: auto;
+    padding: 26px 24px 46px;
+    font-weight: 400;
+    overflow: hidden;
+
+    border-radius: 10px;
+    border: 4px solid #383100;
+    -moz-box-shadow: 0 4px 10px -1px #C8C8C8;
+    -webkit-box-shadow: 0 4px 10px -1px #C8C8C8;
+    box-shadow: 0 4px 10px -1px #C8C8C8!important;
+    position: relative;
+    z-index: 1;
+    background-color: rgb(30,115,190);
+    background: url() no-repeat center top;
+    /*background: rgba(30,115,190,1)!important;
+    background: url(http://www.avasva.com/wp-content/plugins/admin-custom-login/css/img/pattern-1.png) repeat scroll left top, url() no-repeat center top !important;*/
+}
+#modify_form p {
+    margin-bottom: 0;
+}
+
 #mailform {
     width: 520px;
     margin-top: 20px;
@@ -174,12 +257,29 @@ body {
     bottom: 3px;
     z-index: 3;
 }
-#login_btn {
-    background: #d0c184 !important;
+.login_btn {
+    /*background: #d0c184 !important;*/
+    background-color: #eed779;
+    /*border-color: #285e8e;*/
     font-size: 14px;
     border: none !important;
     text-shadow: #ffffff 0 1px 0;
     font-family: Open Sans;
+    cursor: pointer;
+    /*le seguenti info le prendo dalla classe classname penso definita su qualche css esterno*/
+    box-shadow: inset 0px 1px 0px 0px #ffffff;
+    width: 50%;
+    display: inline-block;
+    color: #777777;
+    font-weight: bold;
+    text-decoration: none;
+    text-align: center;
+    text-size-adjust: auto;
+}
+.login_btn:hover {
+    color: #777777;
+    background-color: #d0c184;
+    border-color: #285e8e;
 }
 h2 {
     color: darkred;
@@ -210,26 +310,40 @@ else if ($check_reset == -2) {
 }
 ?>
 
+
+<?php
+if ($check_modify == 1) {
+?>
+        <br/><h2>Password aggiornata con successo! La nuova password per l'utente <?php echo $username; ?> e': <?php echo $password; ?></h2>
+<?php
+}
+else if ($check_modify == -1) {
+?>
+        <br/><h2>Spiacenti ma c'e' stato un errore nell'aggiornamento della password. Riprovare piu' tardi o se il problema persiste contattare l'amministratore del sistema.</h2>
+<?php
+}
+?>
+
+
 	<br/><h1>Credenziali di accesso ai sistemi IRIS</h1>
 
 		<form name="loginform" id="loginform" method="POST" action="/devel/dologin.html">
 
 	<p>
-		<label for="user_login" id="log_input_lable">Nome utente<div class="input-container"> <div class="icon-ph"><i class="fa fa-user"></i></div> <input id="user_login" name="httpd_username" class="input" type="text" placeholder="Type Username" style="padding: 5px 5px 5px 45px;" required="required"></div></label>
+		<label for="user_login" id="log_input_lable">Nome utente<div class="input-container"> <div class="icon-ph"><i class="fa fa-user"></i></div> <input id="user_login" name="httpd_username" class="input input-lg" type="text" placeholder="Nome Utente" style="padding: 5px 5px 5px 45px;" required="required"></div></label>
 	</p>
 
 	<p>
-		<label for="user_pass" id="pwd_input_lable">Password<div class="input-container"> <div class="icon-ph"><i class="fa fa-key"></i></div> <input id="user_pass" name="httpd_password" class="input" type="password" placeholder="Type Password" style="padding: 5px 5px 5px 45px;" required="required"></div></label>
+		<label for="user_pass" id="pwd_input_lable">Password<div class="input-container"> <div class="icon-ph"><i class="fa fa-key"></i></div> <input id="user_pass" name="httpd_password" class="input input-lg" type="password" placeholder="Password" style="padding: 5px 5px 5px 45px;" required="required"></div></label>
 	</p>
 
-			<input type="submit" id="login_btn" name="login" class="classname" value="Login" />
+	<p>&nbsp;</p>
+			<input type="submit" id="login_btn" name="login" class="login_btn btn-lg" value="Login" />
 
 		</form>
 
 	<p>
-
-		<form name="mailform" id="mailform" method="POST" action="">
-
+	<form name="mailform" id="mailform" method="POST" action="">
 	Hai dimenticato la password?
 	<br/>
 	Inserisci la mail sulla quale ricevere la nuova password
@@ -237,11 +351,10 @@ else if ($check_reset == -2) {
                 <div class="input-container"> <div class="icon-ph"><i class="fa fa-key"></i></div> <input id="user_mail" name="httpd_mail" class="input" type="email" placeholder="e-mail" style="padding: 5px 5px 5px 45px;" required="required"></div></label>
         	</p>
 
-	<button title='resetta password e invia la nuova password via mail' type="submit" name="reset_pwd" value="Reset" class="resetta classname"> Resetta password </button>
-
+	<p>&nbsp;</p>
+	<button title='resetta password e invia la nuova password via mail' type="submit" name="reset_pwd" value="Reset" class="resetta classname btn-lg"> Resetta password </button>
 
 		</form>
-
 	</p>
 
 	</body>
