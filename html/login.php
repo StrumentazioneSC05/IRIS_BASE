@@ -234,11 +234,6 @@ body {
 #mailform p {
     margin-bottom: 0;
 }
-.resetta {
-    font-size: 1em;
-    width: fit-content;
-    cursor: pointer;
-}
 .icon-ph {
     display: inline-block;
     width: 15px;
@@ -256,30 +251,6 @@ body {
     top: 4px;
     bottom: 3px;
     z-index: 3;
-}
-.login_btn {
-    /*background: #d0c184 !important;*/
-    background-color: #eed779;
-    /*border-color: #285e8e;*/
-    font-size: 14px;
-    border: none !important;
-    text-shadow: #ffffff 0 1px 0;
-    font-family: Open Sans;
-    cursor: pointer;
-    /*le seguenti info le prendo dalla classe classname penso definita su qualche css esterno*/
-    box-shadow: inset 0px 1px 0px 0px #ffffff;
-    width: 50%;
-    display: inline-block;
-    color: #777777;
-    font-weight: bold;
-    text-decoration: none;
-    text-align: center;
-    text-size-adjust: auto;
-}
-.login_btn:hover {
-    color: #777777;
-    background-color: #d0c184;
-    border-color: #285e8e;
 }
 h2 {
     color: darkred;
@@ -338,7 +309,7 @@ else if ($check_modify == -1) {
 	</p>
 
 	<p>&nbsp;</p>
-			<input type="submit" id="login_btn" name="login" class="login_btn btn-lg" value="Login" />
+			<input type="submit" id="login_btn" name="login" class="btn login_btn" value="Login" />
 
 		</form>
 
@@ -352,7 +323,7 @@ else if ($check_modify == -1) {
         	</p>
 
 	<p>&nbsp;</p>
-	<button title='resetta password e invia la nuova password via mail' type="submit" name="reset_pwd" value="Reset" class="resetta classname btn-lg"> Resetta password </button>
+	<button title='resetta password e invia la nuova password via mail' type="submit" name="reset_pwd" value="Reset" class="btn classname"> Resetta password </button>
 
 		</form>
 	</p>
