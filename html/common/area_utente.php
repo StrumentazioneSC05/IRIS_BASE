@@ -196,19 +196,23 @@ label.error {
         <form name="modify_form" id="modify_form" method="POST" action="../login.php">
 
 <p class="text-center"><b>Usa il form seguente per modificare la tua password.</b></p>
-<p>
-<input type="password" class="input-lg" name="password1" id="password1" placeholder="New Password" autocomplete="off" data-rule-password ="true" required>
-<div class="row">
-<div class="col-sm-12">
+
+<p></p>
+
+<div class="input-container">
+<input type="password" class="input_text" name="password1" id="password1" placeholder="New Password" autocomplete="off" data-rule-password ="true" required>
 </div>
+
+<p></p>
+
 <input type="hidden" name="username" id="username" value="<?php echo $username; ?>" >
-<input type="password" class="input-lg" name="password2" id="password2" placeholder="Repeat Password" autocomplete="off" data-rule-password ="true" data-rule-required="true" data-rule-equalTo="#password1" required>
-<div class="row">
-<div class="col-sm-12">
+<div class="input-container">
+<input type="password" class="input_text" name="password2" id="password2" placeholder="Repeat Password" autocomplete="off" data-rule-password ="true" data-rule-required="true" data-rule-equalTo="#password1" required>
 </div>
-</div>
-<input type="submit" class="btn-primary btn-load btn-lg" data-loading-text="Changing Password..." value="Change Password" id="change_pwd" >
-</p>
+
+<p></p>
+
+<input type="submit" style="font-size:1em;width:50%;padding:2px 3px;" class="btn classname" data-loading-text="Changing Password..." value="Change Password" id="change_pwd" >
         </form>
 </div>
 

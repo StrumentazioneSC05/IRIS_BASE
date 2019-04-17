@@ -301,14 +301,13 @@ else if ($check_modify == -1) {
 		<form name="loginform" id="loginform" method="POST" action="/devel/dologin.html">
 
 	<p>
-		<label for="user_login" id="log_input_lable">Nome utente<div class="input-container"> <div class="icon-ph"><i class="fa fa-user"></i></div> <input id="user_login" name="httpd_username" class="input input-lg" type="text" placeholder="Nome Utente" style="padding: 5px 5px 5px 45px;" required="required"></div></label>
+		<label for="user_login" id="log_input_lable">Nome utente<div class="input-container"> <div class="icon-ph"><i class="fa fa-user"></i></div> <input id="user_login" name="httpd_username" class="input_text" type="text" placeholder="Nome Utente" required="required"></div></label>
 	</p>
 
 	<p>
-		<label for="user_pass" id="pwd_input_lable">Password<div class="input-container"> <div class="icon-ph"><i class="fa fa-key"></i></div> <input id="user_pass" name="httpd_password" class="input input-lg" type="password" placeholder="Password" style="padding: 5px 5px 5px 45px;" required="required"></div></label>
+		<label for="user_pass" id="pwd_input_lable">Password<div class="input-container"> <div class="icon-ph"><i class="fa fa-key"></i></div> <input id="user_pass" name="httpd_password" class="input_text" type="password" placeholder="Password" required="required"></div></label>
 	</p>
 
-	<p>&nbsp;</p>
 			<input type="submit" id="login_btn" name="login" class="btn login_btn" value="Login" />
 
 		</form>
@@ -319,11 +318,10 @@ else if ($check_modify == -1) {
 	<br/>
 	Inserisci la mail sulla quale ricevere la nuova password
 		<p>
-                <div class="input-container"> <div class="icon-ph"><i class="fa fa-key"></i></div> <input id="user_mail" name="httpd_mail" class="input" type="email" placeholder="e-mail" style="padding: 5px 5px 5px 45px;" required="required"></div></label>
+                <div class="input-container"> <div class="icon-ph"><i class="fa fa-key"></i></div> <input id="user_mail" name="httpd_mail" class="input_text" type="email" placeholder="e-mail" required="required"></div></label>
         	</p>
 
-	<p>&nbsp;</p>
-	<button title='resetta password e invia la nuova password via mail' type="submit" name="reset_pwd" value="Reset" class="btn classname"> Resetta password </button>
+	<button title='resetta password e invia la nuova password via mail' type="submit" name="reset_pwd" value="Reset" style="font-size:1em;width:50%;padding:2px 3px;" class="btn classname"> Resetta password </button>
 
 		</form>
 	</p>
