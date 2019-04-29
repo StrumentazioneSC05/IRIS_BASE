@@ -688,6 +688,8 @@ Setup a path that any users (provided with login and password) could have access
 CONFIGURE HTTP.CONF TO MANAGE DIFFERENT WEB USERS - via POSTGRESQL DB
 In order to protect the web content it's possible to setup users for accessing specific path.
 
+==> NB: this option it's available only for Apache 2.4!
+
 It could be more powerful store groups and users on a PostgreSQL DB rather than manage it with ".htpasswd" and ".htgroups" files.
 
 First thing, check and install the dbd module and other useful module to manage login:
