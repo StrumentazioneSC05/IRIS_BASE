@@ -71,6 +71,8 @@ function createPopup(evt, html_feature, title_pop) {
 	title_pop = typeof title_pop !== 'undefined' ? title_pop : ""; //definisco valori di default
 
         var feature = evt.feature;
+	//per avere una larghezza della popup personalizzata in base al layer:
+	var pop_width = typeof feature.attributes.pop_width !== 'undefined' ? feature.attributes.pop_width : 230; //definisco valori di default
         //var html_feature; //definizione contenuto della popup
 
 	if (typeof base11 !== 'undefined') {
@@ -119,7 +121,7 @@ function createPopup(evt, html_feature, title_pop) {
 	// create the popup if it doesn't exist:
 	if (!popup) {
 		popup = new GeoExt.Popup({
-			title: title_pop, feature: feature, width: 210, location: feature,
+			title: title_pop, feature: feature, width: pop_width, location: feature,
 			opacity: 0.6, //non funziona...
 			maximizable: true, collapsible: true, map: mapPanel.map,
 			anchored: false, //a cosa serve?come non farmi coprire il punto dalla popup??
@@ -147,7 +149,7 @@ function createPopup(evt, html_feature, title_pop) {
 	else if (popup) {
 		popup.close();
 		popup = new GeoExt.Popup({
-			title: title_pop, feature: feature, width: 200, location: feature,
+			title: title_pop, feature: feature, width: pop_width, location: feature,
 			maximizable: true, collapsible: true, map: mapPanel.map, anchored: true,
 			listeners: {
 				close: function() {
