@@ -5,7 +5,20 @@
 
 
 ///////////////// DEFINIZIONE WFS VECTOR LAYER //////////////////////
-	
+
+
+var comuni = new OpenLayers.Layer.Vector(default_layer_name, {
+        //styleMap: styleMap_zoneall_dgr2018,
+        strategies: [new OpenLayers.Strategy.Fixed()],
+        projection: OL_32632,
+        protocol: new OpenLayers.Protocol.WFS({
+                url: url_tinyows, featureType: "limiti_amministrativi",
+                featureNS: "http://www.tinyows.org/",
+                srsName: "epsg:32632", geometryName: "the_geom"
+        })
+});
+
+
 /*AREE ALLERTAMENTO*/
 var style_zoneall = new OpenLayers.Style();
 var ordinaria = new OpenLayers.Rule({

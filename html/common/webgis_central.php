@@ -581,6 +581,14 @@ else {
 }
 pg_close($conn);
 ?>
+
+
+<!--SECONDA PROVA EXPORT MAP -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js" integrity="sha384-NaWTHo/8YCBYJ59830LTz/P4aQZK1sS0SneOgAvhsIl3zBu8r9RevNg5lHCHAuQ/" crossorigin="anonymous"></script>
+<script src="../jQuery/html2canvas.js"></script>
+<script src="../jQuery/canvg.js"></script>
+
+
 <script>
 var news_active = <?php echo $news_active; ?>;
 var gids_list = '<?php echo $gids_list; ?>';
@@ -666,6 +674,72 @@ function exportMap() {
 */
 ///////////////////////////////////////////////////////////////
 
+/////////////////////////////// SECONDA PROVA - 24/05/2019 ///////////////////////////////
+// Default export is a4 paper, portrait, using milimeters for units
+//var doc = new jsPDF()
+//doc.text('Hello world!', 10, 10)
+//doc.save('a4.pdf')
+
+var exportButton = document.getElementById('export-pdf');
+var dims = {
+	a0: [1189, 841],
+	a1: [841, 594],
+	a2: [594, 420],
+	a3: [420, 297],
+	a4: [297, 210],
+	a5: [210, 148]
+};
+
+exportButton.addEventListener('click', function() {
+
+html2canvas(document.body).then(function(canvas) {
+	document.body.appendChild(canvas);
+                var img = canvas.toDataURL('image/png');
+                var doc = new jsPDF();
+                doc.addImage(img, 'JPEG', 20, 20);
+                doc.save('test.pdf');
+});
+
+}, false);
+
+/*exportButton.addEventListener('click', function() {
+    exportButton.disabled = true;
+    document.body.style.cursor = 'progress';
+   
+    //var format = document.getElementById('format').value;
+    //var resolution = document.getElementById('resolution').value;
+	var format = "a4";
+	var resolution = "300";
+    var dim = dims[format];
+    var width = Math.round(dim[0] * resolution / 25.4);
+    var height = Math.round(dim[1] * resolution / 25.4);
+    var extent = map.getView().calculateExtent(size);
+   
+    map.once('rendercomplete', function(event) {
+      var canvas = event.context.canvas;
+      var data = canvas.toDataURL('image/jpeg');
+      var pdf = new jsPDF('landscape', undefined, format);
+      pdf.addImage(data, 'JPEG', 0, 0, dim[0], dim[1]);
+      pdf.save('map.pdf');
+      // Reset original map size
+      map.setSize(size);
+      map.getView().fit(extent, {size: size});
+      exportButton.disabled = false;
+      document.body.style.cursor = 'auto';
+    });
+   
+    // Set print size
+    var printSize = [width, height];
+    map.setSize(printSize);
+    map.getView().fit(extent, {size: printSize});
+   
+}, false);
+*/
+
+
+
+///////////////////////////////////////////////////////////////
+
 
 /*
  * CARICAMENTO LAYERS SCELTI DA COOKIE
@@ -704,6 +778,9 @@ baselayer_to_load.splice(pos, 1); // Remove old Sarah
 <body>
 
 <div id="mainpanel">
+
+    <button id="export-pdf">Export PDF</button>
+
 <div id="<?php echo $id_logo_div; ?>" class="logo_div">
 <?php
 echo '<a href="' . $urllogo . '" target="_blank" title="' . $titlelogo . '"><img style="background: rgba(230, 230, 230, 0.8);" height="60" src="' . $nomelogo . '" /></a>';

@@ -444,6 +444,7 @@ function geom_img(geometria) {
                 case 'MULTIPOLYGON': geometria_img = 'polygons.png'; break;
                 case 'LINESTRING': geometria_img = 'line.png'; break;
                 case 'MULTILINESTRING': geometria_img = 'line.png'; break;
+		case 'MULTILINESTRINGZ': geometria_img = 'line.png'; break;
                 case 'POINT': geometria_img = 'points.png'; break;
                 case 'POINT': geometria_img = 'points.png'; break;
                 case 'RASTER': geometria_img = 'raster.png'; break;
@@ -685,12 +686,6 @@ def insert_new_data():
 	    SELECT b.layer_idx FROM config.v_webgis_custom_settings b WHERE b.webgis_idx = {0}\
 	);""".format(id_stab)
         result = conn.execute(text(sql))
-	rows_amount = 0
-	for row in result:
-	  rows_amount += 1
-	  # do something with row
-	if not rows_amount:
-	  print('There were zero rows')
 
         #Provo a creare la tabella con DataTable plugin:
         layer_table = """<table id="main_table" border class="display" cellspacing="0" width="100%"><thead></thead><tbody></tbody><tfoot></tfoot></table>"""
