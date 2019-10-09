@@ -39,7 +39,7 @@ $nomelogo = $root_dir_html . "/common/icons/logo_ArpaPiemonte_transp.png";
 $urllogo = "http://www.arpa.piemonte.gov.it/";
 $map_path = "/var/www/html/common/mapfiles/"; //percorso dei file .map di mapserver
 $url_tinyows = $root_dir_html . "/cgi-bin/tinyows"; //percorso eseguibile tinyows
-$url_tinyows_sigeo = $root_dir_html . "/cgi-bin/tinyows_sigeo"; //percorso eseguibile tinyows
+$url_tinyows_sigeo = $root_dir_html . "/cgi-bin/tinyows110_pg96"; //percorso eseguibile tinyows
 $titlelogo = "WebGis IRIS";
 $id_logo_div = "logo";
 

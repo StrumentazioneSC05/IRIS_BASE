@@ -245,12 +245,16 @@ We list below the commands to compile the newer version in the case these bugs w
 wget http://download.osgeo.org/mapserver/tinyows-1.1.0.tar.bz2
 tar xvjf tinyows-1.1.0.tar.bz2
 cd tinyows
-./configure --with-pg_config=/usr/pgsql-9.3/bin/pg_config --with-xml2-config=/usr/bin/xml2-config
+./configure --with-pg_config=/usr/pgsql-9.3/bin/pg_config --with-xml2-config=/usr/bin/xml2-config --with-shp2pgsql=/usr/pgsql-9.3/bin/shp2pgsql
 make
 sudo make install
 
 Move the executable file "tinyows" in "/var/www/cgi-bin".
 If you will to mantain more version of tinyows, rename this executable in tinyows_110 to distinguish it.
+
+### Run multiple tinyows to serve different DB ###
+in this case, after extracting modify "tinyows/test/unit_test" the line:
+TINYOWS_CONFIG_FILE=/etc/tinyows.xml
 
 ### end of DEVELOPMENT ###
 

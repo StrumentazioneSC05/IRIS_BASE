@@ -12,11 +12,12 @@ var comuni = new OpenLayers.Layer.Vector(default_layer_name, {
         strategies: [new OpenLayers.Strategy.Fixed()],
         projection: OL_32632,
         protocol: new OpenLayers.Protocol.WFS({
-                url: url_tinyows, featureType: "limiti_amministrativi",
+                url: url_tinyows_sigeo, featureType: "limiti_comuni_piemonte_2019",
                 featureNS: "http://www.tinyows.org/",
                 srsName: "epsg:32632", geometryName: "the_geom"
         })
 });
+comuni.setVisibility(false);
 
 
 /*AREE ALLERTAMENTO*/
