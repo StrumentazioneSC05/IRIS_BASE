@@ -16,15 +16,18 @@ In questo script metto tutta la parte javascript che c'era in webgis_produzione.
 //Inizializziamo alcune variabili e funzioni generali:
 
 //Per trasformare correttamente le coordinate. A quanto pare OL riconosce al volo solo 900913 e 4326.
+//E su proj4js vengono definiti solo 900913, 4326, e insospettabilmente il 3785...ma non il 3857
 //Gli altri SRID non li legge da locale, ma proj4js tenta di connettersi a http://spatialreference.org per recuperare la definizione della proiezione specificata, fallendo pero' al primo tentativo.
 //Definendo queste proiezioni qui evita questo primo fallito-tentativo.
 //In realta pare che legga le definizioni sotto common/defs...ma potrebbe essere un problema relativo alla cache del browser...
 Proj4js.defs["epsg:23032"] = "+proj=utm +zone=32 +ellps=intl +towgs84=-87,-98,-121,0,0,0,0 +units=m +no_defs"; //da QGis
+//Proj4js.defs["epsg:23032"] = "+proj=utm +zone=32 +ellps=intl +units=m +no_defs"; //da SpatialReference
 Proj4js.defs["epsg:32632"] = "+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs";
-Proj4js.defs["epsg:3785"] = "+proj=merc +lon_0=0 +k=1 +x_0=0 +y_0=0 +a=6378137 +b=6378137 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs";
-Proj4js.defs["epsg:900913"]= "+title= Google Mercator EPSG:900913 +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs";
+Proj4js.defs["epsg:900913"]= "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs";
 //Proj4js.defs["epsg:3857"] = "+proj=merc +lon_0=0 +k=1 +x_0=0 +y_0=0 +a=6378137 +b=6378137 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs";
-Proj4js.defs["epsg:3857"] = "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext  +no_defs"; //da QGis
+Proj4js.defs["epsg:3857"] = "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs"; //da QGis
+Proj4js.defs["EPSG:3857"] = "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs"; //da QGis, devo inserirlo anche in maiuscolo altrimenti non veniva riconosciuto....
+Proj4js.defs["epsg:3785"] = Proj4js.defs["epsg:3857"];
 
 
 /////////////// PERCORSI GENERALI ////////////////
@@ -63,7 +66,8 @@ var title_grid_default = "Nessuna griglia attributi attivata";
 
 //creating source and destination Proj4js objects
 var proj4326 = new Proj4js.Proj("epsg:4326"); //LatLon WGS84
-var proj3785 = new Proj4js.Proj("epsg:3785"); //UTM Google 900913
+var proj3857 = new Proj4js.Proj("epsg:3857");
+var proj3785 = new Proj4js.Proj("epsg:3857"); //UTM Google 900913
 
 var OL_4326 = new OpenLayers.Projection("epsg:4326");
 var OL_900913 = new OpenLayers.Projection("epsg:900913");
