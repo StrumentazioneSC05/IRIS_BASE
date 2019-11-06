@@ -52,7 +52,7 @@ fs = cgi.FieldStorage()
 fmt = "%Y-%m-%d %H:%M"
 fmt_2 = "%Y%m%d%H%M"
 
-p900913 = pyproj.Proj(init='epsg:3785')
+p900913 = pyproj.Proj(init='epsg:3857')
 p32632 = pyproj.Proj(init='epsg:32632')
 p4326 = pyproj.Proj(init='epsg:4326')
 p23032 = pyproj.Proj(init='epsg:23032')
@@ -152,7 +152,7 @@ def converti_coordinate():
   print 'var proj4230dd = new Proj4js.Proj("epsg:4230"); //LatLon ED50'
   print 'var proj32632 = new Proj4js.Proj("epsg:32632"); //UTM32N WGS84'
   print 'var proj23032 = new Proj4js.Proj("epsg:23032"); //UTM32N ED50'
-  print 'var proj3785 = new Proj4js.Proj("epsg:900913"); //UTM Google 900913'
+  print 'var proj3857 = new Proj4js.Proj("epsg:900913"); //UTM Google 900913'
   print 'function ConvertDDToDMS(D){'
   print 'return [0|D, "d", 0|(D<0?D=-D:D)%1*60, "\'", (0|D*60%1*6000)/100, \'"\'].join("");'
   print '}'
@@ -162,7 +162,7 @@ def converti_coordinate():
   print 'var x=%f' % (x)
   print 'var y=%f' % (y)
   print 'var p1 = new Proj4js.Point(x, y);'
-  print 'var pp1 = Proj4js.transform(proj3785, eval(new_srid), p1);'
+  print 'var pp1 = Proj4js.transform(proj3857, eval(new_srid), p1);'
   print 'var x_center = pp1.x; var y_center = pp1.y;'
   print 'if (new_srid=="proj32632" || new_srid=="proj23032") $("#coords").text(x_center.toFixed(0) + " " + y_center.toFixed(0));'
   print 'else if (new_srid=="proj4326dd" || new_srid=="proj4230dd") $("#coords").text(ConvertDDToDMS(x_center) + " " + ConvertDDToDMS(y_center));'
@@ -179,7 +179,7 @@ def converti_coordinate():
 
 def info_google():
   try:
-    BASE_URL='https://maps.google.com/maps/api/elevation/json?key='
+    BASE_URL='https://maps.google.com/maps/api/elevation/json?key=AIzaSyD6bKVff0rjgepxt6gyC9Vjr54S5BWcs9E'
     gurl=BASE_URL+"&locations="+str(y2)+","+str(x2)
     response=simplejson.load(urllib2.urlopen(gurl))
     elev=max(0,round(response['results'][0]['elevation'],0))
@@ -209,7 +209,7 @@ def info_google():
 
   ## Usando GOOGLE:
   try:
-    BASE_URL='https://maps.google.com/maps/api/geocode/json?key='
+    BASE_URL='https://maps.google.com/maps/api/geocode/json?key=AIzaSyD6bKVff0rjgepxt6gyC9Vjr54S5BWcs9E'
     url=BASE_URL+'&latlng='+str(y2)+","+str(x2)
     response=simplejson.load(urllib2.urlopen(url))
     loc = response['results'][0]['formatted_address']
@@ -360,12 +360,13 @@ table1b[2] = ['clm_type_'+subsrid, 'Tipo di nube', ' ', '9999']
 table1b[3] = ['clm_phase_'+subsrid, 'Fase della nube', ' ', '9999']
 
 #Tabella per la precipitazione cumulata da rete a terra:
-table4 = [ [ 0 for i in range(4) ] for j in range(5) ]
+table4 = [ [ 0 for i in range(4) ] for j in range(6) ]
 table4[0] = ['PLUV_ultima_ora'+subsrid2, 'Pioggia ult. ora', 'mm', '60']
 table4[1] = ['PLUV_ultime_3ore'+subsrid2, 'Pioggia ult. 3ore', 'mm', '180']
 table4[2] = ['PLUV_ultime_6ore'+subsrid2, 'Pioggia ult. 6ore', 'mm', '360']
 table4[3] = ['PLUV_ultime_12ore'+subsrid2, 'Pioggia ult. 12ore', 'mm', '720']
 table4[4] = ['PLUV_ultime_24ore'+subsrid2, 'Pioggia ult. 24ore', 'mm', '1440']
+table4[5] = ['PLUV_10dd'+subsrid2, 'Pioggia ult. 10dd', 'mm', '864000']
 
 #Tabella per la neve fresca / neve al suolo:
 table3 = [ [ 0 for i in range(3) ] for j in range(3) ]
@@ -690,7 +691,8 @@ def raster_idro(infile_path):
         rete_prec.append(prec)
 
   global rete_arr
-  rete_arr = '@@'.join(rete_prec)
+  #ATTENZIONE! Dall'array rete_arr devo togliere l'ultimo elemento poiche' e' la pioggia di 10dd e sballa il grafico sull'atlante delle piogge!
+  rete_arr = '@@'.join(rete_prec[:-1])
   #60,8.2@@180,11.4@@360,11.4@@999,11.9
   #print rete_arr
 
@@ -812,8 +814,8 @@ elif active_queries==2: #funzionalita complete tranne RHI bandax
     atlante()
 elif active_queries==3: #tolgo tutto cio che riguarda il Piemonte (per expo e lombardia)
     print "<ul><li><a href='#tabs-1'>Pioggia-radar</a></li><li><a href='#tabs-4'>Meteosat</a></li></ul>"
-    stop_raster = ["_composite_", "p_ist_"+subsrid]
     print "<div id='tabs-1'>"
+    stop_raster = ["_composite_", "p_ist_"+subsrid]
     tipo_precipitazione("/var/www/html/common/DATA/raster/")
     precipitazione("/var/www/html/common/DATA/raster/", stop_raster)
     print "</div>"
