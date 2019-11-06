@@ -30,50 +30,50 @@ include_once('config_iris.php');
 
 //Tengo traccia degli accessi autenticati con DBD
 $indicesServer = array('PHP_SELF', 
-'argv', 
-'argc', 
-'GATEWAY_INTERFACE', 
-'SERVER_ADDR', 
-'SERVER_NAME', 
-'SERVER_SOFTWARE', 
-'SERVER_PROTOCOL', 
-'REQUEST_METHOD', 
-'REQUEST_TIME', 
-'REQUEST_TIME_FLOAT', 
-'QUERY_STRING', 
-'DOCUMENT_ROOT', 
-'HTTP_ACCEPT', 
-'HTTP_ACCEPT_CHARSET', 
-'HTTP_ACCEPT_ENCODING', 
-'HTTP_ACCEPT_LANGUAGE', 
-'HTTP_CONNECTION', 
-'HTTP_HOST', 
-'HTTP_REFERER', 
-'HTTP_USER_AGENT', 
-'HTTPS', 
-'REMOTE_ADDR', 
-'REMOTE_HOST', 
-'REMOTE_PORT', 
-'REMOTE_USER', 
-'REDIRECT_REMOTE_USER', 
-'SCRIPT_FILENAME', 
-'SERVER_ADMIN', 
-'SERVER_PORT', 
-'SERVER_SIGNATURE', 
-'PATH_TRANSLATED', 
-'SCRIPT_NAME', 
-'REQUEST_URI', 
-'PHP_AUTH_DIGEST', 
-'PHP_AUTH_USER', 
-'PHP_AUTH_PW', 
-'AUTH_TYPE', 
-'PATH_INFO', 
-'ORIG_PATH_INFO') ; 
+'argv',
+'argc',
+'GATEWAY_INTERFACE',
+'SERVER_ADDR',
+'SERVER_NAME',
+'SERVER_SOFTWARE',
+'SERVER_PROTOCOL',
+'REQUEST_METHOD',
+'REQUEST_TIME',
+'REQUEST_TIME_FLOAT',
+'QUERY_STRING',
+'DOCUMENT_ROOT',
+'HTTP_ACCEPT',
+'HTTP_ACCEPT_CHARSET',
+'HTTP_ACCEPT_ENCODING',
+'HTTP_ACCEPT_LANGUAGE',
+'HTTP_CONNECTION',
+'HTTP_HOST',
+'HTTP_REFERER',
+'HTTP_USER_AGENT',
+'HTTPS',
+'REMOTE_ADDR',
+'REMOTE_HOST',
+'REMOTE_PORT',
+'REMOTE_USER',
+'REDIRECT_REMOTE_USER',
+'SCRIPT_FILENAME',
+'SERVER_ADMIN',
+'SERVER_PORT',
+'SERVER_SIGNATURE',
+'PATH_TRANSLATED',
+'SCRIPT_NAME',
+'REQUEST_URI',
+'PHP_AUTH_DIGEST',
+'PHP_AUTH_USER',
+'PHP_AUTH_PW',
+'AUTH_TYPE',
+'PATH_INFO',
+'ORIG_PATH_INFO') ;
 //per vedere il contenuto delle varie informazioni estraibili dal server/client:
-/*echo '<table cellpadding="10">' ; 
-foreach ($indicesServer as $arg) { 
-    if (isset($_SERVER[$arg])) { echo '<tr><td>'.$arg.'</td><td>' . $_SERVER[$arg] . '</td></tr>' ; } 
-    else { echo '<tr><td>'.$arg.'</td><td>-</td></tr>'; } 
+/*echo '<table cellpadding="10">' ;
+foreach ($indicesServer as $arg) {
+    if (isset($_SERVER[$arg])) { echo '<tr><td>'.$arg.'</td><td>' . $_SERVER[$arg] . '</td></tr>' ; }
+    else { echo '<tr><td>'.$arg.'</td><td>-</td></tr>'; }
 }
 echo '</table>' ;*/
 //Su DB salvo solo alcune informazioni di accesso:
@@ -221,7 +221,6 @@ $geoext_css = '<link rel="stylesheet" href="'.$root_dir_html.'/GeoExt/resources/
 echo $geoext_css;
 
 //Recupero alcuni fogli di stile con Minify:
-//$open_css = '<link rel="stylesheet" type="text/css" href="../minify-2.1.7/min/?f=';
 $open_css = '<link rel="stylesheet" type="text/css" href="../min/?f=';
 //$open_css .= $root_dir_html_ext.'/ext-3.4.0/resources/css/ext-all.css,'; //LO TOLGO DAL MINIFY onde evitare problemi di proxy o versioni di sviluppo
 //$open_css .= '/GeoExt/resources/css/geoext-all.css,'; //LO TOLGO DAL MINIFY onde evitare problemi di proxy o versioni di sviluppo
@@ -237,7 +236,8 @@ $script_js = '<script type="text/javascript" src="'.$root_dir_html.'/ext-3.4.0/a
 $script_js .= '<script type="text/javascript" src="'.$root_dir_html.'/ext-3.4.0/ext-all.js"></script>';
 $script_js .= '<script type="text/javascript" src="'.$root_dir_html.'/OpenLayers-2.13.1/OpenLayers.js"></script>';
 $script_js .= '<script type="text/javascript" src="'.$root_dir_html.'/GeoExt/script/GeoExt.js"></script>';
-$script_js .= '<script src="https://maps.googleapis.com/maps/api/js"></script>';
+//$script_js .= '<script src="https://maps.googleapis.com/maps/api/js"></script>';
+$script_js .= '<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDqIt8yOo4yAaZDv_x3lRnkSpzfOxWrbRc"></script>';
 $script_js .= '<script type="text/javascript" src="'.$root_dir_html.'/common/proj4js-combined.js"></script>';
 echo $script_js;
 ?>
@@ -326,7 +326,7 @@ echo $launch_toolbar;
 <script>
 //Riprendo i valori eventualmente definiti da DB in modo tale da trasormarli sfruttando la libreria projs che magari non voglio caricarmi anche da local_script_db.php o che da esso non viene riconosciuta:
 p1 = new Proj4js.Point(Math.round(lon_center*1000)/1000, Math.round(lat_center*1000)/1000);
-pp1 = Proj4js.transform(proj4326, proj3785, p1);
+pp1 = Proj4js.transform(proj4326, proj3857, p1);
 var x_center = pp1.x;
 var y_center = pp1.y;
 //poi passo a recuperare eventuali cookie:
@@ -350,7 +350,7 @@ else if (start_condition && start_condition.length > 0) {
   var lat_center = '<?php echo $lat; ?>';
   var lon_center = '<?php echo $lon; ?>';
   p1 = new Proj4js.Point(Math.round(lon_center*1000)/1000, Math.round(lat_center*1000)/1000);
-  pp1 = Proj4js.transform(proj4326, proj3785, p1);
+  pp1 = Proj4js.transform(proj4326, proj3857, p1);
   var x_center = pp1.x;
   var y_center = pp1.y;
 }
