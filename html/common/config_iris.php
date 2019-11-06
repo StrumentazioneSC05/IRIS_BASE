@@ -40,6 +40,7 @@ $urllogo = "http://www.arpa.piemonte.gov.it/";
 $map_path = "/var/www/html/common/mapfiles/"; //percorso dei file .map di mapserver
 $url_tinyows = $root_dir_html . "/cgi-bin/tinyows"; //percorso eseguibile tinyows
 $url_tinyows_sigeo = $root_dir_html . "/cgi-bin/tinyows110_pg96"; //percorso eseguibile tinyows
+$url_tinyows_acqua = $root_dir_html . "/cgi-bin/tinyows_acqua"; //percorso eseguibile tinyows
 $titlelogo = "WebGis IRIS";
 $id_logo_div = "logo";
 

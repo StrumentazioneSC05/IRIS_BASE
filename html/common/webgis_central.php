@@ -186,6 +186,7 @@ document.write("<link rel='icon' href='"+root_dir_html+"/common/icons/" + webgis
 var map_path = "<?php echo $map_path; ?>"; //percorso dei file .map di mapserver
 var url_tinyows = "<?php echo $url_tinyows; ?>"; //percorso eseguibile tinyows
 var url_tinyows_sigeo = "<?php echo $url_tinyows_sigeo; ?>"; //percorso eseguibile tinyows
+var url_tinyows_acqua = "<?php echo $url_tinyows_acqua; ?>"; //percorso eseguibile tinyows
 </script>
 
 <script>

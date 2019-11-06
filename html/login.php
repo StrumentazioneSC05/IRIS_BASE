@@ -1,6 +1,9 @@
 
 <?php
 
+//Carico le configurazioni di base da un file esterno:
+include_once('common/config_iris.php');
+
 //se proengo dalla pagina in cui ho modificato la password:
 $check_modify = 0;
 if (isset($_POST["password1"])) { //vuol dire che ho richiesto di modificare la password
@@ -11,7 +14,7 @@ if (isset($_POST["password1"])) { //vuol dire che ho richiesto di modificare la 
 //echo $username;
 
   //Carico le configurazioni di base da un file esterno:
-  $conn_string = "host=localhost port=5432 dbname=iris_base user=webgis password=webgis$2013%";
+  //$conn_string = "host=localhost port=5432 dbname=iris_base user=webgis password=webgis$2013%";
   $conn = pg_connect($conn_string);
   //Recupero dati per i servizi WebGIS disponibili:
   if (!$conn) { // Check if valid connection
@@ -57,12 +60,11 @@ $check_reset = 0;
 if (isset($_POST["httpd_mail"])) { //vuol dire che ho richiesto di resettare la password
   $httpd_mail = $_POST["httpd_mail"];
   //Carico le configurazioni di base da un file esterno:
-  $conn_string = "host=localhost port=5432 dbname=iris_base user=webgis password=webgis$2013%";
-
+  //$conn_string = "host=localhost port=5432 dbname=iris_base user=webgis password=webgis$2013%";
   //Recupero dati per i servizi WebGIS disponibili:
   $conn = pg_connect($conn_string);
   if (!$conn) { // Check if valid connection
-    echo "Error Connecting to database <br>";
+    echo "Error Connecting to database - reset pwd <br>";
     exit;
   }
   else {
